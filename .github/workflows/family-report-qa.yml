@@ -1,0 +1,43 @@
+name: MathsGrove family stats and report QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'family-access.js'
+      - 'family.html'
+      - 'family-timing.js'
+      - 'family-timing.css'
+      - 'index.html'
+      - 'report.html'
+      - 'report-reader.js'
+      - 'report-reader.css'
+      - 'report-preview.css'
+      - 'scripts/check-family-timing-report.mjs'
+      - 'supabase/migrations/202611080900_family_engagement_timing.sql'
+      - '.github/workflows/family-report-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: Parent data privacy and complete report
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse parent and report modules
+        run: |
+          node --input-type=module --check < family-access.js
+          node --input-type=module --check < family-timing.js
+          node --check report-reader.js
+      - name: Test timing model, permissions, reader and deployment
+        run: node scripts/check-family-timing-report.mjs
+      - name: Preserve parent access and report mathematical consistency
+        run: |
+          node scripts/check-family-access.mjs
+          node scripts/check-family-refresh-race.mjs
+          node scripts/check-examiner-book.mjs
+          node scripts/check-site.mjs
