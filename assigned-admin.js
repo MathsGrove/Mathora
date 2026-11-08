@@ -87,7 +87,7 @@ export function initAssignedAdmin(db,state){
  async function refresh(){
   if(!state.membership?.org_id)return;
   const {data,error}=await db.rpc('grove_admin_schedule',{p_org:state.membership.org_id});
-  if(error){summary.textContent='Cannot fetch assignments: '+error.message;list.replaceChildren();throw Error(error.message)}
+  if(error){state.assignedScheduleLoaded=false;summary.textContent='Cannot fetch assignments: '+error.message;list.replaceChildren();throw Error(error.message)}
   const rows=Array.isArray(data?.assignments)?data.assignments:[];
   state.assignedReviewRows=rows.filter(x=>['completed','expired'].includes(x.status)&&x.review_status!=='released');
   state.assignedReleasedCount=rows.filter(x=>x.review_status==='released').length;
