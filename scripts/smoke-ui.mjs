@@ -30,7 +30,7 @@ const server=createServer(async(req,res)=>{
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const port=server.address().port,base='http://127.0.0.1:'+port;
-const pages=['/','/portal.html','/studio.html','/family.html','/baseline.html','/sample.html'];
+const pages=['/','/portal.html','/studio.html','/family.html','/baseline.html','/sample.html','/report.html'];
 const viewports=[{label:'phone',width:390,height:844},{label:'desktop',width:1440,height:900}];
 const failures=[],reports=[];
 const browser=await chromium.launch({headless:true});
@@ -49,6 +49,14 @@ try{
    try{
     const response=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:20000});
     await page.waitForTimeout(750);
+    if(path==='/report.html'){
+     await page.waitForSelector('#mgr-pages .mg7-page',{timeout:6000});
+     assert.equal(await page.locator('#mgr-pages .mg7-page').count(),7,'Seven full report pages must render');
+     assert.equal(await page.locator('#mgr-pages .mg7-page[hidden]').count(),0,'All report pages must scroll');
+     assert.equal(await page.locator('#mgr-select option').count(),7,'Page navigator must include all seven');
+     await page.selectOption('#mgr-select','3');
+     assert.equal((await page.locator('#mgr-select').inputValue()),'3');
+    }
     const stats=await page.evaluate(()=>{
      const doc=document.documentElement;
      const images=[...document.querySelectorAll('img')];
@@ -190,6 +198,43 @@ try{
    finally{await page.close()}
   }
   await context.close();
+ }
+ // Parent dashboard: render the actual linked-learner timing component with
+ // fictional data; do not send credentials or read real student records.
+ for(const viewport of viewports){
+  const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},
+   deviceScaleFactor:1,reducedMotion:'reduce'});
+  const page=await context.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push(String(e.message)));
+  await page.route('**/family-access.js',route=>route.fulfill({status:200,contentType:'text/javascript',body:''}));
+  try{
+   await page.goto(base+'/family.html',{waitUntil:'domcontentloaded'});
+   await page.evaluate(async()=>{
+    document.getElementById('fa-loading').hidden=true;
+    document.getElementById('fa-dashboard').hidden=false;
+    const {renderFamilyTiming}=await import('./family-timing.js');
+    renderFamilyTiming({practice_timing:{
+     window_days:28,scheduled_sessions:9,submitted_sessions:5,
+     unstarted_past_schedule:2,submitted_after_day:1,recorded_visible_minutes:142.5
+    },practice_activity:[
+     {mode:'exam_daily',scheduled_date:'2026-11-05',submitted_at:'2026-11-07T15:00:00Z',
+      days_after_scheduled:2,status:'completed',visible_minutes:45},
+     {mode:'weekly',scheduled_date:'2026-11-07',submitted_at:null,
+      days_after_scheduled:null,status:'scheduled',visible_minutes:0}
+    ]});
+   });
+   assert.equal(await page.locator('.fat-stat').count(),4);
+   assert.equal(await page.locator('.fat-event').count(),2);
+   assert.equal((await page.locator('.fat-stat strong').first().textContent()).trim(),'2 hr 23 min');
+   const over=await page.evaluate(()=>Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)-
+     document.documentElement.clientWidth);
+   if(over>12)failures.push('family mock '+viewport.label+' overflow '+over+'px');
+   if(errors.length)failures.push('family mock '+viewport.label+' errors '+errors.slice(0,2).join('; '));
+   await page.locator('#fa-timing-dashboard').scrollIntoViewIfNeeded();
+   await page.screenshot({path:resolve(screenshotDir,'family-timing-'+viewport.label+'.png'),fullPage:false});
+   console.log('Family timing mock '+viewport.label+': overflow='+over+'px, scriptErrors='+errors.length);
+  }catch(error){failures.push('Family mock '+viewport.label+': '+String(error.message||error).slice(0,300))}
+  finally{await page.close();await context.close()}
  }
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
 for(const r of reports)console.log(JSON.stringify(r));
