@@ -7,6 +7,7 @@ import { initEditorialReview } from './editorial-review.js';
 import { initSignatureEditorial } from './signature-editorial.js';
 import { initStudentOffboarding } from './student-offboarding.js';
 import { initExaminerWorkspace } from './examiner-workspace.js';
+import { assessScheduleCoverage,renderScheduleCoverage } from './schedule-readiness.js';
 const $ = id => document.getElementById(id);
 const config = window.MATHSGROVE_CONFIG || {};
 const connected = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url || '') && !!config.publishableKey;
@@ -15,7 +16,7 @@ const state = {user:null,org:null,membership:null,memberships:[],students:[],att
 const linkedManager=initAccessManagement(db,state);
 const baselineManager=initBaselineAdmin(db,state);
 const assignedManager=initAssignedAdmin(db,state);
-state.onAssignedRefresh=()=>{if(state.membership){renderOverview();renderQueue();examinerWorkspace.render()}};
+state.onAssignedRefresh=()=>{if(state.membership){renderOverview();renderQueue();examinerWorkspace.render();renderScheduleWarning()}};
 const editorialManager=initEditorialReview(db,state);
 const signatureManager=initSignatureEditorial(db,state);
 const offboardingChannel=typeof BroadcastChannel!=='undefined'?new BroadcastChannel('mathsgrove-offboarding'):null;
@@ -126,7 +127,7 @@ async function refresh({strict=false}={}){
  const results=await Promise.allSettled([loadRoster(),loadAttempts(),loadInvites(),loadProgrammes(),loadStudentSetups()]);
  const failures=results.filter(x=>x.status==='rejected').map(x=>x.reason?.message||'Unknown error');
  if(failures.length){issues.push(...failures);inform('Some studio data could not load: '+failures.join(' | '),true);}
- renderOverview();renderRoster();renderInvites();renderProgrammes();syncMarkingStudentFilter();renderQueue();renderReleased();examinerWorkspace.render();
+ renderOverview();renderRoster();renderInvites();renderProgrammes();syncMarkingStudentFilter();renderQueue();renderReleased();examinerWorkspace.render();renderScheduleWarning();
  const inspect=async(label,task)=>{
   try{await task()}catch(err){
    const reason=label+': '+(err?.message||String(err));
@@ -159,7 +160,7 @@ async function loadRoster(){
 async function loadProgrammes(){
  const {data,error}=await db.from('student_entitlements')
  .select('student_id,org_id,tier,signature_credits,starts_at,ends_at').eq('org_id',state.membership.org_id).limit(200);
- if(error){state.entitlements=[];return}
+ if(error){state.entitlements=[];throw error}
  state.entitlements=data||[];
 }
 async function loadStudentSetups(){
@@ -268,11 +269,11 @@ $('programme-form').onsubmit=async e=>{
  button.disabled=true;
  try{
   const payload=setupArgs('programme',student);
-  const {data,error}=await db.rpc('update_student_setup',payload);
-  if(error||!data?.ok)throw Error(error?.message||'Student settings could not be saved.');
+  // One PostgreSQL transaction updates both programme and target grade.
+  // A rejected grade must never leave an otherwise half-saved programme.
   const target=$('programme-target-grade').value.trim();
-  const {data:gradeResult,error:gradeError}=await db.rpc('grove_admin_set_target',{p_student:student,p_grade:target});
-  if(gradeError||!gradeResult?.ok)throw Error('Programme saved, but target grade was not updated: '+(gradeError?.message||'Please try again.'));
+  const {data,error}=await db.rpc('update_student_setup_atomic',{...payload,p_grade:target});
+  if(error||!data?.ok)throw Error('Nothing was saved: '+(error?.message||'Please check the qualification and target grade, or install the atomic programme migration.'));
   await Promise.all([loadRoster(),loadProgrammes(),loadStudentSetups()]);
   renderRoster();renderProgrammes();
   inform('Saved exam information, programme, target grade and add-ons. Previous submissions and reports remain unchanged.',false,'programme-feedback');
@@ -309,6 +310,11 @@ async function loadInvites(){
  if(!adminRole()){state.invites=[];return}
  const result=await edge('list',{orgId:state.membership.org_id});
  state.invites=result.invitations||[];
+}
+function renderScheduleWarning(){
+ if(!state.assignedScheduleLoaded)return;
+ const result=assessScheduleCoverage(state.students,state.entitlements,state.assignedAllRows);
+ renderScheduleCoverage(result,$('mg-schedule-readiness'));
 }
 function renderOverview(){
  const students=state.students,attempts=state.attempts;
