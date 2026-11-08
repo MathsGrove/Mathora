@@ -209,8 +209,9 @@ async function loadStudentAnalysis(){
 
 let releaseRefreshBusy=false,lastReleaseCheck=0;
 async function refreshStudentReleases(){
- if(releaseRefreshBusy||!sb||!state.user||!state.member||state.attempt||
-   !$('mg-practice-workspace').hidden)return;
+ if(releaseRefreshBusy||!sb||!state.user||!state.member)return;
+ if(state.attempt||!$('mg-practice-workspace').hidden)
+  throw Error('Complete or leave the current assessment before checking for newly released feedback.');
  releaseRefreshBusy=true;
  try{
   const {data,error}=await sb.from('attempts')
@@ -326,7 +327,7 @@ async function renderEvidence(){
 $('invite-login-form').addEventListener('submit',requestLink);
 $('existing-member').addEventListener('click',()=>{$('access-code').value='';message('login-message','Enter your registered email to receive a secure sign-in link.')});
 $('claim-form').addEventListener('submit',async e=>{e.preventDefault();try{await redeem($('claim-code').value);await loadMembership();if(!state.member)throw Error('Enrolment pending.');message('claim-message','Invitation accepted.');await boot()}catch(err){message('claim-message',friendlyError(err),true)}});
-$('sign-out').addEventListener('click',async()=>{await sb?.auth.signOut();sessionStorage.removeItem('mathsgrove_pending_code');location.href='./portal.html'});
+$('sign-out').addEventListener('click',async()=>{studentReleaseFeed.invalidate();await sb?.auth.signOut();sessionStorage.removeItem('mathsgrove_pending_code');location.href='./portal.html'});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.view)));
 $('pathway-form').addEventListener('submit',async e=>{
  e.preventDefault();
@@ -782,6 +783,7 @@ async function recheckLearnerOnReturn(){
    .eq('user_id',verified.user.id).eq('member_role','student').limit(1);
   if(roleError)throw roleError;
   if(!roles?.length){
+   studentReleaseFeed.invalidate();
    state.member=null;state.members=[];state.attempts=[];state.questions=[];
    state.preference=null;state.profile=null;state.entitlement=null;state.attempt=null;
    show('claim-view');
@@ -796,6 +798,7 @@ async function recheckLearnerOnReturn(){
     await loadStudentAnalysis();
   }
  }catch{
+  studentReleaseFeed.invalidate();
   state.member=null;state.members=[];state.attempts=[];state.questions=[];
   state.profile=null;state.preference=null;state.entitlement=null;state.attempt=null;
   show('login-view');
