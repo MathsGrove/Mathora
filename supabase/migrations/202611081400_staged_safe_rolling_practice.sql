@@ -91,8 +91,8 @@ begin
    v_route_blocked:=v_route_blocked+1;
    continue;
   end if;
-  v_first:=pg_catalog.greatest(p_today,v_member.starts_at::date);
-  v_last:=pg_catalog.least(p_today+27,
+  v_first:=greatest(p_today,v_member.starts_at::date);
+  v_last:=least(p_today+27,
           coalesce(v_member.ends_at::date,p_today+27));
   if v_last<v_first then continue;end if;
   -- An admin route change can leave a formerly scheduled task of the same
