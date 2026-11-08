@@ -129,7 +129,19 @@ try{
      assert.equal(await page.locator('#mgex-students .mgex-student-card').count(),2);
      assert.equal((await page.locator('#mgex-inbox .mgex-inbox-name').first().textContent()).trim(),'Student One');
      assert.equal((await page.locator('#mgex-after').textContent()).trim(),'1');
-     await page.locator('#mgex-search').fill('Student Two');
+     const diagnostic=await page.locator('#mgex-search').evaluate(el=>{
+      const style=getComputedStyle(el),box=el.getBoundingClientRect();
+      let hiddenAncestor=null;
+      for(let p=el.parentElement;p;p=p.parentElement){
+       const st=getComputedStyle(p);
+       if(st.display==='none'||st.visibility==='hidden'){hiddenAncestor=p.id||p.className||p.tagName;break}
+      }
+      return {display:style.display,visibility:style.visibility,rect:{x:box.x,y:box.y,width:box.width,height:box.height},
+       hiddenAncestor,disabled:el.disabled};
+     });
+     console.log('Examiner input '+viewport.label+': '+JSON.stringify(diagnostic));
+     await page.screenshot({path:resolve(screenshotDir,'examiner-before-'+viewport.label+'.png'),fullPage:false});
+     await page.locator('#mgex-search').fill('Student Two',{timeout:5000});
      assert.equal(await page.locator('#mgex-students .mgex-student-card').count(),1);
      await page.locator('#mgex-search').fill('');
      await page.locator('#mgex-students .mgex-student-action').first().click();
@@ -159,7 +171,17 @@ try{
     }
     const overflow=await page.evaluate(()=>Math.max(
      document.documentElement.scrollWidth,document.body.scrollWidth)-document.documentElement.clientWidth);
-    if(overflow>12)failures.push(kind+' '+viewport.label+' authenticated dashboard mock overflow '+overflow+'px');
+    if(overflow>12){
+     const offenders=await page.evaluate(()=>{
+      const w=document.documentElement.clientWidth;
+      return [...document.querySelectorAll('body *')].map(el=>{
+       const b=el.getBoundingClientRect();return {tag:el.tagName,cls:String(el.className).slice(0,60),id:el.id,
+        left:Math.round(b.left),right:Math.round(b.right),width:Math.round(b.width)};
+      }).filter(v=>v.right>w+12&&v.width>0).sort((a,b)=>b.right-a.right).slice(0,8);
+     });
+     console.log('Dashboard overflow details '+kind+' '+viewport.label+': '+JSON.stringify(offenders));
+     failures.push(kind+' '+viewport.label+' authenticated dashboard mock overflow '+overflow+'px');
+    }
     if(errors.length)failures.push(kind+' '+viewport.label+' dashboard script errors: '+errors.slice(0,2).join(' | '));
     await page.screenshot({path:resolve(screenshotDir,kind+'-dashboard-'+viewport.label+'.png'),fullPage:false});
     console.log('Authenticated dashboard mock '+kind+' '+viewport.label+': overflow='+overflow+'px, JavaScript errors='+errors.length);
