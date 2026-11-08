@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11243b">
+<meta name="description" content="Try a fictional MathsGrove reasoning journey: solve an original algebra problem, review the method, and attempt a new independent recheck.">
+<link rel="canonical" href="https://mathsgrove.github.io/Mathora/reasoning-demo.html">
+<title>Reasoning Journey · See the Thinking | MathsGrove</title>
+<link rel="icon" href="./mathsgrove-icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./reasoning-demo.css">
+<script type="module" src="./reasoning-demo.js"></script>
+</head>
+<body class="rg">
+<a href="#rg-main" class="rg-skip">Skip to mathematical question</a>
+<header class="rg-header"><a class="rg-brand" href="./index.html" aria-label="MathsGrove homepage"><img src="./mathsgrove-icon.svg" width="36" height="36" alt="">Maths<span>Grove</span></a>
+ <nav aria-label="Page navigation"><a href="./index.html">Homepage</a><a href="./report.html">Specimen report</a><a class="rg-private" href="./portal.html">Member sign-in ↗</a></nav>
+</header>
+<main id="rg-main">
+ <section class="rg-hero" aria-labelledby="rg-title">
+  <div class="rg-eyebrow">THE MATHSGROVE METHOD · ORIGINAL MATHEMATICS DEMONSTRATION</div>
+  <h1 id="rg-title">See the thinking<br><em>behind the mark.</em></h1>
+  <p>Try two original GCSE-style algebra questions. We look at both your numerical answer and the mathematical method you select. You'll see exactly why a correction matters—and why two questions are not enough to prove long-term mastery.</p>
+  <div class="rg-hero-pills"><span><b>01</b> Try</span><span><b>02</b> Understand</span><span><b>03</b> Recheck</span><span><b>04</b> Plan</span></div>
+  <p class="rg-disclosure"><strong>Important:</strong> This is a local, prepared mathematics demonstration—not human examiner marking, a live assessment, an automated evaluation of handwriting, or a qualification grade. Nothing you type here is submitted, sent to a server or stored.</p>
+ </section>
+ <div class="rg-workspace">
+  <section class="rg-step" id="rg-first" aria-labelledby="rg-first-title">
+   <div class="rg-step-top"><span class="rg-step-no">01 / FIRST ATTEMPT</span><span class="rg-step-meta">GCSE Foundation-style · Algebra</span></div>
+   <div class="rg-step-layout">
+    <div class="rg-question"><h2 id="rg-first-title">First, solve the equation.</h2><div class="rg-equation" aria-label="Three multiplied by the quantity x plus four equals twenty-seven">3(x + 4) = 27</div><p>Find <strong>x</strong>. Then select the method that best explains how you arrived at your result.</p>
+      <form id="rg-form-first" novalidate>
+        <label for="rg-answer-first" class="rg-label">Your answer</label>
+        <input id="rg-answer-first" name="number" inputmode="decimal" autocomplete="off" placeholder="For example, x = 5" required>
+        <fieldset><legend>Which method describes your reasoning?</legend>
+         <label><input type="radio" name="method" value="a" required> Divide both sides by 3, then subtract 4.</label>
+         <label><input type="radio" name="method" value="b"> Subtract 4 from 27, then divide by 3.</label>
+         <label><input type="radio" name="method" value="c"> Multiply 27 by 3, then subtract 4.</label>
+        </fieldset>
+        <p id="rg-error-first" class="rg-error" role="alert" hidden></p>
+        <button class="rg-action" type="submit">Check this example <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+    <aside class="rg-help"><span>WHAT WE NOTICE</span><h3>Answers are evidence.<br><em>Methods explain them.</em></h3><p>A correct answer can hide an incorrect method. A sensible method can still lead to an arithmetic slip. Both deserve different feedback.</p><div class="rg-help-rule"><strong>Try the question before revealing the explanation.</strong><small>No timer. No account. No pressure.</small></div></aside>
+   </div>
+   <div class="rg-feedback" id="rg-feedback-first" hidden aria-live="polite"><p class="rg-feedback-eyebrow">SPECIMEN SELF-REVIEW</p><h3 id="rg-result-first">Your first check</h3><p id="rg-explanation-first"></p><div class="rg-feedback-notice" id="rg-observation-first"></div><button type="button" class="rg-action rg-action-small" id="rg-go-second">Try a different equation <span aria-hidden="true">→</span></button></div>
+  </section>
+  <section class="rg-step" id="rg-second" hidden aria-labelledby="rg-second-title">
+   <div class="rg-step-top"><span class="rg-step-no">02 / FRESH PRACTICE</span><span class="rg-step-meta">Different numbers · Similar reasoning</span></div>
+   <div class="rg-step-layout">
+    <div class="rg-question"><h2 id="rg-second-title">Now, apply the idea again.</h2><div class="rg-equation" aria-label="Four multiplied by the quantity two y minus three equals twenty">4(2y − 3) = 20</div><p>Find <strong>y</strong>. This is a separate problem, designed to test the same inverse-operation idea in a different structure.</p>
+    <form id="rg-form-second" novalidate>
+      <label class="rg-label" for="rg-answer-second">Your answer</label>
+      <input id="rg-answer-second" name="number" inputmode="decimal" autocomplete="off" placeholder="For example, y = 4" required>
+      <fieldset><legend>Which method describes your reasoning?</legend>
+       <label><input type="radio" name="method" value="a" required> Divide by 4, add 3, then divide by 2.</label>
+       <label><input type="radio" name="method" value="b"> Divide by 4, divide by 2, then add 3.</label>
+       <label><input type="radio" name="method" value="c"> Expand as 8y − 3 = 20.</label>
+      </fieldset>
+      <p id="rg-error-second" class="rg-error" role="alert" hidden></p>
+      <button class="rg-action" type="submit">Check the new method <span aria-hidden="true">→</span></button>
+    </form></div>
+    <aside class="rg-help"><span>WHY A NEW QUESTION?</span><h3>One correction<br><em>isn't mastery.</em></h3><p>Revisiting an idea in a new form can reveal whether a student is applying a method or recognising the previous answer.</p><div class="rg-help-rule"><strong>A later, independent check is still needed.</strong><small>This demonstration does not track long-term retention.</small></div></aside>
+   </div>
+   <div class="rg-feedback" id="rg-feedback-second" hidden aria-live="polite"><p class="rg-feedback-eyebrow">SECOND SELF-REVIEW</p><h3 id="rg-result-second">Your second check</h3><p id="rg-explanation-second"></p><div class="rg-feedback-notice" id="rg-observation-second"></div><button type="button" class="rg-action rg-action-small" id="rg-go-summary">See your evidence summary <span aria-hidden="true">→</span></button></div>
+  </section>
+  <section class="rg-summary" id="rg-summary" hidden aria-labelledby="rg-summary-title">
+   <p class="rg-step-no">03 / THE EVIDENCE, IN CONTEXT</p>
+   <h2 id="rg-summary-title">What does your work <em>actually show?</em></h2>
+   <div class="rg-metrics"><div><span>Questions completed</span><strong id="rg-count">—</strong><small>Two original practice examples</small></div><div><span>Answer + method signals</span><strong id="rg-signals">—</strong><small>Four possible checks; not a qualification mark</small></div><div><span>Independent later review</span><strong>Needed</strong><small>Retention has not been tested</small></div></div>
+   <p id="rg-summary-desc" class="rg-summary-desc"></p>
+   <div class="rg-perspectives" role="group" aria-label="Choose a perspective">
+    <button type="button" data-role="student" aria-pressed="true">Student</button>
+    <button type="button" data-role="examiner" aria-pressed="false">Examiner</button>
+    <button type="button" data-role="parent" aria-pressed="false">Parent</button>
+   </div>
+   <div class="rg-perspective-output"><p class="rg-step-no" id="rg-role-heading">STUDENT VIEW</p><h3 id="rg-role-title">What to try next</h3><p id="rg-role-desc"></p><p class="rg-role-caveat">This is an illustrative view, not an examiner-issued report or verified progress record.</p></div>
+   <div class="rg-end-actions"><button type="button" id="rg-restart">Start again</button><a href="./report.html">See a complete examiner specimen ↗</a><a href="./index.html#services">Explore MathsGrove programmes ↗</a></div>
+  </section>
+ </div>
+ <section class="rg-end" aria-label="How MathsGrove is different"><div><p class="rg-eyebrow">MATHEMATICS, WITH MEANING</p><h2>Good feedback is a beginning,<br><em>not the finishing line.</em></h2><p>In the private MathsGrove environment, saved mathematical working and authorised examiner feedback can support a more precise next step. The full Reasoning Journey—linking those records to later independent checks—is under controlled development and will not be advertised as complete until it passes academic and privacy tests.</p><a href="./index.html">Return to the MathsGrove website ↗</a></div></section>
+</main>
+<footer>MathsGrove · Independent original specimen · Not endorsed by any awarding body · No personal data collected in this demonstration.</footer>
+</body>
+</html>
