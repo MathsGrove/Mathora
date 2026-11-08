@@ -59,14 +59,15 @@ export function buildExaminerRecords(students=[],attempts=[],assignments=[]){
 }
 const timeNumber=r=>{
  const n=Date.parse(r.timestamp||'');
- return Number.isFinite(n)?n:0;
+ return Number.isFinite(n)?n:null;
 };
 export function sortExaminerRecords(records){
  return [...records].sort((a,b)=>{
   const rank=x=>x.stage==='submitted'?0:x.stage==='draft'?1:x.stage==='released'?2:3;
   const r=rank(a)-rank(b);if(r)return r;
-  return a.stage==='submitted' ? timeNumber(a)-timeNumber(b)
-   :timeNumber(b)-timeNumber(a);
+  return a.stage==='submitted'
+   ? (timeNumber(a)??Number.POSITIVE_INFINITY)-(timeNumber(b)??Number.POSITIVE_INFINITY)
+   : (timeNumber(b)??0)-(timeNumber(a)??0);
  });
 }
 const text=(tag,cls,value)=>{
@@ -136,7 +137,7 @@ export function initExaminerWorkspace(state,{openPaper,openPractice,onRefresh,on
    const entries=records.filter(r=>r.studentId===s.id);
    return {student:s,entries,pending:entries.filter(x=>x.stage==='submitted').length,
     reviewed:entries.filter(x=>x.stage==='released').length,
-    last:Math.max(0,...entries.map(timeNumber))};
+    last:Math.max(0,...entries.map(r=>timeNumber(r)??0))};
   };
   const profiles=visibleStudents.map(studentStats);
   if(sort.value==='name')profiles.sort((a,b)=>a.student.name.localeCompare(b.student.name));
@@ -154,7 +155,7 @@ export function initExaminerWorkspace(state,{openPaper,openPractice,onRefresh,on
    stats.append(text('span','',p.pending+' awaiting'),text('span','',p.reviewed+' released'));
    head.append(avatar,info,stats);card.append(head);
    const recent=text('div','mgex-card-activity');
-   const recentRows=p.entries.filter(r=>r.stage!=='scheduled').slice(0,2);
+   const recentRows=p.entries.filter(r=>r.stage!=='scheduled').sort((a,b)=>(timeNumber(b)??0)-(timeNumber(a)??0)).slice(0,2);
    if(!recentRows.length)recent.append(text('p','mgex-empty','No submitted assessments yet.'));
    else for(const entry of recentRows)recent.append(row(entry));
    card.append(recent);
@@ -171,7 +172,7 @@ export function initExaminerWorkspace(state,{openPaper,openPractice,onRefresh,on
    focused.hidden=false;
    $('mgex-selected-title').textContent=(student?.name||'Student')+' · Individual record';
    const activities=$('mgex-selected-activities');activities.replaceChildren();
-   const data=records.filter(r=>r.studentId===selectedId&&r.stage!=='scheduled');
+   const data=records.filter(r=>r.studentId===selectedId&&r.stage!=='scheduled').sort((a,b)=>(timeNumber(b)??0)-(timeNumber(a)??0));
    if(!data.length)activities.append(text('p','mgex-empty','No work yet for this student.'));
    else for(const rec of data.slice(0,30))activities.append(row(rec));
   }else focused.hidden=true;
