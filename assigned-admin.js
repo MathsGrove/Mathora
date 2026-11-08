@@ -2,6 +2,7 @@
 export function initAssignedAdmin(db,state){
  const $=id=>document.getElementById(id),list=$('mg-assigned-admin-rows'),summary=$('mg-assigned-admin-summary');
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n};
+ let rowsCache=[],studentFilter='';
  const modes={daily:'Daily practice',weekly:'Weekly paper',exam_daily:'Exam Daily',mock_pending:'Moderated mock placeholder',mock:'20-question timed monthly mock'};
  const info=(parent,message)=>{const node=el('p',message,'mg-review-status');parent.append(node);return node};
  async function displayEvidence(root,items){
@@ -96,19 +97,32 @@ export function initAssignedAdmin(db,state){
   for(const [num,label] of [[awaiting.length,'AWAITING EXAMINER'],[released.length,'REPORTS RELEASED'],[active.length,'IN PROGRESS']]){
    const cell=el('div');cell.append(el('strong',num),el('span',label));summary.append(cell);
   }
+  rowsCache=rows;
+  state.assignedAllRows=rows;
+  renderRows();
+  state.onAssignedRefresh?.();
+ }
+ $('mg-assigned-admin-refresh').addEventListener('click',()=>void refresh());
+ setInterval(()=>{if(!document.hidden&&!$('mg-assigned-admin').closest('[data-panel]')?.hidden&&!list.querySelector('.mg-assigned-detail[open]'))void refresh()},60000);
+ function renderRows(){
+  const rows=studentFilter?rowsCache.filter(r=>r.student_id===studentFilter):rowsCache;
   list.replaceChildren();
   if(!rows.length){list.append(el('p','New daily and weekly assignments appear here as students begin their programme.'));return}
   const ordered=[...rows].sort((a,b)=>{
-   const rank=r=>r.status==='completed'||r.status==='expired'?(r.review_status==='released'?1:0):2;
-   return rank(a)-rank(b)||String(b.due_date).localeCompare(String(a.due_date));
+   const rank=r=>['completed','expired'].includes(r.status)?(r.review_status==='released'?2:0):r.status==='active'?1:3;
+   const priority=rank(a)-rank(b);if(priority)return priority;
+   const at=r=>Date.parse(r.submitted_at||r.started_at||((r.due_date||'1970-01-01')+'T12:00:00Z'))||0;
+   return rank(a)===0?at(a)-at(b):at(b)-at(a);
   });
   for(const r of ordered.slice(0,75)){
    const card=el('div',undefined,'mg-assigned-row'),meta=el('div',undefined,'mg-task-meta');
+   card.dataset.taskId=r.task_id;card.dataset.studentId=r.student_id;
    const stage=r.review_status==='released'?'Released · '+r.score+'/'+r.question_count:
     r.status==='completed'||r.status==='expired'?'Ready to mark':
     r.status==='active'?'In progress':r.mode==='mock_pending'?'Awaiting a moderated mock':'Upcoming';
    meta.append(el('strong',r.student_name||'Student'),
-    el('small',[modes[r.mode]||r.mode,r.qualification,r.level,r.due_date].join(' · ')),
+    el('small',[modes[r.mode]||r.mode,r.qualification,r.level,'Scheduled '+r.due_date].join(' · ')),
+    el('small',r.submitted_at?'Submitted '+new Date(r.submitted_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}):'Not yet submitted'),
     el('span',stage+' · '+(r.minutes_visible||0)+' min of recorded question visibility','mg-task-status'));
    card.append(meta);
    if(['completed','expired'].includes(r.status)&&r.mode!=='mock_pending'){
@@ -118,9 +132,18 @@ export function initAssignedAdmin(db,state){
    }else card.append(el('p',r.status==='scheduled'?'Opens on the scheduled date.':'The learner is still working or this mock requires publication.','mg-review-hint'));
    list.append(card);
   }
-  state.onAssignedRefresh?.();
+
  }
- $('mg-assigned-admin-refresh').addEventListener('click',()=>void refresh());
- setInterval(()=>{if(!document.hidden&&!$('mg-assigned-admin').closest('[data-panel]')?.hidden&&!list.querySelector('.mg-assigned-detail[open]'))void refresh()},60000);
- return {refresh}
+ function setStudentFilter(id){studentFilter=String(id||'');renderRows()}
+ function openTask(id){
+  const target=rowsCache.find(r=>r.task_id===id);
+  if(!target)return;
+  studentFilter=target.student_id;renderRows();
+  const card=[...list.querySelectorAll('[data-task-id]')].find(node=>node.dataset.taskId===id);
+  if(!card)return;
+  const details=card.querySelector('details');
+  if(details)details.open=true;
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ return {refresh,setStudentFilter,openTask}
 }

@@ -1,0 +1,45 @@
+/* MathsGrove learner release hub */
+.mgsf{margin:23px 0 25px;padding:clamp(20px,3vw,30px);
+ border:1px solid #d8e1e6;border-radius:17px;
+ background:linear-gradient(145deg,#fdfefd 0%,#f2f7f8 59%,#faf8f2 100%);
+ box-shadow:0 13px 40px rgba(17,45,66,.04);color:#19344e}
+.mgsf *{box-sizing:border-box}
+.mgsf-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.mgsf-top p:first-child{font-size:10px;letter-spacing:.13em;color:#8b7456;font-weight:800;text-transform:uppercase;margin:0 0 6px}
+.mgsf-top h2{font:400 clamp(29px,3.5vw,40px)/1.2 "Instrument Serif",Georgia,serif;color:#163450;margin:0}
+.mgsf-top h2 em{color:#a28460}
+.mgsf-top p:last-child{font-size:12px;color:#617991;line-height:1.7;margin:8px 0 0;max-width:590px}
+.mgsf-refresh,.mgsf-open{cursor:pointer;border:1px solid #244b69;border-radius:9px;background:#214565;color:#fff;font-weight:800;font-size:12px;padding:11px 14px;min-height:44px}
+.mgsf-refresh:hover,.mgsf-open:hover{background:#366383}
+.mgsf-refresh:disabled{opacity:.55;cursor:wait}
+.mgsf-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:20px 0}
+.mgsf-metrics>div{min-width:0;border:1px solid #e3e9eb;border-radius:11px;background:#fff;padding:15px 18px}
+.mgsf-metrics span{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;color:#6d8294;text-transform:uppercase}
+.mgsf-metrics strong{display:block;font:400 34px/1.2 "Instrument Serif",Georgia,serif;margin-top:6px;color:#1c4b68;font-variant-numeric:tabular-nums}
+.mgsf-list{display:grid;gap:11px}
+.mgsf-item{display:flex;justify-content:space-between;align-items:center;gap:17px;border:1px solid #e7e6e0;background:white;border-radius:12px;padding:17px 19px}
+.mgsf-item-main{min-width:0;flex:1}
+.mgsf-item-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mgsf-tag,.mgsf-new{font-size:9px;font-weight:800;letter-spacing:.08em;padding:5px 9px;border-radius:30px;background:#eaf1f6;color:#3a5b75}
+.mgsf-new{background:#fff1d9;color:#8b5a1f}
+.mgsf-item h3{font-size:15px;color:#203b55;margin:10px 0 7px}
+.mgsf-result{display:block;font-size:12px;color:#287355}
+.mgsf-date{display:block;font-size:11px;color:#718292;margin-top:5px}
+.mgsf-feedback{font-size:12px;line-height:1.7;color:#526b82;margin:10px 0 0;white-space:pre-line;overflow-wrap:anywhere}
+.mgsf-open{flex:none;background:#edf4f7;color:#25506b;border-color:#ccdde4}
+.mgsf-open:hover{background:#dfeaf0}
+.mgsf-empty{color:#6e8092;font-size:13px;line-height:1.7;margin:12px 0}
+.mgsf-status{font-size:11px;color:#71859a;margin:15px 0 0}
+.mgsf button:focus-visible{outline:3px solid #7498be;outline-offset:3px}
+@media(max-width:720px){.mgsf-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.mgsf-metrics>div:last-child{grid-column:1/-1}.mgsf-item{display:block}.mgsf-open{margin-top:15px;width:100%}}
+@media(max-width:420px){.mgsf{padding:17px 14px}.mgsf-metrics>div{padding:14px 12px}.mgsf-metrics strong{font-size:29px}}
+@media(prefers-reduced-motion:reduce){.mgsf{scroll-behavior:auto}}
+
+/* A mobile dashboard grid must shrink independently of its horizontally scrollable navigation. */
+@media(max-width:960px){
+ body.mg-private-portal .dashboard-shell{grid-template-columns:minmax(0,1fr);width:100%;min-width:0;max-width:100%}
+ body.mg-private-portal .dashboard-shell>.sidebar,
+ body.mg-private-portal .dashboard-shell>.dashboard-main{min-width:0;max-width:100%}
+ body.mg-private-portal .side-nav{min-width:0;max-width:100%;overflow-x:auto}
+ body.mg-private-portal .dash-top{flex-wrap:wrap}
+}

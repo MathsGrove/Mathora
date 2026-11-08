@@ -87,6 +87,110 @@ try{
   }
   await context.close();
  }
+
+ // Render the real authenticated dashboard components with fictional local data.
+ // Do not sign in or access production learner records.
+ for(const viewport of viewports){
+  const context=await browser.newContext({
+   viewport:{width:viewport.width,height:viewport.height},
+   deviceScaleFactor:1,reducedMotion:'reduce'
+  });
+  for(const kind of ['examiner','learner']){
+   const page=await context.newPage(),errors=[];
+   page.on('pageerror',e=>errors.push(String(e.message)));
+   // Suppress actual authentication boot; render real dashboard modules with fake records.
+   await page.route('**/studio.js',route=>route.fulfill({status:200,contentType:'text/javascript',body:''}));
+   await page.route('**/portal.js',route=>route.fulfill({status:200,contentType:'text/javascript',body:''}));
+   try{
+    await page.goto(base+(kind==='examiner'?'/studio.html':'/portal.html'),
+     {waitUntil:'domcontentloaded',timeout:20000});
+    if(kind==='examiner'){
+     await page.evaluate(async()=>{
+      const app=document.getElementById('application');app.hidden=false;app.style.setProperty('display','block','important');
+      document.getElementById('status-screen').hidden=true;
+      const m=await import('./examiner-workspace.js');
+      const state={
+       students:[
+        {id:'s1',name:'Student One',pref:{qualification:'GCSE',exam_board:'AQA'}},
+        {id:'s2',name:'Student Two',pref:{qualification:'IGCSE',exam_board:'Cambridge'}}
+       ],
+       attempts:[{id:'paper1',student_id:'s2',qualification:'IGCSE',paper_mode:'weekly',
+        status:'submitted',started_at:'2026-11-05T10:00:00Z',
+        submitted_at:'2026-11-05T18:00:00Z'}],
+       assignedAllRows:[{task_id:'task1',student_id:'s1',mode:'exam_daily',
+        status:'completed',review_status:'awaiting_review',due_date:'2026-11-01',
+        submitted_at:'2026-11-03T15:00:00Z',qualification:'GCSE'}]
+      };
+      const ui=m.initExaminerWorkspace(state,{
+       openPaper:()=>{},openPractice:()=>{},onRefresh:async()=>{},onStudentFocus:()=>{}
+      });
+      ui.render();
+     });
+     assert.equal(await page.locator('#mgex-students .mgex-student-card').count(),2);
+     assert.equal((await page.locator('#mgex-inbox .mgex-inbox-name').first().textContent()).trim(),'Student One');
+     assert.equal((await page.locator('#mgex-after').textContent()).trim(),'1');
+     await page.evaluate(()=>{const app=document.getElementById('application');app.hidden=false;app.style.setProperty('display','block','important')});
+     const diagnostic=await page.locator('#mgex-search').evaluate(el=>{
+      const style=getComputedStyle(el),box=el.getBoundingClientRect();
+      let hiddenAncestor=null;
+      for(let p=el.parentElement;p;p=p.parentElement){
+       const st=getComputedStyle(p);
+       if(st.display==='none'||st.visibility==='hidden'){hiddenAncestor=p.id||p.className||p.tagName;break}
+      }
+      return {display:style.display,visibility:style.visibility,rect:{x:box.x,y:box.y,width:box.width,height:box.height},
+       hiddenAncestor,disabled:el.disabled};
+     });
+     console.log('Examiner input '+viewport.label+': '+JSON.stringify(diagnostic));
+     await page.screenshot({path:resolve(screenshotDir,'examiner-before-'+viewport.label+'.png'),fullPage:false});
+     await page.locator('#mgex-search').fill('Student Two',{timeout:5000});
+     assert.equal(await page.locator('#mgex-students .mgex-student-card').count(),1);
+     await page.locator('#mgex-search').fill('');
+     await page.locator('#mgex-students .mgex-student-action').first().click();
+     assert.equal(await page.locator('#mgex-selected').isVisible(),true);
+     await page.locator('#mg-examiner-workspace').scrollIntoViewIfNeeded();
+    }else{
+     await page.evaluate(async()=>{
+      const dash=document.getElementById('dashboard-view');dash.hidden=false;
+      document.getElementById('loading-view').hidden=true;
+      const m=await import('./student-release-feed.js');
+      const ui=m.initStudentReleaseFeed({onRefresh:async()=>{},onOpenPaper:()=>{}});
+      await ui.update({
+       submitted:2,reviewed:1,reviewed_accuracy:75,
+       history:[{task_id:'t1',mode:'daily',date:'2026-11-06',score:3,total:4,
+        feedback:'Strong algebra reasoning. Practise fractions next.',
+        feedback_updated_at:'2026-11-07T10:00:00Z'}]
+      },[{id:'p1',status:'marked',qualification:'GCSE',paper_mode:'weekly',
+        started_at:'2026-11-05T12:00:00Z'}],
+      {from:()=>({select:()=>({in:async()=>({data:[{
+       attempt_id:'p1',released_at:'2026-11-08T09:00:00Z',
+       next_steps:'Check each substitution carefully.'
+      }],error:null})})})},'fictional-student');
+     });
+     assert.equal(await page.locator('#mgsf-feed .mgsf-item').count(),2);
+     assert.equal((await page.locator('#mgsf-released').textContent()).trim(),'2');
+     await page.locator('#mg-student-releases').scrollIntoViewIfNeeded();
+    }
+    const overflow=await page.evaluate(()=>Math.max(
+     document.documentElement.scrollWidth,document.body.scrollWidth)-document.documentElement.clientWidth);
+    if(overflow>12){
+     const offenders=await page.evaluate(()=>{
+      const w=document.documentElement.clientWidth;
+      return [...document.querySelectorAll('body *')].map(el=>{
+       const b=el.getBoundingClientRect();return {tag:el.tagName,cls:String(el.className).slice(0,60),id:el.id,
+        left:Math.round(b.left),right:Math.round(b.right),width:Math.round(b.width)};
+      }).filter(v=>v.right>w+12&&v.width>0).sort((a,b)=>b.right-a.right).slice(0,8);
+     });
+     console.log('Dashboard overflow details '+kind+' '+viewport.label+': '+JSON.stringify(offenders));
+     failures.push(kind+' '+viewport.label+' authenticated dashboard mock overflow '+overflow+'px');
+    }
+    if(errors.length)failures.push(kind+' '+viewport.label+' dashboard script errors: '+errors.slice(0,2).join(' | '));
+    await page.screenshot({path:resolve(screenshotDir,kind+'-dashboard-'+viewport.label+'.png'),fullPage:false});
+    console.log('Authenticated dashboard mock '+kind+' '+viewport.label+': overflow='+overflow+'px, JavaScript errors='+errors.length);
+   }catch(err){failures.push(kind+' '+viewport.label+' dashboard test error: '+String(err.message||err).slice(0,400))}
+   finally{await page.close()}
+  }
+  await context.close();
+ }
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
 for(const r of reports)console.log(JSON.stringify(r));
 if(failures.length){console.error('MathsGrove browser smoke findings:\n'+failures.join('\n'));process.exitCode=1}

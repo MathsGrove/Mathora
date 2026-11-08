@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./portal.css">
 <link rel="stylesheet" href="./private-refresh.css">
-<link rel="stylesheet" href="./evidence-workspace.css"><link rel="stylesheet" href="./student-analysis.css"><link rel="stylesheet" href="./student-features.css"><link rel="stylesheet" href="./timed-mock.css"><link rel="stylesheet" href="./evidence-theme.css">
+<link rel="stylesheet" href="./evidence-workspace.css"><link rel="stylesheet" href="./student-analysis.css"><link rel="stylesheet" href="./student-release-feed.css"><link rel="stylesheet" href="./student-features.css"><link rel="stylesheet" href="./timed-mock.css"><link rel="stylesheet" href="./evidence-theme.css">
 <script defer src="./mathsgrove-config.js"></script>
 <script defer src="./whiteboard.js"></script><script defer src="./maths-render.js"></script>
 <script defer src="./insights-upgrade.js"></script>
@@ -94,6 +94,20 @@
 </section>
 <section class="card student-programme" aria-label="Your assigned programme"><div><p class="card-kicker">YOUR PRIVATE PROGRAMME</p><h2 id="student-programme-title">Programme awaiting activation</h2><p id="student-programme-description">Your administrator sets your academic route, service programme and separate assessment arrangements.</p></div><div class="programme-facts"><span id="student-programme-expiry">Access dates will appear here</span><span id="student-signature-credits">Signature Reviews: —</span></div></section>
 <div class="overview-metrics"><div class="metric"><span>PAPERS IN PROGRESS</span><strong id="metric-progress">0</strong></div><div class="metric"><span>SUBMITTED FOR REVIEW</span><strong id="metric-submitted">0</strong></div><div class="metric"><span>MARKED PAPERS</span><strong id="metric-marked">0</strong></div></div>
+<section id="mg-student-releases" class="mgsf" aria-labelledby="mgsf-heading">
+ <div class="mgsf-top"><div>
+  <p>YOUR EXAMINER · RELEASED LEARNING</p>
+  <h2 id="mgsf-heading">What's new in <em>your mathematics.</em></h2>
+  <p>Reviewed practice, released marks and examiner recommendations in one place. This feed only shows work released to your private account.</p>
+ </div><button type="button" id="mgsf-refresh" class="mgsf-refresh">Check for updates ↻</button></div>
+ <div class="mgsf-metrics">
+  <div><span>Released assessments</span><strong id="mgsf-released">—</strong></div>
+  <div><span>Awaiting examiner</span><strong id="mgsf-waiting">—</strong></div>
+  <div><span>Reviewed practice accuracy</span><strong id="mgsf-accuracy">—</strong></div>
+ </div>
+ <div id="mgsf-feed" class="mgsf-list" aria-live="polite"><p class="mgsf-empty">Checking for your released feedback…</p></div>
+ <p id="mgsf-status" class="mgsf-status" role="status">Latest examiner updates are checked securely.</p>
+</section>
 <section id="mg-student-analysis" class="mg-student-analysis" aria-labelledby="mg-analysis-heading">
  <div class="mg-analysis-heading"><div><p class="card-kicker">THE BIGGER PICTURE</p><h2 id="mg-analysis-heading">Your progress atlas.</h2><p>One starting point, then a stronger picture as your examiner reviews your working.</p></div><span class="mg-analysis-mark">MEANINGFUL EVIDENCE</span></div>
  <div class="mg-analysis-metrics">

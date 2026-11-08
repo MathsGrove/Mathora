@@ -1,0 +1,44 @@
+name: MathsGrove dashboards and release-feed QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'studio.js'
+      - 'studio.html'
+      - 'assigned-admin.js'
+      - 'examiner-workspace.js'
+      - 'examiner-workspace.css'
+      - 'portal.js'
+      - 'portal.html'
+      - 'student-release-feed.js'
+      - 'student-release-feed.css'
+      - 'scripts/check-dashboard-upgrade.mjs'
+      - 'supabase/migrations/202611080730_examiner_schedule_submission_metadata.sql'
+      - 'supabase/migrations/202611080731_student_released_feedback_feed.sql'
+      - '.github/workflows/dashboard-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  student-and-examiner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check module syntax
+        run: |
+          node --input-type=module --check < studio.js
+          node --input-type=module --check < portal.js
+          node --input-type=module --check < assigned-admin.js
+          node --input-type=module --check < examiner-workspace.js
+          node --input-type=module --check < student-release-feed.js
+      - name: Check release privacy and chronological order
+        run: node scripts/check-dashboard-upgrade.mjs
+      - name: Preserve existing content and permissions checks
+        run: |
+          node scripts/check-auto-assign.mjs
+          node scripts/check-family-access.mjs
+          node scripts/check-evidence-marking.mjs
+          node scripts/check-approved-practice-gate.mjs
