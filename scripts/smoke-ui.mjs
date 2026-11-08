@@ -106,7 +106,7 @@ try{
      {waitUntil:'domcontentloaded',timeout:20000});
     if(kind==='examiner'){
      await page.evaluate(async()=>{
-      const app=document.getElementById('application');app.hidden=false;
+      const app=document.getElementById('application');app.hidden=false;app.style.setProperty('display','block','important');
       document.getElementById('status-screen').hidden=true;
       const m=await import('./examiner-workspace.js');
       const state={
@@ -129,6 +129,7 @@ try{
      assert.equal(await page.locator('#mgex-students .mgex-student-card').count(),2);
      assert.equal((await page.locator('#mgex-inbox .mgex-inbox-name').first().textContent()).trim(),'Student One');
      assert.equal((await page.locator('#mgex-after').textContent()).trim(),'1');
+     await page.evaluate(()=>{const app=document.getElementById('application');app.hidden=false;app.style.setProperty('display','block','important')});
      const diagnostic=await page.locator('#mgex-search').evaluate(el=>{
       const style=getComputedStyle(el),box=el.getBoundingClientRect();
       let hiddenAncestor=null;
