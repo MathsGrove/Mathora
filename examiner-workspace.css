@@ -67,3 +67,8 @@
 @media(max-width:1000px){.mgex-grid{grid-template-columns:1fr}.mgex-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.mgex{padding:18px 14px;border-radius:12px}.mgex-filterbar{grid-template-columns:1fr}.mgex-student-head{flex-wrap:wrap}.mgex-student-stats{width:100%;display:flex;text-align:left;gap:9px;padding-left:54px}.mgex-activity{flex-direction:column}.mgex-activity-right{align-items:flex-start;flex-direction:row;flex-wrap:wrap}.mgex-inbox{padding:5px 13px}.mgex-inbox-name{width:auto;max-width:none}.mgex-metric{padding:14px}.mgex-metric strong{font-size:30px}}
 @media(prefers-reduced-motion:reduce){.mgex-student-card{transition:none}}
+
+.mgex-marking-student{display:flex;align-items:center;gap:8px;font-size:11px;color:#577089;font-weight:700;margin-left:auto}
+.mgex-marking-student select{min-height:39px;border:1px solid #d6e0e6;border-radius:7px;padding:7px 11px;background:#fff;color:#18344e;max-width:230px}
+.roster-profile{display:block;margin-top:5px;font-size:11px}
+@media(max-width:650px){.mgex-marking-student{width:100%;justify-content:space-between}.mgex-marking-student select{max-width:70%}}
