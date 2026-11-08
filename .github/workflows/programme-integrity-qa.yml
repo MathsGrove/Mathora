@@ -1,0 +1,36 @@
+name: MathsGrove programme integrity and schedule readiness
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'studio.js'
+      - 'studio.html'
+      - 'assigned-admin.js'
+      - 'schedule-readiness.js'
+      - 'schedule-readiness.css'
+      - 'scripts/check-programme-schedule-readiness.mjs'
+      - 'supabase/migrations/202611081200_atomic_student_programme_save.sql'
+      - '.github/workflows/programme-integrity-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  programme-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm programme consistency and schedule horizon detection
+        run: |
+          node --input-type=module --check < schedule-readiness.js
+          node --input-type=module --check < studio.js
+          node scripts/check-programme-schedule-readiness.mjs
+      - name: Protect existing family permissions and mathematics task gates
+        run: |
+          node scripts/check-family-access.mjs
+          node scripts/check-approved-practice-gate.mjs
+          node scripts/check-auto-assign.mjs
