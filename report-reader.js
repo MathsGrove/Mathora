@@ -23,7 +23,7 @@
   history.replaceState(null,'','#page-'+(n+1));
  };
  try{
-  const response=await fetch('./index.html',{cache:'no-store'});
+  const response=await fetch('./report-pages.html',{cache:'no-store'});
   if(!response.ok)throw Error('Could not retrieve the original specimen');
   const documentCopy=new DOMParser().parseFromString(await response.text(),'text/html');
   const source=[...documentCopy.querySelectorAll('#mg7-book .mg7-pages [data-mg7-page]')];
