@@ -457,6 +457,7 @@ function syncMarkingStudentFilter(){
   input.add(new Option(s.name,s.id));
  if(selected&&state.students.some(s=>s.id===selected))input.value=selected;
  else{input.value='';state.examinerSelectedStudentId=''}
+ assignedManager.setStudentFilter(state.examinerSelectedStudentId||'');
 }
 $('marking-student-filter').onchange=()=>{
  state.examinerSelectedStudentId=$('marking-student-filter').value||'';
