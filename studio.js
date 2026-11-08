@@ -268,11 +268,11 @@ $('programme-form').onsubmit=async e=>{
  button.disabled=true;
  try{
   const payload=setupArgs('programme',student);
-  const {data,error}=await db.rpc('update_student_setup',payload);
-  if(error||!data?.ok)throw Error(error?.message||'Student settings could not be saved.');
+  // One PostgreSQL transaction updates both programme and target grade.
+  // A rejected grade must never leave an otherwise half-saved programme.
   const target=$('programme-target-grade').value.trim();
-  const {data:gradeResult,error:gradeError}=await db.rpc('grove_admin_set_target',{p_student:student,p_grade:target});
-  if(gradeError||!gradeResult?.ok)throw Error('Programme saved, but target grade was not updated: '+(gradeError?.message||'Please try again.'));
+  const {data,error}=await db.rpc('update_student_setup_atomic',{...payload,p_grade:target});
+  if(error||!data?.ok)throw Error('Nothing was saved: '+(error?.message||'Please check the qualification and target grade, or install the atomic programme migration.'));
   await Promise.all([loadRoster(),loadProgrammes(),loadStudentSetups()]);
   renderRoster();renderProgrammes();
   inform('Saved exam information, programme, target grade and add-ons. Previous submissions and reports remain unchanged.',false,'programme-feedback');
