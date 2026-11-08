@@ -311,6 +311,11 @@ async function loadInvites(){
  const result=await edge('list',{orgId:state.membership.org_id});
  state.invites=result.invitations||[];
 }
+function renderScheduleWarning(){
+ if(!state.assignedScheduleLoaded)return;
+ const result=assessScheduleCoverage(state.students,state.entitlements,state.assignedAllRows);
+ renderScheduleCoverage(result,$('mg-schedule-readiness'));
+}
 function renderOverview(){
  const students=state.students,attempts=state.attempts;
  const assigned=state.assignedReviewRows||[];
