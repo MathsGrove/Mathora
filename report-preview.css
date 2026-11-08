@@ -1,0 +1,29 @@
+/* Compact Signature preview: the complete report now lives at report.html. */
+@media screen{body.mg-site #signature-sample #mg7-book{display:none!important}}
+.mg-site .mg-report-compact{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(190px,.65fr);gap:clamp(20px,3vw,48px);align-items:center;
+ border-radius:16px;border:1px solid #ddd8cd;background:linear-gradient(132deg,#fff 0%,#f9f7f2 62%,#ede8df 100%);
+ padding:clamp(22px,4vw,44px);margin:24px auto 28px;max-width:1120px;box-shadow:0 15px 40px rgba(13,30,49,.06)}
+.mg-report-compact *{box-sizing:border-box}
+.mg-report-compact-kicker{font-size:10px;font-weight:800;letter-spacing:.16em;color:#987c5c;margin:0 0 11px}
+.mg-report-compact-copy h3{font:400 clamp(34px,4vw,54px)/1.04 "Instrument Serif",Georgia,serif;letter-spacing:-.025em;color:#152d47;margin:0 0 17px}
+.mg-report-compact-copy h3 em{font-weight:400;color:#a28766}
+.mg-report-compact-copy>p:not(.mg-report-compact-kicker){font-size:13px;color:#60758a;line-height:1.8;max-width:570px;margin:0 0 20px}
+.mg-report-compact-facts{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 23px}
+.mg-report-compact-facts span{font-size:9px;color:#718196;letter-spacing:.05em;border:1px solid #e1ddd4;background:#fff;padding:10px 12px;border-radius:8px}
+.mg-report-compact-facts strong{display:block;font:400 25px/1.25 "Instrument Serif",Georgia,serif;color:#1d3955;letter-spacing:0}
+.mg-report-compact-open{display:inline-flex;align-items:center;gap:15px;justify-content:space-between;min-height:47px;padding:12px 17px;
+ background:#152f4b;border:1px solid #152f4b;border-radius:8px;color:#fff!important;text-decoration:none;font-size:12px;font-weight:800}
+.mg-report-compact-open:hover{background:#2d4d6d}
+.mg-report-compact-open:focus-visible{outline:3px solid #779dbb;outline-offset:3px}
+.mg-report-compact-copy>small{display:block;color:#8794a2;font-size:10px;line-height:1.7;margin-top:13px}
+.mg-report-compact-art{display:grid;place-items:center;min-height:260px}
+.mg-report-mini-cover{background:#fffdf8;border:1px solid #ded8cd;box-shadow:0 18px 37px #142e4b20;border-radius:3px;
+ width:min(100%,246px);aspect-ratio:1/1.26;padding:20px 20px 17px;transform:rotate(2.5deg);display:flex;flex-direction:column;color:#203750}
+.mg-report-mini-cover>span{font-size:7px;font-weight:800;letter-spacing:.16em;color:#9c876a;border-bottom:1px solid #ddd9d1;padding-bottom:12px}
+.mg-report-mini-cover>strong{font:400 40px/1 "Instrument Serif",Georgia,serif;margin:27px 0 14px}
+.mg-report-mini-cover>strong em{color:#aa8f70;font-weight:400}
+.mg-report-mini-cover>i{font-size:9px;line-height:1.6;font-style:normal;color:#728195}
+.mg-report-mini-cover>b{font:400 37px "Instrument Serif",Georgia,serif;margin:auto 0 6px;color:#213f5c}
+.mg-report-mini-cover>small{font-size:7px;color:#718398;border-top:1px solid #e9e4dc;padding-top:10px}
+@media(max-width:720px){.mg-site .mg-report-compact{grid-template-columns:1fr;padding:22px 20px}.mg-report-compact-art{display:none}.mg-report-compact-facts{gap:7px}}
+@media print{body.mg-site .mg-report-compact{display:none!important}}

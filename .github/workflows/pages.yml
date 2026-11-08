@@ -58,6 +58,9 @@ jobs:
           node --input-type=module --check < signature-editorial.js
           node --input-type=module --check < access-management.js
           node --input-type=module --check < family-access.js
+          node --input-type=module --check < family-timing.js
+          node --check report-reader.js
+          node scripts/check-family-timing-report.mjs
           node --check showcase-v3.js
           node --check experience-v4.js
           node --check marketing-experience-v5.js
@@ -99,7 +102,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p site
-          cp index.html mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js site/
+          cp index.html report.html report-reader.css report-reader.js report-preview.css mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js site/
           cp portal.html portal.css private-refresh.css student-features.css evidence-theme.css timed-mock.css maths-notation.css portal.js maths-render.js mathsgrove-config.js whiteboard.js student-release-feed.js student-release-feed.css site/
           cp auth-password.js auth-password.css site/
           cp student-welcome.js student-welcome.css site/
@@ -113,7 +116,7 @@ jobs:
           cp student-offboarding.js student-offboarding.css site/
           cp export.html export.css student-export-download.js site/
           cp editorial-review.js site/
-          cp family.html family-access.css family-access.js site/
+          cp family.html family-access.css family-access.js family-timing.css family-timing.js site/
           mkdir -p site/content
           cp content/boards.json content/paper-blueprints.json site/content/
           mkdir -p site/content/programmes
