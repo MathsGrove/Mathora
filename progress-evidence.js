@@ -131,7 +131,7 @@ export function renderFamilyProof(learner){
  const root=document.getElementById('fa-proof');if(!root)return;
  const evidence=familyProgressEvidence(learner||{});
  document.getElementById('mgpe-family-kicker').textContent=evidence.role==='tutor'?
-  'ASSIGNED TUTOR · RELEASED EVIDENCE':'AUTHOR ISED FAMILY · RELEASED EVIDENCE';
+  'ASSIGNED TUTOR · RELEASED EVIDENCE':'AUTHORISED FAMILY · RELEASED EVIDENCE';
  document.getElementById('mgpe-family-headline').textContent=evidence.headline;
  document.getElementById('mgpe-family-positive').textContent=evidence.positiveText;
  document.getElementById('mgpe-family-focus').textContent=evidence.focusText;
