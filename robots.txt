@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /Mathora/
+Disallow: /Mathora/portal.html
+Disallow: /Mathora/studio.html
+Disallow: /Mathora/family.html
+Disallow: /Mathora/baseline.html
+Disallow: /Mathora/export.html
+Sitemap: https://mathsgrove.github.io/Mathora/sitemap.xml

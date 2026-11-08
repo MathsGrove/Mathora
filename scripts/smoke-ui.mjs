@@ -30,7 +30,7 @@ const server=createServer(async(req,res)=>{
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const port=server.address().port,base='http://127.0.0.1:'+port;
-const pages=['/','/portal.html','/studio.html','/family.html','/baseline.html','/sample.html','/report.html'];
+const pages=['/','/reasoning-demo.html','/portal.html','/studio.html','/family.html','/baseline.html','/sample.html','/report.html'];
 const viewports=[{label:'phone',width:390,height:844},{label:'desktop',width:1440,height:900}];
 const failures=[],reports=[];
 const browser=await chromium.launch({headless:true});
@@ -56,6 +56,23 @@ try{
      assert.equal(await page.locator('#mgr-select option').count(),7,'Page navigator must include all seven');
      await page.selectOption('#mgr-select','3');
      assert.equal((await page.locator('#mgr-select').inputValue()),'3');
+    }
+    if(path==='/reasoning-demo.html'){
+     await page.locator('#rg-answer-first').fill('x = 5');
+     await page.locator('#rg-form-first input[name="method"][value="b"]').check();
+     await page.locator('#rg-form-first button[type="submit"]').click();
+     assert.match(await page.locator('#rg-result-first').textContent(),/Correct answer/);
+     await page.locator('#rg-go-second').click();
+     assert.equal(await page.locator('#rg-second').isVisible(),true);
+     await page.locator('#rg-answer-second').fill('4');
+     await page.locator('#rg-form-second input[name="method"][value="a"]').check();
+     await page.locator('#rg-form-second button[type="submit"]').click();
+     await page.locator('#rg-go-summary').click();
+     assert.equal(await page.locator('#rg-summary').isVisible(),true);
+     assert.equal((await page.locator('#rg-signals').textContent()).trim(),'3 / 4');
+     await page.locator('.rg-perspectives [data-role="parent"]').click();
+     assert.match(await page.locator('#rg-role-desc').textContent(),/why do you divide|outside the brackets/i);
+     if(pageErrors.length)failures.push('Reasoning demo '+viewport.label+' JavaScript errors: '+pageErrors.join(' | '));
     }
     const stats=await page.evaluate(()=>{
      const doc=document.documentElement;

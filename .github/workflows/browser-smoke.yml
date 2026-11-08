@@ -9,6 +9,7 @@ on:
       - '*.html'
       - '*.css'
       - '*.js'
+      - '*.mjs'
   workflow_dispatch:
 
 permissions:

@@ -1,24 +1,24 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 const read=p=>readFileSync(p,'utf8');
-const home=read('index.html'),script=read('examiner-report-book.js'),style=read('examiner-report-book.css'),deploy=read('.github/workflows/pages.yml');
+const home=read('index.html'),specimen=read('report-pages.html'),script=read('examiner-report-book.js'),style=read('examiner-report-book.css'),deploy=read('.github/workflows/pages.yml');
 const ids=[...home.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(ids.length,new Set(ids).size,'Homepage must not contain duplicate IDs');
-assert.ok(home.includes('href="./examiner-report-book.css"')&&home.includes('src="./examiner-report-book.js"'),'Homepage must load flipbook');
+assert.ok(home.includes('href="./report.html"')&&read('report.html').includes('href="./examiner-report-book.css"'),'Homepage must link to separate Signature reader');
 assert.ok(home.includes('href="#signature-sample"'),'Site navigation must link to specimen');
-assert.ok(home.includes('id="mg7-book"'),'Signature specimen must have a book');
+assert.ok(specimen.includes('id="mg7-book"')&&!home.includes('id="mg7-book"'),'Seven-page source must be separate from homepage HTML');
 assert.ok(home.includes('mg7-legacy-comparison'),'Programme-specific report comparisons must remain available');
 assert.ok(deploy.split('\n').some(line => /^\s*cp\s+/.test(line) && line.includes('examiner-report-book.css') && line.includes('examiner-report-book.js') && /\s+site\/\s*$/.test(line)),'Deploy must include flipbook assets');
 assert.ok(deploy.includes('node --check examiner-report-book.js'),'CI must parse flipbook script');
 assert.ok(style.includes('@media print')&&style.includes('body.mg-site main > :not(.mg-v3)'),'Printing must isolate the report');
 assert.ok(style.includes('prefers-reduced-motion:reduce'),'Page turns must respect reduced-motion preference');
 for(const key of ['ArrowRight','ArrowLeft','touchstart','touchend','aria-current','window.print'])assert.ok(script.includes(key),'Missing reader control '+key);
-for(const term of ['not an official','fictional','43 / 60','10 / 10','2 / 10','four-week','centre is twice'])assert.ok(home.toLowerCase().includes(term.toLowerCase()),'Report content missing '+term);
-const pages=[...home.matchAll(/<article class="mg7-page[^"]*" data-mg7-page="(\d+)"[^>]*>/g)].map(m=>+m[1]);
-const pageTabs=[...home.matchAll(/data-mg7-nav="(\d+)"/g)].map(m=>+m[1]);
+for(const term of ['not an official','fictional','43 / 60','10 / 10','2 / 10','four-week','centre is twice'])assert.ok(specimen.toLowerCase().includes(term.toLowerCase()),'Report content missing '+term);
+const pages=[...specimen.matchAll(/<article class="mg7-page[^"]*" data-mg7-page="(\d+)"[^>]*>/g)].map(m=>+m[1]);
+const pageTabs=[...specimen.matchAll(/data-mg7-nav="(\d+)"/g)].map(m=>+m[1]);
 assert.deepEqual(pages,[0,1,2,3,4,5,6],'Report must contain seven ordered pages');
 assert.deepEqual(pageTabs,[0,1,2,3,4,5,6],'Reader must contain seven ordered navigation buttons');
-const rows=[...home.matchAll(/<tr data-mg7-question="(\d+)" data-mg7-topic="([^"]+)" data-mg7-awarded="(\d+)" data-mg7-available="(\d+)"/g)].map(m=>({q:+m[1],topic:m[2],earned:+m[3],possible:+m[4]}));
+const rows=[...specimen.matchAll(/<tr data-mg7-question="(\d+)" data-mg7-topic="([^"]+)" data-mg7-awarded="(\d+)" data-mg7-available="(\d+)"/g)].map(m=>({q:+m[1],topic:m[2],earned:+m[3],possible:+m[4]}));
 assert.equal(rows.length,10,'Sample assessment needs ten marked questions');
 assert.deepEqual(rows.map(r=>r.q),[1,2,3,4,5,6,7,8,9,10]);
 const awarded=rows.reduce((a,r)=>a+r.earned,0),possible=rows.reduce((a,r)=>a+r.possible,0);
@@ -33,7 +33,7 @@ for(const row of rows){
  const state=topics.get(row.topic)||{earned:0,possible:0};
  state.earned+=row.earned;state.possible+=row.possible;topics.set(row.topic,state);
 }
-const summary=[...home.matchAll(/<div class="mg7-topic" data-mg7-topic-summary="([^"]+)"[^>]*><div class="mg7-topic-name">[^<]+<\/div><span class="mg7-topic-count">(\d+) \/ (\d+)<\/span>[\s\S]*?<span class="mg7-topic-pct">(\d+)%<\/span><\/div>/g)].map(m=>({topic:m[1],earned:+m[2],possible:+m[3],pct:+m[4]}));
+const summary=[...specimen.matchAll(/<div class="mg7-topic" data-mg7-topic-summary="([^"]+)"[^>]*><div class="mg7-topic-name">[^<]+<\/div><span class="mg7-topic-count">(\d+) \/ (\d+)<\/span>[\s\S]*?<span class="mg7-topic-pct">(\d+)%<\/span><\/div>/g)].map(m=>({topic:m[1],earned:+m[2],possible:+m[3],pct:+m[4]}));
 assert.equal(summary.length,6,'Expect six topic summaries');
 for(const s of summary){
  const expected=topics.get(s.topic);
