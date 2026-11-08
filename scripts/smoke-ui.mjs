@@ -191,6 +191,15 @@ try{
        next_steps:'Check each substitution carefully.'
       }],error:null})})})},'fictional-student');
      });
+     await page.evaluate(async()=>{
+      const {renderStudentProof}=await import('./progress-evidence.js');
+      renderStudentProof({baseline:{status:'submitted',score:14,total:20},
+       reviewed:1,topics:[{topic:'Algebra',correct:2,total:3}],
+       history:[{task_id:'t1',score:3,total:4,mode:'daily',feedback_updated_at:'2026-11-07T10:00:00Z'}]});
+     });
+     assert.equal(await page.locator('#mgpe-student-steps .mgpe-step').count(),4);
+     assert.match(await page.locator('#mgpe-student-status').textContent(),/released questions/);
+     assert.equal((await page.locator('#mgpe-student-steps .mgpe-step-state').last().textContent()).trim(),'NEXT CHECK');
      assert.equal(await page.locator('#mgsf-feed .mgsf-item').count(),2);
      assert.equal((await page.locator('#mgsf-released').textContent()).trim(),'2');
      await page.locator('#mg-student-releases').scrollIntoViewIfNeeded();
@@ -240,6 +249,15 @@ try{
       days_after_scheduled:null,status:'scheduled',visible_minutes:0}
     ]});
    });
+   await page.evaluate(async()=>{
+    const {renderFamilyProof}=await import('./progress-evidence.js');
+    renderFamilyProof({view_role:'parent',papers_reviewed:2,
+     topics:[{topic:'Algebra',earned:3,available:8,questions:3},
+      {topic:'Geometry',earned:7,available:9,questions:2}],
+     recent_results:[{topic:'Algebra',score:3,maximum:8,date:'2026-11-07T10:00:00Z'}]});
+   });
+   assert.match(await page.locator('#mgpe-family-focus').textContent(),/3 \/ 8/);
+   assert.match(await page.locator('#mgpe-family-question').textContent(),/algebraic step/i);
    assert.equal(await page.locator('.fat-stat').count(),4);
    assert.equal(await page.locator('.fat-event').count(),2);
    assert.equal((await page.locator('.fat-stat strong').first().textContent()).trim(),'2 hr 23 min');
