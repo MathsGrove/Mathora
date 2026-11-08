@@ -33,6 +33,7 @@ const sb={
  }
 };
 const ctx={sb,records:[{student_name:'Old learner'}],user:{id:'parent-one'},$,
+ clearProgressEvidence:type=>writes.push(['evidenceCleared',type]),
  view:v=>writes.push(['view',v]),
  set:(id,v)=>writes.push([id,v]),
  err:(...args)=>writes.push(['error',...args]),
@@ -49,6 +50,7 @@ const original=ctx.__access();
 assert.equal(pendingSessions.length,1);
 await ctx.__leave();
 assert.equal(signOutCalls,1);
+assert.ok(writes.some(x=>x[0]==='evidenceCleared'&&x[1]==='family'),'Sign-out must clear the newly displayed evidence summary');
 assert.deepEqual(Array.from(ctx.__snapshot().records),[]);
 assert.equal(ctx.__snapshot().user,null);
 pendingSessions[0].resolve({data:{session:{user:{id:'parent-one'}}},error:null});
