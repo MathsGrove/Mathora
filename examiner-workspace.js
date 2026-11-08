@@ -13,7 +13,7 @@ const shortDate=value=>{
  if(!value)return 'Not scheduled';
  const d=/^\d{4}-\d{2}-\d{2}$/.test(String(value))
   ?new Date(value+'T12:00:00Z'):new Date(value);
- return Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Date unavailable';
+ return Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):'Date unavailable';
 };
 const duration=ms=>{
  const minutes=Math.max(1,Math.ceil(ms/60000));
