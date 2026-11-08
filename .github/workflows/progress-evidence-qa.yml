@@ -1,0 +1,32 @@
+name: MathsGrove released Proof of Progress QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'portal.js'
+      - 'portal.html'
+      - 'family-access.js'
+      - 'family.html'
+      - 'progress-evidence.js'
+      - 'progress-evidence.css'
+      - 'scripts/check-proof-of-progress.mjs'
+      - '.github/workflows/progress-evidence-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate privacy-scoped student and family progress summaries
+        run: |
+          node --input-type=module --check < progress-evidence.js
+          node scripts/check-proof-of-progress.mjs
+          node scripts/check-family-access.mjs
+          node scripts/check-family-refresh-race.mjs
+          node scripts/check-dashboard-upgrade.mjs
+          node scripts/check-site.mjs
