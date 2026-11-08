@@ -45,6 +45,8 @@ jobs:
           node --input-type=module --check < examiner-workspace.js
           node --input-type=module --check < student-release-feed.js
           node scripts/check-dashboard-upgrade.mjs
+          node --input-type=module --check < schedule-readiness.js
+          node scripts/check-programme-schedule-readiness.mjs
           node --input-type=module --check < editorial-review.js
           node scripts/check-auto-assign.mjs
           node scripts/check-assigned-answer-reliability.mjs
@@ -110,7 +112,7 @@ jobs:
           cp assigned-practice.js assigned-practice.css site/
           cp evidence-workspace.js evidence-workspace.css student-analysis.css examiner-evidence.css site/
           cp baseline.html baseline.css baseline.js baseline-calc.js site/
-          cp studio.html studio.css studio.js examiner-workspace.js examiner-workspace.css admin-learner.css content-bank.js content-bank.css timed-mock.css maths-notation.css access-management.css access-management.js access-router.js baseline-admin.js site/
+          cp studio.html studio.css studio.js examiner-workspace.js examiner-workspace.css schedule-readiness.js schedule-readiness.css admin-learner.css content-bank.js content-bank.css timed-mock.css maths-notation.css access-management.css access-management.js access-router.js baseline-admin.js site/
           cp assigned-admin.js assigned-admin.css site/
           cp signature-editorial.js signature-editorial.css site/
           cp student-offboarding.js student-offboarding.css site/
