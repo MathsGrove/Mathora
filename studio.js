@@ -6,6 +6,7 @@ import { initAssignedAdmin } from './assigned-admin.js';
 import { initEditorialReview } from './editorial-review.js';
 import { initSignatureEditorial } from './signature-editorial.js';
 import { initStudentOffboarding } from './student-offboarding.js';
+import { initExaminerWorkspace } from './examiner-workspace.js';
 const $ = id => document.getElementById(id);
 const config = window.MATHSGROVE_CONFIG || {};
 const connected = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url || '') && !!config.publishableKey;
@@ -14,7 +15,7 @@ const state = {user:null,org:null,membership:null,memberships:[],students:[],att
 const linkedManager=initAccessManagement(db,state);
 const baselineManager=initBaselineAdmin(db,state);
 const assignedManager=initAssignedAdmin(db,state);
-state.onAssignedRefresh=()=>{if(state.membership)renderOverview()};
+state.onAssignedRefresh=()=>{if(state.membership){renderOverview();renderQueue();examinerWorkspace.render()}};
 const editorialManager=initEditorialReview(db,state);
 const signatureManager=initSignatureEditorial(db,state);
 const offboardingChannel=typeof BroadcastChannel!=='undefined'?new BroadcastChannel('mathsgrove-offboarding'):null;
@@ -31,6 +32,15 @@ const offboardingManager=initStudentOffboarding(db,state,{onRemoved:async(studen
   throw Error('A removed student still appears in a refreshed Studio panel.');
  inform('Student removed. Overview, marking, reports, baseline, timetable, linked access and invitations have been reloaded.');
 }});
+const examinerWorkspace=initExaminerWorkspace(state,{
+ openPaper:paper=>{setTab('marking');void openReview(paper)},
+ openPractice:id=>{setTab('marking');assignedManager.openTask(id)},
+ onRefresh:()=>refresh(),
+ onStudentFocus:id=>{
+  state.examinerSelectedStudentId=id;
+  syncMarkingStudentFilter();assignedManager.setStudentFilter(id);renderQueue();
+ }
+});
 const examLabels={IGCSE:'IGCSE Mathematics',GCSE:'GCSE Mathematics',A_LEVEL:'A Level Mathematics',FURTHER_MATHS:'A Level Further Mathematics',IB_AA:'IB Mathematics AA',IB_AI:'IB Mathematics AI',TMUA:'TMUA'};
 const date=s=>s?new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
 const fmt=s=>String(s||'').trim();
@@ -115,7 +125,7 @@ async function refresh({strict=false}={}){
  const results=await Promise.allSettled([loadRoster(),loadAttempts(),loadInvites(),loadProgrammes(),loadStudentSetups()]);
  const failures=results.filter(x=>x.status==='rejected').map(x=>x.reason?.message||'Unknown error');
  if(failures.length){issues.push(...failures);inform('Some studio data could not load: '+failures.join(' | '),true);}
- renderOverview();renderRoster();renderInvites();renderProgrammes();renderQueue();renderReleased();
+ renderOverview();renderRoster();renderInvites();renderProgrammes();syncMarkingStudentFilter();renderQueue();renderReleased();examinerWorkspace.render();
  const inspect=async(label,task)=>{
   try{await task()}catch(err){
    const reason=label+': '+(err?.message||String(err));
@@ -289,7 +299,7 @@ $('invite-email').addEventListener('blur',()=>{
 async function loadAttempts(){
  // Timed sessions are closed by the server-side scheduled jobs.
  // Do not call the retired finalize_expired_mock_sessions RPC (404).
- const {data,error}=await db.from('attempts').select('id,student_id,org_id,qualification,status,started_at,submitted_at')
+ const {data,error}=await db.from('attempts').select('id,student_id,org_id,qualification,paper_mode,status,started_at,submitted_at')
   .eq('org_id',state.membership.org_id).order('started_at',{ascending:false}).limit(150);
  if(error)throw error;
  state.attempts=data||[];
@@ -346,6 +356,9 @@ function renderRoster(){
   const plan=state.entitlements.find(e=>e.student_id===student.id);
   const programmeNote=make('small','',plan?'Programme: '+({weekly:'Grove Weekly',daily:'Grove Daily',exam:'Grove Exam'}[plan.tier]||plan.tier):'Programme: not yet assigned');
   name.append(programmeNote);
+  const profile=make('button','link-action roster-profile','View individual progress →');
+  profile.type='button';profile.onclick=()=>{setTab('overview');examinerWorkspace.focusStudent(student.id)};
+  name.append(profile);
   if(adminRole()){
    const edit=make('button','link-action roster-edit','Edit learner ↗');
    edit.type='button';edit.onclick=()=>{setTab('students');$('programme-student').value=student.id;fillStudentEditor(student.id);$('programme-admin').scrollIntoView({behavior:'smooth',block:'start'})};
@@ -419,7 +432,11 @@ $('copy-message').onclick=()=>state.lastCode&&copy(
 function renderQueue(){
  const root=$('marking-queue');clear(root);
  const filter=$('marking-filter').value;
- const matched=state.attempts.filter(a=>filter==='all'||a.status===filter);
+ const selected=state.examinerSelectedStudentId||'';
+ const matched=state.attempts.filter(a=>(filter==='all'||a.status===filter)&&(!selected||a.student_id===selected))
+   .sort((a,b)=>filter==='marked'
+     ?Date.parse(b.submitted_at||b.started_at)-Date.parse(a.submitted_at||a.started_at)
+     :Date.parse(a.submitted_at||a.started_at)-Date.parse(b.submitted_at||b.started_at));
  if(!matched.length){root.append(make('p','empty','No assessments match this filter.'));return}
  for(const a of matched){
   const student=state.students.find(x=>x.id===a.student_id);
@@ -429,6 +446,20 @@ function renderQueue(){
   root.append(itemRow(student?.name||'Student', (examLabels[a.qualification]||a.qualification)+' · '+date(a.submitted_at||a.started_at),trailing));
  }
 }
+function syncMarkingStudentFilter(){
+ const input=$('marking-student-filter');
+ const selected=state.examinerSelectedStudentId||'';
+ input.replaceChildren(new Option('All students',''));
+ for(const s of [...state.students].sort((a,b)=>a.name.localeCompare(b.name)))
+  input.add(new Option(s.name,s.id));
+ if(selected&&state.students.some(s=>s.id===selected))input.value=selected;
+ else{input.value='';state.examinerSelectedStudentId=''}
+}
+$('marking-student-filter').onchange=()=>{
+ state.examinerSelectedStudentId=$('marking-student-filter').value||'';
+ assignedManager.setStudentFilter(state.examinerSelectedStudentId);
+ renderQueue();
+};
 $('marking-filter').onchange=renderQueue;
 $('refresh-marking').onclick=async()=>{await refresh();inform('Queue refreshed.')};
 $('close-review').onclick=()=>{$('review-card').hidden=true;state.activeReview=null;state.reviewFields=[]};
