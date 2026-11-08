@@ -3,12 +3,17 @@ import {getAccessChoices,preferredSingleChoice} from './access-router.js';
 import {initAssignedPractice} from './assigned-practice.js';
 import {initPasswordAccess} from './auth-password.js';
 import {initStudentWelcome} from './student-welcome.js';
+import {initStudentReleaseFeed} from './student-release-feed.js';
 const $=id=>document.getElementById(id);
 const config=window.MATHSGROVE_CONFIG||{};
 const configured=Boolean(config.url&&config.publishableKey&&/^https:\/\//.test(config.url)&&!config.url.includes('YOUR_PROJECT'));
 const sb=configured?createClient(config.url,config.publishableKey,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}}):null;
 const state={entitlement:null,user:null,member:null,members:[],profile:null,preference:null,attempts:[],questions:[],attempt:null,question:0,answer:null,autosave:null,photos:[],pen:false,eraser:false,drawingChanged:false,mouseDown:false,mockClock:null,mockSeconds:0,mockAnchor:0,mockFinalizing:false,mockQuestionTimes:{},questionTimer:null,questionActiveId:null,questionEntered:0,questionElapsed:{}};
 const assignedPractice=sb?initAssignedPractice(sb):null;
+const studentReleaseFeed=initStudentReleaseFeed({
+ onRefresh:()=>refreshStudentReleases(),
+ onOpenPaper:paper=>{showPanel('progress');void viewPaperRecord(paper)}
+});
 const passwordAccess=initPasswordAccess(sb,{show,boot});
 const studentWelcome=initStudentWelcome(sb,{show,continueToDashboard:dashboard});
 const quals={IGCSE:'IGCSE Mathematics',GCSE:'GCSE Mathematics',A_LEVEL:'A Level Mathematics',FURTHER_MATHS:'A Level Further Mathematics',IB_AA:'IB Mathematics: Analysis & Approaches',IB_AI:'IB Mathematics: Applications & Interpretation',TMUA:'TMUA'};
@@ -191,6 +196,10 @@ async function loadStudentAnalysis(){
    const fill=document.createElement('i');const percent=item.total?Math.round(100*item.score/item.total):0;fill.style.width=percent+'%';bar.append(fill);
    const pct=document.createElement('strong');pct.textContent=percent+'%';line.append(d,bar,pct);trend.append(line);
   }
+  try{
+   await studentReleaseFeed.update(data,state.attempts,sb,state.user?.id);
+   lastReleaseCheck=Date.now();
+  }catch(err){studentReleaseFeed.message('Recent examiner updates could not be checked. Use refresh to try again.')}
  }catch(e){
   const note=$('mg-insight-topics');note.replaceChildren();
   note.textContent='Your analysis could not load right now. Refresh after your programme is active.';
@@ -198,6 +207,26 @@ async function loadStudentAnalysis(){
  }
 }
 
+let releaseRefreshBusy=false,lastReleaseCheck=0;
+async function refreshStudentReleases(){
+ if(releaseRefreshBusy||!sb||!state.user||!state.member||state.attempt||
+   !$('mg-practice-workspace').hidden)return;
+ releaseRefreshBusy=true;
+ try{
+  const {data,error}=await sb.from('attempts')
+   .select('id,student_id,org_id,qualification,paper_mode,status,started_at,submitted_at')
+   .eq('student_id',state.user.id).eq('org_id',state.member.org_id)
+   .order('started_at',{ascending:false}).limit(80);
+  if(error)throw error;
+  state.attempts=data||[];
+  text('metric-progress',state.attempts.filter(a=>a.status==='draft').length);
+  text('metric-submitted',state.attempts.filter(a=>a.status==='submitted').length);
+  text('metric-marked',state.attempts.filter(a=>a.status==='marked').length);
+  await loadStudentAnalysis();
+  await renderEvidence();
+  if(!$('progress-panel').hidden)await renderProgress();
+ }finally{releaseRefreshBusy=false}
+}
 async function dashboard(){
  if(isStaff()){location.replace('./studio.html');return}
  // Existing students are routed into their one-time, qualification-level baseline
@@ -761,7 +790,11 @@ async function recheckLearnerOnReturn(){
   }
   state.member=roles[0];state.members=roles;
   show('dashboard-view');
-  if(!state.attempt)await refresh();
+  if(!state.attempt){
+   await refresh();
+   if(Date.now()-lastReleaseCheck>90000&&$('mg-practice-workspace').hidden)
+    await loadStudentAnalysis();
+  }
  }catch{
   state.member=null;state.members=[];state.attempts=[];state.questions=[];
   state.profile=null;state.preference=null;state.entitlement=null;state.attempt=null;
