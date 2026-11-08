@@ -1,0 +1,25 @@
+name: MathsGrove safe rolling-practice scheduler QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/202611081400_staged_safe_rolling_practice.sql'
+      - 'scripts/check-rolling-scheduler-staging.mjs'
+      - '.github/workflows/rolling-schedule-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify future-only, content-gated rolling schedule is staged
+        run: node scripts/check-rolling-scheduler-staging.mjs
+      - name: Preserve existing practice assignment and mathematics gates
+        run: |
+          node scripts/check-auto-assign.mjs
+          node scripts/check-approved-practice-gate.mjs
