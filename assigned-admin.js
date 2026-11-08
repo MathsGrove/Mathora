@@ -99,6 +99,7 @@ export function initAssignedAdmin(db,state){
   }
   rowsCache=rows;
   state.assignedAllRows=rows;
+  state.assignedScheduleLoaded=true;
   renderRows();
   state.onAssignedRefresh?.();
  }
