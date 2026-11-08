@@ -52,7 +52,7 @@ export function renderScheduleCoverage(result,container){
  const detail=document.createElement('p');
  let status='pending';
  if(result.capped){
-  status='unknown';detail.textContent='More than 600 tasks were returned. The schedule list may be incomplete; check the full calendar before drawing conclusions.';
+  status='unknown';detail.textContent='The staff task, student or entitlement list reached its display limit. Coverage is unknown; use the full register before drawing conclusions.';
  }else if(!result.checked){
   detail.textContent='No active, enrolled students have a scheduled practice obligation in the next seven UTC calendar days. Baseline completion or programme activation may still be pending.';
  }else if(!result.attention.length){
