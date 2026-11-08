@@ -1,0 +1,12 @@
+/* Read-only operations alert; never equate scheduled work with approved questions. */
+.mg-schedule-readiness{margin:16px 0 24px;padding:16px 19px;border:1px solid #d9e1e8;border-radius:12px;background:#f6f9fa;color:#25455e;line-height:1.55}
+.mg-schedule-readiness strong{font-size:13px;display:block;color:#1e3d56}
+.mg-schedule-readiness p{margin:8px 0;color:#586e83;font-size:12px}
+.mg-schedule-readiness small{display:block;font-size:10px;line-height:1.65;color:#718398;margin-top:9px}
+.mg-schedule-readiness ul{padding-left:20px;margin:7px 0;color:#80572c;font-size:11px}
+.mg-schedule-readiness li{padding:3px 0}
+.mg-schedule-readiness[data-status="ok"]{background:#f2f8f4;border-color:#bad7c5}
+.mg-schedule-readiness[data-status="attention"]{background:#fff7ee;border-color:#e3c5a1}
+.mg-schedule-readiness[data-status="attention"] strong{color:#8a5627}
+.mg-schedule-readiness[data-status="unknown"]{background:#f3f4fa;border-color:#c7cfdf}
+@media(max-width:640px){.mg-schedule-readiness{padding:14px 12px;margin:11px 0}}
