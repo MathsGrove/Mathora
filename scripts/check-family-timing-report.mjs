@@ -45,7 +45,7 @@ assert.ok(home.includes('mg-report-compact'),'Home must use a compact report tea
 assert.ok(css.includes('@media screen')&&css.includes('#mg7-book'),'Home should hide only the large embedded reader on screen');
 assert.ok(reader.includes('href="./examiner-report-book.css"'));
 assert.ok(reader.includes('id="mgr-pages"')&&reader.includes('id="mgr-select"'));
-assert.ok(script.includes("fetch('./index.html'")&&script.includes("source.length!==7"));
+assert.ok(script.includes("fetch('./report-pages.html'")&&script.includes("source.length!==7"));
 assert.ok(script.includes("removeAttribute('hidden')"),'All specimen pages need to be available when scrolling');
 assert.ok(script.includes('IntersectionObserver'),'Reader should update current page with scroll position');
 assert.ok(script.includes('window.print()'),'Full original report should remain printable');
