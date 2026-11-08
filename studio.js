@@ -127,7 +127,7 @@ async function refresh({strict=false}={}){
  const results=await Promise.allSettled([loadRoster(),loadAttempts(),loadInvites(),loadProgrammes(),loadStudentSetups()]);
  const failures=results.filter(x=>x.status==='rejected').map(x=>x.reason?.message||'Unknown error');
  if(failures.length){issues.push(...failures);inform('Some studio data could not load: '+failures.join(' | '),true);}
- renderOverview();renderRoster();renderInvites();renderProgrammes();syncMarkingStudentFilter();renderQueue();renderReleased();examinerWorkspace.render();
+ renderOverview();renderRoster();renderInvites();renderProgrammes();syncMarkingStudentFilter();renderQueue();renderReleased();examinerWorkspace.render();renderScheduleWarning();
  const inspect=async(label,task)=>{
   try{await task()}catch(err){
    const reason=label+': '+(err?.message||String(err));
