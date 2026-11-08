@@ -13,7 +13,7 @@ function dateForDay(n){return new Date(n*DAY).toISOString().slice(0,10)}
 export function assessScheduleCoverage(students=[],entitlements=[],tasks=[],today=new Date()){
  const baseDay=utcDay(today);
  if(baseDay==null)return {checked:0,attention:[],complete:0,unknown:0,days:7};
- if(tasks.length>=600)return {checked:0,attention:[],complete:0,unknown:students.length,days:7,capped:true};
+ if(tasks.length>=600||students.length>=200||entitlements.length>=200)return {checked:0,attention:[],complete:0,unknown:students.length,days:7,capped:true};
  const roster=new Map(students.map(s=>[String(s.id),s.name||'Enrolled learner']));
  const available=new Set(tasks.filter(t=>t&&t.student_id&&t.due_date&&t.mode&&
   ['scheduled','active','completed','expired'].includes(t.status||'scheduled'))
