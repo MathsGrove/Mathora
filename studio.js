@@ -16,7 +16,7 @@ const state = {user:null,org:null,membership:null,memberships:[],students:[],att
 const linkedManager=initAccessManagement(db,state);
 const baselineManager=initBaselineAdmin(db,state);
 const assignedManager=initAssignedAdmin(db,state);
-state.onAssignedRefresh=()=>{if(state.membership){renderOverview();renderQueue();examinerWorkspace.render()}};
+state.onAssignedRefresh=()=>{if(state.membership){renderOverview();renderQueue();examinerWorkspace.render();renderScheduleWarning()}};
 const editorialManager=initEditorialReview(db,state);
 const signatureManager=initSignatureEditorial(db,state);
 const offboardingChannel=typeof BroadcastChannel!=='undefined'?new BroadcastChannel('mathsgrove-offboarding'):null;
