@@ -7,6 +7,7 @@ import { initEditorialReview } from './editorial-review.js';
 import { initSignatureEditorial } from './signature-editorial.js';
 import { initStudentOffboarding } from './student-offboarding.js';
 import { initExaminerWorkspace } from './examiner-workspace.js';
+import { assessScheduleCoverage,renderScheduleCoverage } from './schedule-readiness.js';
 const $ = id => document.getElementById(id);
 const config = window.MATHSGROVE_CONFIG || {};
 const connected = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.url || '') && !!config.publishableKey;
