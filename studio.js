@@ -443,7 +443,10 @@ function renderQueue(){
   const btn=make('button','link-action','Open review →');
   btn.onclick=()=>void openReview(a);
   const trailing=make('div','record-actions');trailing.append(pill(status[a.status]||a.status,a.status==='marked'?'done':''),btn);
-  root.append(itemRow(student?.name||'Student', (examLabels[a.qualification]||a.qualification)+' · '+date(a.submitted_at||a.started_at),trailing));
+  const timing=a.submitted_at?'Submitted '+new Date(a.submitted_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})
+    :'Started '+new Date(a.started_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
+  root.append(itemRow(student?.name||'Student',
+   (examLabels[a.qualification]||a.qualification)+' · '+timing+' · No separate due date recorded',trailing));
  }
 }
 function syncMarkingStudentFilter(){
