@@ -8,7 +8,7 @@ const dateTime=value=>{
 const dateOnly=value=>{
  if(!value)return '';
  const d=new Date(String(value).slice(0,10)+'T12:00:00Z');
- return Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+ return Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):'';
 };
 export function buildStudentFeed(insights,attempts,summaries){
  const summariesById=new Map((summaries||[]).map(x=>[x.attempt_id,x]));
