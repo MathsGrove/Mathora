@@ -45,6 +45,8 @@ jobs:
           node --input-type=module --check < examiner-workspace.js
           node --input-type=module --check < student-release-feed.js
           node scripts/check-dashboard-upgrade.mjs
+          node --input-type=module --check < progress-evidence.js
+          node scripts/check-proof-of-progress.mjs
           node --input-type=module --check < schedule-readiness.js
           node scripts/check-programme-schedule-readiness.mjs
           node --input-type=module --check < editorial-review.js
@@ -107,7 +109,7 @@ jobs:
         run: |
           mkdir -p site
           cp index.html report.html report-pages.html reasoning-demo.html reasoning-demo.css reasoning-demo.js reasoning-model.mjs robots.txt sitemap.xml report-reader.css report-reader.js report-preview.css mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js site/
-          cp portal.html portal.css private-refresh.css student-features.css evidence-theme.css timed-mock.css maths-notation.css portal.js maths-render.js mathsgrove-config.js whiteboard.js student-release-feed.js student-release-feed.css site/
+          cp portal.html portal.css private-refresh.css student-features.css evidence-theme.css timed-mock.css maths-notation.css portal.js maths-render.js mathsgrove-config.js whiteboard.js student-release-feed.js student-release-feed.css progress-evidence.js progress-evidence.css site/
           cp auth-password.js auth-password.css site/
           cp student-welcome.js student-welcome.css site/
           cp studio-refine.css site/

@@ -4,6 +4,7 @@ import {initAssignedPractice} from './assigned-practice.js';
 import {initPasswordAccess} from './auth-password.js';
 import {initStudentWelcome} from './student-welcome.js';
 import {initStudentReleaseFeed} from './student-release-feed.js';
+import {renderStudentProof,clearProgressEvidence} from './progress-evidence.js';
 const $=id=>document.getElementById(id);
 const config=window.MATHSGROVE_CONFIG||{};
 const configured=Boolean(config.url&&config.publishableKey&&/^https:\/\//.test(config.url)&&!config.url.includes('YOUR_PROJECT'));
@@ -169,6 +170,7 @@ async function loadStudentAnalysis(){
   const {data,error}=await sb.rpc('grove_student_insights');
   if(error)throw error;
   window.MGInsights?.student(data);
+  renderStudentProof(data);
   const write=(id,v)=>{const el=$(id);if(el)el.textContent=String(v??'—')};
   write('mg-insight-target',data?.target_grade||'Not set');
   write('mg-insight-baseline',data?.baseline?.status==='submitted'||data?.baseline?.status==='expired'?(data.baseline.score+'/20'):'Not started');
@@ -201,6 +203,7 @@ async function loadStudentAnalysis(){
    lastReleaseCheck=Date.now();
   }catch(err){studentReleaseFeed.message('Recent examiner updates could not be checked. Use refresh to try again.')}
  }catch(e){
+  clearProgressEvidence('student');
   const note=$('mg-insight-topics');note.replaceChildren();
   note.textContent='Your analysis could not load right now. Refresh after your programme is active.';
    window.MGInsights?.student(null);
@@ -327,7 +330,7 @@ async function renderEvidence(){
 $('invite-login-form').addEventListener('submit',requestLink);
 $('existing-member').addEventListener('click',()=>{$('access-code').value='';message('login-message','Enter your registered email to receive a secure sign-in link.')});
 $('claim-form').addEventListener('submit',async e=>{e.preventDefault();try{await redeem($('claim-code').value);await loadMembership();if(!state.member)throw Error('Enrolment pending.');message('claim-message','Invitation accepted.');await boot()}catch(err){message('claim-message',friendlyError(err),true)}});
-$('sign-out').addEventListener('click',async()=>{studentReleaseFeed.invalidate();await sb?.auth.signOut();sessionStorage.removeItem('mathsgrove_pending_code');location.href='./portal.html'});
+$('sign-out').addEventListener('click',async()=>{studentReleaseFeed.invalidate();clearProgressEvidence('student');await sb?.auth.signOut();sessionStorage.removeItem('mathsgrove_pending_code');location.href='./portal.html'});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.view)));
 $('pathway-form').addEventListener('submit',async e=>{
  e.preventDefault();
@@ -783,7 +786,7 @@ async function recheckLearnerOnReturn(){
    .eq('user_id',verified.user.id).eq('member_role','student').limit(1);
   if(roleError)throw roleError;
   if(!roles?.length){
-   studentReleaseFeed.invalidate();
+   studentReleaseFeed.invalidate();clearProgressEvidence('student');
    state.member=null;state.members=[];state.attempts=[];state.questions=[];
    state.preference=null;state.profile=null;state.entitlement=null;state.attempt=null;
    show('claim-view');
@@ -798,7 +801,7 @@ async function recheckLearnerOnReturn(){
     await loadStudentAnalysis();
   }
  }catch{
-  studentReleaseFeed.invalidate();
+  studentReleaseFeed.invalidate();clearProgressEvidence('student');
   state.member=null;state.members=[];state.attempts=[];state.questions=[];
   state.profile=null;state.preference=null;state.entitlement=null;state.attempt=null;
   show('login-view');
