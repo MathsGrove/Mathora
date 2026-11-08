@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.49.4';
+import {renderFamilyTiming} from './family-timing.js';
 const $=id=>document.getElementById(id);
 const conf=window.MATHSGROVE_CONFIG||{};
 const ready=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(conf.url||'')&&Boolean(conf.publishableKey);
@@ -78,6 +79,7 @@ function render(){
    baselineRoot.append(element('p','fa-fine',baseline.disclaimer||'This is diagnostic topic evidence, not an official grade or prediction.'));
  }else baselineRoot.append(element('p','fa-fine','No released baseline evidence is available yet.'));
  set('fa-role-notice',parent?'Parent access is read-only: released scores and useful academic summaries only. No private tutor notes, student handwriting or draft answers.':'Assigned tutors may view released question-level examiner comments for this specific learner. This does not grant access to unmarked work, identity management, downloads or administrative functions.');
+ renderFamilyTiming(p);
  window.MGInsights?.family(p,parent);
  view('fa-dashboard');
 }
