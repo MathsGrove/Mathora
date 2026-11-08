@@ -1,0 +1,35 @@
+name: MathsGrove original reasoning demonstration QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reasoning-demo.html'
+      - 'reasoning-demo.css'
+      - 'reasoning-demo.js'
+      - 'reasoning-model.mjs'
+      - 'report-pages.html'
+      - 'report-reader.js'
+      - 'index.html'
+      - 'scripts/check-reasoning-demo.mjs'
+      - '.github/workflows/reasoning-demo-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check interactive public model and module syntax
+        run: |
+          node --check reasoning-model.mjs
+          node --input-type=module --check < reasoning-demo.js
+          node scripts/check-reasoning-demo.mjs
+      - name: Reconcile original report mathematics after extraction
+        run: |
+          node scripts/check-examiner-book.mjs
+          node scripts/check-family-timing-report.mjs
+          node scripts/check-site.mjs
