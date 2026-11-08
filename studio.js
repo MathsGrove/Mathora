@@ -160,7 +160,7 @@ async function loadRoster(){
 async function loadProgrammes(){
  const {data,error}=await db.from('student_entitlements')
  .select('student_id,org_id,tier,signature_credits,starts_at,ends_at').eq('org_id',state.membership.org_id).limit(200);
- if(error){state.entitlements=[];return}
+ if(error){state.entitlements=[];throw error}
  state.entitlements=data||[];
 }
 async function loadStudentSetups(){
