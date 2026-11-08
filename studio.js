@@ -22,6 +22,7 @@ const offboardingChannel=typeof BroadcastChannel!=='undefined'?new BroadcastChan
 const offboardingManager=initStudentOffboarding(db,state,{onRemoved:async(studentId)=>{
  // Discard the entire in-memory student roster and derived metrics before a fresh server read.
  state.students=[];state.attempts=[];state.invites=[];state.entitlements=[];
+ state.assignedAllRows=[];state.assignedReviewRows=[];
  state.academic=[];state.addons=[];state.pending=[];
  state.activeReview=null;
  $('review-card').hidden=true;
