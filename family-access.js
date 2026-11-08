@@ -1,5 +1,6 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 import {renderFamilyTiming} from './family-timing.js';
+import {renderFamilyProof,clearProgressEvidence} from './progress-evidence.js';
 const $=id=>document.getElementById(id);
 const conf=window.MATHSGROVE_CONFIG||{};
 const ready=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(conf.url||'')&&Boolean(conf.publishableKey);
@@ -80,6 +81,7 @@ function render(){
  }else baselineRoot.append(element('p','fa-fine','No released baseline evidence is available yet.'));
  set('fa-role-notice',parent?'Parent access is read-only: released scores and useful academic summaries only. No private tutor notes, student handwriting or draft answers.':'Assigned tutors may view released question-level examiner comments for this specific learner. This does not grant access to unmarked work, identity management, downloads or administrative functions.');
  renderFamilyTiming(p);
+ renderFamilyProof(p);
  window.MGInsights?.family(p,parent);
  view('fa-dashboard');
 }
@@ -90,7 +92,7 @@ async function access(){
  const generation=++accessGeneration;
  const isCurrent=()=>generation===accessGeneration;
  // Clear previously authorised learner records before every permissions check.
- records=[];view('fa-loading');
+ records=[];clearProgressEvidence('family');view('fa-loading');
  if(!sb){view('fa-login');err('fa-login-message','The secure database connection has not been configured.',true);return}
  try{
   const session=await sb.auth.getSession();
@@ -135,7 +137,7 @@ async function access(){
 }
 async function leaveFamilyDashboard(){
  // Invalidate every in-flight permission response before initiating sign-out.
- ++accessGeneration;records=[];user=null;view('fa-loading');
+ ++accessGeneration;records=[];user=null;clearProgressEvidence('family');view('fa-loading');
  $('fa-sign-out').hidden=true;
  try{if(sb)await sb.auth.signOut()}finally{location.replace('./portal.html')}
 }
