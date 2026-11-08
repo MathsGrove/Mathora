@@ -101,11 +101,19 @@ export function initStudentReleaseFeed({onRefresh,onOpenPaper}){
   }
   message('Checked '+dateTime(new Date().toISOString())+' · automatically refreshes while you are on this dashboard');
  }
+ function invalidate(){
+  ++generation;
+  $('mgsf-feed').replaceChildren();
+  $('mgsf-released').textContent='—';
+  $('mgsf-waiting').textContent='—';
+  $('mgsf-accuracy').textContent='—';
+  message('Examiner information cleared from this browser view.');
+ }
  $('mgsf-refresh').addEventListener('click',async()=>{
   if(refreshing)return;refreshing=true;
   $('mgsf-refresh').disabled=true;message('Checking for newly released examiner feedback…');
   try{await onRefresh()}catch(e){message('Unable to refresh: '+(e?.message||'Try again'))}
   finally{refreshing=false;$('mgsf-refresh').disabled=false}
  });
- return{update,message};
+ return{update,message,invalidate};
 }
