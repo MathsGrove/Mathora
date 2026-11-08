@@ -11,7 +11,7 @@ assert.equal(ids.length,new Set(ids).size,'Homepage contains duplicate IDs');
 for(const id of ['top','main-content','hero-title','choose-your-view','dashboards','services','signature','signature-sample','how-it-works','mg8-spotlight-heading']){
  assert.ok(ids.includes(id),'Missing welcome flow anchor '+id);
 }
-for(const text of ['WELCOME TO MATHSGROVE','Mathematics,','with meaning.','Students practise with purpose','Signature brings human examiner judgement']){
+for(const text of ['WELCOME TO MATHSGROVE','See the thinking','behind the mark.','A correct answer is just a beginning.','examiner feedback that explains the method']){
  assert.ok(home.includes(text),'Missing value proposition: '+text);
 }
 assert.ok(home.includes('href="./welcome-experience-v8.css"')&&home.includes('src="./welcome-experience-v8.js"'),'Homepage must load welcome styles and interaction');
