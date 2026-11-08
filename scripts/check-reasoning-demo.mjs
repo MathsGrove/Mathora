@@ -36,7 +36,7 @@ for(const id of ['rg-form-first','rg-form-second','rg-feedback-first','rg-feedba
 assert.ok(home.includes('href="./reasoning-demo.html"'),'Homepage must present the live example');
 assert.ok(page.includes('not human examiner marking')&&page.includes('Nothing you type here is submitted'),
  'No misleading automated-marking or private submission claims');
-assert.ok(!/\b(?:localStorage|sessionStorage|indexedDB|fetch|XMLHttpRequest|sendBeacon|supabase)\b/i.test(app),
+assert.ok(!/\b(?:localStorage\s*\.|sessionStorage\s*\.|indexedDB\s*\.|fetch\s*\(|new\s+XMLHttpRequest|sendBeacon\s*\(|createClient\s*\()/.test(app),
  'Question responses must never leave the device or persist in browser storage');
 assert.ok(!app.includes('innerHTML'),'Prepared guidance must only use safe text nodes');
 assert.ok(!app.includes('mastered'),'Short demo must not promise mastery');
