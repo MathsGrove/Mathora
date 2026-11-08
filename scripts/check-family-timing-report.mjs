@@ -27,6 +27,12 @@ for(const check of ['l.viewer_id=v_viewer and l.active','i.viewer_email=v_email'
  assert.ok(migration.includes(check),'Existing family privacy or date boundary missing: '+check);
 }
 assert.ok(!/\bgrant\b.+\bexecute\b/i.test(migration),'Do not expand privileged RPC grants');
+const refined=read('supabase/migrations/202611080901_family_timing_exclude_unpublished_mocks.sql');
+assert.equal(refined.split("and t.mode in ('daily','weekly','exam_daily')").length-1,2,
+ 'Unmoderated mock placeholders cannot inflate parent missed-schedule counts');
+assert.ok(refined.includes('l.viewer_id=v_viewer and l.active')&&refined.includes('i.viewer_email=v_email'),
+ 'Retain verified parent and tutor permissions in refined timing query');
+
 const family=read('family.html'),familyJs=read('family-access.js');
 for(const id of ['fa-timing-dashboard','fa-timing-metrics','fa-timing-activity','fa-timing-window'])
  assert.ok(family.includes('id="'+id+'"'),'Family dashboard missing '+id);
