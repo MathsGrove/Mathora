@@ -4,7 +4,7 @@ const sql=readFileSync(new URL('../supabase/migrations/202611081400_staged_safe_
 for(const rule of [
  'p_apply boolean default false',
  'pg_try_advisory_xact_lock',
- 'and b.review_state=\\'approved\\'',
+ "and b.review_state='approved'",
  'b.reviewed_at is not null',
  'private.grove_board_compatible(b.exam_board,v_member.exam_board)',
  'not exists (',
@@ -57,5 +57,5 @@ for(const tier of ['weekly','daily','exam']){
 assert.ok(sql.includes("private.baseline_bank base"));
 assert.ok(sql.includes('private.grove_task_items i'));
 assert.ok(sql.includes('past.student_id=v_member.student_id'));
-assert.ok(sql.includes('t.status=\\'scheduled\\''));
+assert.ok(sql.includes("t.status='scheduled'"));
 console.log('Rolling scheduler static and 28-day tier invariants passed (no production task changes).');
