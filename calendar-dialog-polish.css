@@ -186,6 +186,7 @@
  .mg-v3 .mg4-dialog-refined .mg4-dialog-date-mark{width:52px;height:52px;font-size:10px}
  .mg-v3 .mg4-dialog-refined .mg4-dialog-close{width:40px;height:40px;min-width:40px}
  .mg-v3 .mg4-dialog-refined .mg4-event-overview{grid-template-columns:1fr;gap:15px}
+ .mg-v3 .mg4-dialog.mg4-dialog-refined::backdrop{-webkit-backdrop-filter:none;backdrop-filter:none}
  .mg-v3 .mg4-dialog-refined .mg4-event-status-panel{padding:13px 15px}
  .mg-v3 .mg4-dialog-refined .mg4-event-status-panel strong{font-size:24px}
  .mg-v3 .mg4-dialog-refined .mg4-session-steps>div{padding:7px 9px}
