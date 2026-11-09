@@ -100,7 +100,7 @@
 ### E-GF · GCSE Foundation · arithmetic / percentages · 4 marks
 **Question:** A group buys 3 adult tickets at £8 each and 4 child tickets at £5 each. A 10% discount applies to the whole purchase. Find the final payment.
 
-**Working:** Before discount $3(8)+4(5)=44$ pounds. Discount $0.10(44)=£4.40$; final $£44-£4.40=£39.60$.
+**Working:** Before discount: 3 × £8 + 4 × £5 = £44. Discount: 10% × £44 = £4.40. Final payment: £44 − £4.40 = £39.60.
 **Indicative marks:** M1 adult total; M1 child total and combined £44; M1 discount; A1 £39.60.  
 **Feedback focus:** Calculate percentage discount on the combined pre-discount price.
 
