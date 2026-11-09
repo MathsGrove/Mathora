@@ -135,7 +135,6 @@ export function summariseFamilyRole(learner={}){
   ],
   bottom:'Parent access is read-only. Private examiner notes, unfinished work and unreleased marks are not displayed. A later independent check is needed before claiming lasting improvement.'
  };
-}
  const ratio=totalPossible>0?percent(totalEarned,totalPossible):null;
  return {
   role,tag:'GROVE EXAM · ASSIGNED TUTOR',
