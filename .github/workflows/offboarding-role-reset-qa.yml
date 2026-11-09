@@ -1,0 +1,23 @@
+name: MathsGrove offboarding and role reset QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/check-student-export.mjs'
+      - '.github/workflows/offboarding-role-reset-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify offboarding cleans family data and new role panels
+        run: |
+          node scripts/check-student-export.mjs
+          node scripts/check-family-refresh-race.mjs
+          node scripts/check-tier-role-experience.mjs
