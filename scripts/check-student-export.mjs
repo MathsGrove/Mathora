@@ -37,12 +37,12 @@ const tests=[
  ['Disabled until service deploy',ui.includes("health.data?.method==='manual_zip_pdf'")&&ui.includes('deletion.disabled=!manualServiceReady')],
  ['Post-deletion database cleanup verification',cleanup.includes('grove_offboarding_verify_cleanup')&&cleanup.includes('auth.users')&&cleanup.includes('storage.objects')],
  ['Deleted learner cannot remain a linked viewer',linkedCleanup.includes('viewer_id=j.student_id')&&linkedCleanup.includes('lower(viewer_email)=lower(j.recipient_email)')],
- ['Family view also periodically refreshes access',family.includes('setInterval')&&family.includes("records=[];view('fa-loading')")],
+ ['Family view also periodically refreshes access',family.includes('setInterval')&&family.includes("records=[];clearTierRoleExperience('family');view('fa-loading')")],
  ['Student portal periodically rechecks removed access',portal.includes('setInterval')&&portal.includes("recheckLearnerOnReturn")],
  ['Server refuses to finalise before full clean verification',service.includes("grove_offboarding_verify_cleanup")&&service.indexOf("grove_offboarding_verify_cleanup")<service.indexOf("grove_offboarding_record_completion")],
  ['All Studio student data cleared and reloaded',js.includes("onRemoved:async")&&js.includes("state.students=[];state.attempts=[]")&&js.includes("await refresh();")],
  ['Administrator tab resume refresh',js.includes("visibilitychange")&&js.includes("if(!document.hidden&&state.membership)void refresh()")],
- ['Family views reject cached removed learner details',family.includes("records=[];view('fa-loading')")&&family.includes("visibilitychange")],
+ ['Family views reject cached removed learner details',family.includes("records=[];clearTierRoleExperience('family');view('fa-loading')")&&family.includes("visibilitychange")],
  ['Student portal rechecks deleted access',portal.includes("recheckLearnerOnReturn")&&portal.includes("state.member=null;state.members=[];state.attempts=[]")],
  ['Deployment assets copied',workflow.includes('cp student-offboarding.js student-offboarding.css site/')]
 ];
