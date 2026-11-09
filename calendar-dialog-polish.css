@@ -1,0 +1,211 @@
+/* MathsGrove calendar · refined, lightweight, accessible session preview.
+   Overrides the original experience-v4 dialog without changing the assessment. */
+.mg-v3 .mg4-dialog.mg4-dialog-refined{
+  --mg4-navy:#142d49;--mg4-ink:#183650;--mg4-champ:#c2a581;--mg4-line:#e8e2d7;
+  position:fixed;inset:0;margin:auto;
+  box-sizing:border-box;width:min(760px,calc(100vw - 32px));max-width:760px;
+  max-height:min(88dvh,850px);padding:0;overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid #d5c9ba;border-radius:19px;
+  background:#fffdf9;color:var(--mg4-ink);
+  box-shadow:0 34px 100px #07182dcc,0 0 0 1px #fff4ed55;
+  scrollbar-width:thin;scrollbar-color:#b8aa98 transparent;
+}
+.mg-v3 .mg4-dialog.mg4-dialog-refined::backdrop{
+  background:rgba(7,18,31,.72);
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+}
+.mg-v3 .mg4-dialog.mg4-dialog-refined[open]{
+  animation:mg4-modal-enter .18s ease-out both;
+}
+@keyframes mg4-modal-enter{
+  from{opacity:.5;transform:translateY(10px) scale(.99)}
+  to{opacity:1;transform:none}
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-head{
+  position:relative;display:flex;justify-content:space-between;align-items:flex-start;
+  gap:20px;padding:clamp(22px,4vw,34px);
+  background:linear-gradient(126deg,#102641 0%,#1d405d 68%,#28516d 100%);
+  border-bottom:3px solid var(--mg4-champ);color:#fff;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-head-copy{min-width:0;max-width:560px}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-head .mg4-eyebrow{
+  display:block;margin:0 0 11px;color:#d7c2a5;
+  font-size:10px;font-weight:800;letter-spacing:.15em;line-height:1.5;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-head h3{
+  font:400 clamp(32px,5vw,46px)/1.08 "Instrument Serif",Georgia,serif;
+  color:white;letter-spacing:-.02em;max-width:550px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-header-subtitle{
+  font-size:12px;line-height:1.65;margin:11px 0 0;max-width:480px;color:#cbdbe6;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-head-tools{
+  flex:0 0 auto;display:flex;align-items:flex-start;gap:10px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-date-mark{
+  display:grid;place-items:center;width:73px;height:73px;flex:none;
+  padding:7px;border:1px solid #ffffff42;border-radius:13px;
+  background:#ffffff14;color:#f1dfc2;
+  text-align:center;font-weight:800;letter-spacing:.08em;font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-close{
+  display:grid;place-items:center;width:43px;height:43px;min-width:43px;
+  color:#fff;border:1px solid #fff6;background:#ffffff13;border-radius:11px;
+  cursor:pointer;font-size:27px;line-height:1;transition:background .16s ease;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-close:hover{background:#ffffff35}
+.mg-v3 .mg4-dialog-refined button:focus-visible,
+.mg-v3 .mg4-dialog-refined a:focus-visible,
+.mg-v3 .mg4-dialog-refined textarea:focus-visible{
+  outline:3px solid #81b5d9;outline-offset:3px;
+}
+.mg-v3 .mg4-dialog-refined #mg4-event-details{
+  padding:clamp(18px,4vw,30px);
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-overview{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(155px,.72fr);
+  align-items:stretch;gap:20px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-lead{min-width:0}
+.mg-v3 .mg4-dialog-refined .mg4-event-section-label{
+  margin:0 0 9px!important;color:#997954;
+  font-size:9px!important;font-weight:800;letter-spacing:.13em;
+}
+.mg-v3 .mg4-dialog-refined #mg4-dialog-desc{
+  color:#536a80;font-size:13px;line-height:1.9;margin:0;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-status-panel{
+  display:flex;flex-direction:column;justify-content:center;gap:6px;
+  padding:16px 17px;background:#f4f6f6;
+  border:1px solid #e1e7e8;border-radius:12px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-status-panel>span{
+  color:#82919e;font-size:9px;letter-spacing:.1em;font-weight:800;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-status-panel strong{
+  color:#24475f;font:400 25px/1.12 "Instrument Serif",Georgia,serif;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-status-panel small{
+  color:#71849a;font-size:10px;line-height:1.55;
+}
+.mg-v3 .mg4-dialog-refined .mg4-event-tags{margin:18px 0;display:flex;flex-wrap:wrap;gap:7px}
+.mg-v3 .mg4-dialog-refined .mg4-event-tags span{
+  font-size:10px;font-weight:700;color:#775f43;background:#f6f0e8;
+  border:1px solid #e8dbc9;padding:7px 10px;border-radius:50px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-box{
+  margin:18px 0;background:#f8f6f1;border:1px solid #e9e2d7;
+  border-left:4px solid #bca27e;padding:19px 20px;border-radius:0 10px 10px 0;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-box>strong{font-size:17px;display:block;color:#183a53;line-height:1.4}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-box>p:last-child{
+  font-size:12px;line-height:1.8;color:#61758a;margin:9px 0 0;
+}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;padding:14px 0;margin:10px 0 3px;
+  border-top:1px solid var(--mg4-line);border-bottom:1px solid var(--mg4-line);
+}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps>div{
+  display:grid;gap:4px;align-content:start;padding:7px 14px;min-width:0;
+  border-right:1px solid #e5e1dc;
+}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps>div:first-child{padding-left:0}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps>div:last-child{border-right:0}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps span{font-size:10px;color:#a1815b;font-weight:800}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps strong{font-size:12px;color:#183851}
+.mg-v3 .mg4-dialog-refined .mg4-session-steps small{
+  color:#78889a;font-size:10px;line-height:1.5;
+}
+.mg-v3 .mg4-dialog-refined .mg4-preview-disclaimer{
+  padding:10px 0;margin:13px 0 0;color:#7b8797;
+  font-size:10px;line-height:1.75;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions{
+  margin:16px 0 0;display:flex;align-items:center;
+  flex-wrap:wrap;justify-content:flex-start;gap:10px;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions button,
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions a{
+  box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+  min-height:45px;padding:11px 15px;border-radius:9px;
+  text-decoration:none;font-size:11px;font-weight:800;line-height:1.4;
+  cursor:pointer;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions button{
+  background:#193a57!important;color:#fff!important;border:1px solid #193a57;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions button:hover{background:#2d5374!important}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions .mg4-dialog-secondary-link{
+  color:#2c506b;background:white;border:1px solid #cfdae2;
+}
+.mg-v3 .mg4-dialog-refined .mg4-dialog-actions .mg4-dialog-secondary-link:hover{background:#f1f5f8}
+.mg-v3 .mg4-dialog-refined #mg4-trial,
+.mg-v3 .mg4-dialog-refined #mg4-trial-results{padding:clamp(20px,4vw,33px)}
+.mg-v3 .mg4-dialog-refined #mg4-trial-answer{
+  min-height:120px;border-radius:9px;border:1px solid #cfd8e0;line-height:1.6;
+}
+.mg-v3 .mg4-dialog-refined .mg4-trial-top{
+  padding:11px 15px;border:1px solid #e8e0d6;border-radius:10px;background:#f9f7f2;
+}
+.mg-v3 .mg4-dialog-refined .mg4-trial-progress{height:8px;border-radius:12px;overflow:hidden}
+.mg-v3 .mg4-dialog-refined #mg4-trial-results h4{color:#1a3854}
+.mg-v3 .mg4-dialog-refined .mg4-trial-review{
+  padding:16px;margin:9px 0;border:1px solid #e8e2d7;border-radius:10px;background:white;
+}
+/* Marketing funnel: role previews are fictional; these links go to actual gated areas. */
+.mg8-entry .mg-role-access-strip{
+  display:flex;gap:24px;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;margin:25px 0 0;padding:18px 21px;
+  border:1px solid #ddd7ce;border-radius:12px;background:#f7f4ee;
+}
+.mg8-entry .mg-role-access-copy{display:grid;gap:4px;max-width:410px}
+.mg8-entry .mg-role-access-copy>span{
+  font-size:9px;font-weight:800;letter-spacing:.13em;color:#a1825d;
+}
+.mg8-entry .mg-role-access-copy strong{font-size:14px;color:#1c3853}
+.mg8-entry .mg-role-access-copy small{font-size:10px;line-height:1.65;color:#708398}
+.mg8-entry .mg-role-access-links{display:flex;gap:8px;flex-wrap:wrap}
+.mg8-entry .mg-role-access-links a{
+  display:flex;gap:12px;align-items:center;justify-content:space-between;
+  text-decoration:none;padding:10px 13px;min-height:44px;
+  font-size:11px;font-weight:800;color:#23445f;background:white;
+  border:1px solid #d6dfe4;border-radius:8px;
+}
+.mg8-entry .mg-role-access-links a:hover{background:#edf3f7;border-color:#b9cddd}
+.mg8-entry .mg-role-access-links a:focus-visible{outline:3px solid #78a6c8;outline-offset:2px}
+@media(max-width:720px){
+ .mg-v3 .mg4-dialog.mg4-dialog-refined{
+  width:calc(100vw - 14px);max-width:none;max-height:calc(100dvh - 18px);
+  border-radius:15px;
+ }
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-head{padding:20px 18px;gap:12px}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-head h3{font-size:33px}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-header-subtitle{font-size:11px}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-date-mark{width:52px;height:52px;font-size:10px}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-close{width:40px;height:40px;min-width:40px}
+ .mg-v3 .mg4-dialog-refined .mg4-event-overview{grid-template-columns:1fr;gap:15px}
+ .mg-v3 .mg4-dialog-refined .mg4-event-status-panel{padding:13px 15px}
+ .mg-v3 .mg4-dialog-refined .mg4-event-status-panel strong{font-size:24px}
+ .mg-v3 .mg4-dialog-refined .mg4-session-steps>div{padding:7px 9px}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-actions button,
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-actions a{width:100%;justify-content:center}
+ .mg8-entry .mg-role-access-strip{gap:15px;padding:16px}
+ .mg8-entry .mg-role-access-links{width:100%;display:grid;grid-template-columns:1fr}
+}
+@media(max-width:375px){
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-head-tools{flex-direction:column-reverse;align-items:flex-end}
+ .mg-v3 .mg4-dialog-refined .mg4-session-steps{grid-template-columns:1fr;gap:0}
+ .mg-v3 .mg4-dialog-refined .mg4-session-steps>div{
+  display:flex;gap:9px;align-items:baseline;border-right:0;
+  border-bottom:1px solid #eee7de;padding:10px 0;
+ }
+ .mg-v3 .mg4-dialog-refined .mg4-session-steps>div:last-child{border-bottom:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .mg-v3 .mg4-dialog.mg4-dialog-refined[open]{animation:none!important}
+ .mg-v3 .mg4-dialog-refined .mg4-dialog-close{transition:none}
+ .mg-v3 .mg4-dialog-refined *{scroll-behavior:auto!important}
+}
+@media print{.mg-v3 .mg4-dialog.mg4-dialog-refined{display:none!important}}
