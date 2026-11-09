@@ -32,7 +32,8 @@ const sb={
   throw Error('Unexpected RPC '+name);
  }
 };
-const ctx={sb,records:[{student_name:'Old learner'}],user:{id:'parent-one'},$,
+const ctx={sb,records:[{student_name:'Old learner'}],user:{id:'parent-one'},selectedLearnerKey:'old-id::parent',$,
+ clearTierRoleExperience:what=>writes.push(['clear-tier-role',what]),
  view:v=>writes.push(['view',v]),
  set:(id,v)=>writes.push([id,v]),
  err:(...args)=>writes.push(['error',...args]),
@@ -51,6 +52,7 @@ await ctx.__leave();
 assert.equal(signOutCalls,1);
 assert.deepEqual(Array.from(ctx.__snapshot().records),[]);
 assert.equal(ctx.__snapshot().user,null);
+assert.ok(writes.some(x=>x[0]==='clear-tier-role'&&x[1]==='family'),'New role summary must clear on sign-out');
 pendingSessions[0].resolve({data:{session:{user:{id:'parent-one'}}},error:null});
 await original;await flush();
 assert.equal(rpccalls.length,0);

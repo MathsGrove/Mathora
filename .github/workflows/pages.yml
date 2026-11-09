@@ -45,6 +45,8 @@ jobs:
           node --input-type=module --check < examiner-workspace.js
           node --input-type=module --check < student-release-feed.js
           node scripts/check-dashboard-upgrade.mjs
+          node --input-type=module --check < tier-role-experience.js
+          node scripts/check-tier-role-experience.mjs
           node --input-type=module --check < schedule-readiness.js
           node scripts/check-programme-schedule-readiness.mjs
           node --input-type=module --check < editorial-review.js
@@ -121,7 +123,7 @@ jobs:
           cp student-offboarding.js student-offboarding.css site/
           cp export.html export.css student-export-download.js site/
           cp editorial-review.js site/
-          cp family.html family-access.css family-access.js family-timing.css family-timing.js site/
+          cp family.html family-access.css family-access.js family-timing.css family-timing.js tier-role-experience.js tier-role-experience.css site/
           mkdir -p site/content
           cp content/boards.json content/paper-blueprints.json site/content/
           mkdir -p site/content/programmes
