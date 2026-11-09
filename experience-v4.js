@@ -5,7 +5,7 @@ const core=window.MathsGroveV3;
 if(!core||!$('mg4-calendar-dialog'))return;
 const get=()=>core.getState();
 const put=(id,text)=>{const e=$(id);if(e)e.textContent=String(text)};
-let monthOffset=0,lastMonthDate=null,trial=null,interval=null,touchStart=null;
+let monthOffset=0,lastMonthDate=null,trial=null,interval=null,touchStart=null,lastOpenedFrom=null,restoreCalendarFocus=true;
 const baseYear=2026,baseMonth=9; // month index: October
 const monthName=d=>d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
 const dateInfo=()=>new Date(baseYear,baseMonth+monthOffset,1);
@@ -29,7 +29,7 @@ function renderCalendar(){
  const calendar=$('mg3-calendar');if(!calendar)return;
  const d=dateInfo(),y=d.getFullYear(),m=d.getMonth(),days=new Date(y,m+1,0).getDate(),offset=(d.getDay()+6)%7;
  lastMonthDate=d;calendar.replaceChildren();
- put('mg4-calendar-title',monthName(d)+' · Practice rhythm');
+ put('mg4-calendar-title',monthName(d)+' · Fictional practice rhythm');
  $('mg4-month-prev').disabled=!inRange(monthOffset-1);
  $('mg4-month-next').disabled=!inRange(monthOffset+1);
  const {tier}=get();put('mg3-calendar-kind',tier==='weekly'?'4 SETS / MONTH':tier==='daily'?'DAILY PRACTICE':'DAILY + MOCK');
@@ -37,11 +37,12 @@ function renderCalendar(){
  for(let x=0;x<offset;x++){const blank=document.createElement('span');blank.className='mg3-cal-label';blank.setAttribute('aria-hidden','true');calendar.append(blank)}
  for(let n=1;n<=days;n++){
   const ev=activity(n),b=document.createElement('button');b.type='button';b.className='mg3-day';if(ev.type==='mock')b.classList.add('mock');else if(ev.completed)b.classList.add('done');else if(ev.scheduled)b.classList.add('scheduled');else b.classList.add('rest');
-  if(monthOffset===0&&n===29)b.setAttribute('aria-current','date');
+  // This is a fictional calendar, not the learner's current date.
+  if(monthOffset===0&&n===29)b.dataset.featuredExample='true';
   b.dataset.day=String(n);b.textContent=String(n);
   b.setAttribute('aria-label',new Date(y,m,n).toLocaleDateString('en-GB',{day:'numeric',month:'long'})+' · '+(ev.type==='mock'?'Monthly timed mock':!ev.scheduled?'Unscheduled day':ev.completed?'Example completed session':'Scheduled practice')+' · click for details');
   if(ev.scheduled){const mark=document.createElement('span');mark.className='mg3-day-dot';mark.setAttribute('aria-hidden','true');b.append(mark)}
-  b.addEventListener('click',()=>{calendar.querySelectorAll('.is-selected').forEach(x=>x.classList.remove('is-selected'));b.classList.add('is-selected');showActivity(ev)});
+  b.addEventListener('click',()=>{calendar.querySelectorAll('.is-selected').forEach(x=>x.classList.remove('is-selected'));b.classList.add('is-selected');lastOpenedFrom=b;restoreCalendarFocus=true;showActivity(ev)});
   calendar.append(b)
  }
  put('mg3-calendar-description',monthName(d)+' · '+(tier==='weekly'?'Four dedicated weekly sets. Click a marked day to see its topic and next action.':tier==='daily'?'A purposeful seven-day rhythm. Choose any date to see the practice focus.':'Daily learning with a separate monthly timed mock. Choose the blue mock date to try a sample session.'));
@@ -53,6 +54,9 @@ function showActivity(ev){
  const isMock=ev.type==='mock';
  put('mg4-dialog-eyebrow',isMock?'GROVE EXAM · MONTHLY TIMED MOCK':ev.scheduled?'GROVE '+tier.toUpperCase()+' · PRACTICE SESSION':'LEARNING CALENDAR · FLEXIBLE DAY');
  put('mg4-dialog-title',dateLabel);
+ put('mg4-dialog-date-mark',String(ev.day).padStart(2,'0')+' '+date.toLocaleDateString('en-GB',{month:'short'}).toUpperCase());
+ put('mg4-event-status',isMock?'Fictional mock preview':ev.completed?'Example completed':ev.scheduled?'Planned practice':'Optional review day');
+ put('mg4-event-kind',isMock?'Three-question trial, not a full mock':ev.scheduled?'Illustrative '+(tier==='weekly'?'weekly':'daily')+' learning slot':'No required session on this example day');
  const topic=e.topics[(ev.day+1)%e.topics.length],mins=isMock?'Timed specimen · duration varies by qualification':tier==='weekly'?'20–30 min illustrative set':'10–15 min illustrative set';
  const detail=isMock?'A fictional exam-style paper brings together mathematical methods, explanations and time management. The trial below contains just three demonstration questions; it is not an official exam or marked mock.':
  ev.scheduled?('A '+(tier==='weekly'?'structured weekly set':'short daily practice')+' exploring '+topic.toLowerCase()+'. The student may show working on a whiteboard, type their method or upload a photo.'):('No required activity is scheduled on this day. A learner can review released feedback or revisit an earlier method.');
@@ -63,7 +67,9 @@ function showActivity(ev){
  $('mg4-start-trial').hidden=!(isMock&&role==='student');
  $('mg4-view-practice').hidden=role!=='student';
  $('mg4-event-details').hidden=false;$('mg4-trial').hidden=true;$('mg4-trial-results').hidden=true;
- const dialog=$('mg4-calendar-dialog');if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+ const dialog=$('mg4-calendar-dialog');
+ if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');}
+ $('mg4-dialog-close').focus({preventScroll:true});
 }
 function closeDialog(){stopClock();const dialog=$('mg4-calendar-dialog');if(dialog.open&&typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open');trial=null;$('mg4-trial-answer').value=''}
 function stopClock(){if(interval!==null){clearInterval(interval);interval=null}}
@@ -77,9 +83,14 @@ function finish(timedOut){if(!trial)return;trial.answers[trial.index]=$('mg4-tri
 $('mg4-month-prev').addEventListener('click',()=>shiftMonth(-1));$('mg4-month-next').addEventListener('click',()=>shiftMonth(1));
 $('mg3-calendar').addEventListener('touchstart',e=>{if(e.touches.length!==1)return;touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
 $('mg3-calendar').addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.35)shiftMonth(dx<0?1:-1)},{passive:true});
-$('mg4-dialog-close').addEventListener('click',closeDialog);$('mg4-calendar-dialog').addEventListener('close',()=>{stopClock();trial=null});
+$('mg4-dialog-close').addEventListener('click',closeDialog);$('mg4-calendar-dialog').addEventListener('close',()=>{
+ stopClock();trial=null;$('mg4-trial-answer').value='';
+ if(restoreCalendarFocus&&lastOpenedFrom?.isConnected)lastOpenedFrom.focus({preventScroll:true});
+ restoreCalendarFocus=true;
+});
+$('mg4-calendar-dialog').addEventListener('cancel',()=>{stopClock();trial=null});
 $('mg4-calendar-dialog').addEventListener('click',e=>{if(e.target===$('mg4-calendar-dialog'))closeDialog()});
-$('mg4-view-practice').addEventListener('click',()=>{closeDialog();$('interactive-sample').scrollIntoView({behavior:'smooth',block:'start'})});
+$('mg4-view-practice').addEventListener('click',()=>{restoreCalendarFocus=false;closeDialog();$('interactive-sample').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
 $('mg4-start-trial').addEventListener('click',startTrial);
 $('mg4-trial-back').addEventListener('click',()=>trialSet(trial.index-1));$('mg4-trial-next').addEventListener('click',()=>trialSet(trial.index+1));$('mg4-trial-finish').addEventListener('click',()=>finish(false));$('mg4-trial-close').addEventListener('click',closeDialog);
 function buildAnalytics(){
