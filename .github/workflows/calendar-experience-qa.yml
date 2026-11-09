@@ -1,0 +1,30 @@
+name: MathsGrove calendar interaction and marketing quality
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'experience-v4.js'
+      - 'calendar-dialog-polish.css'
+      - 'scripts/check-calendar-marketing.mjs'
+      - 'scripts/check-welcome-v8.mjs'
+      - 'scripts/check-atelier-v9.mjs'
+      - '.github/workflows/calendar-experience-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify calendar and cross-role navigation
+        run: |
+          node --check experience-v4.js
+          node scripts/check-calendar-marketing.mjs
+          node scripts/check-welcome-v8.mjs
+          node scripts/check-atelier-v9.mjs
+          node scripts/check-site.mjs
