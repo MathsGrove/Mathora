@@ -74,6 +74,52 @@ try{
      assert.match(await page.locator('#rg-role-desc').textContent(),/why do you divide|outside the brackets/i);
      if(pageErrors.length)failures.push('Reasoning demo '+viewport.label+' JavaScript errors: '+pageErrors.join(' | '));
     }
+    if(path==='/'){
+     // Exercise the actual public calendar, including focus restoration, parent
+     // perspective and the optional three-question illustrative mock.
+     const firstDay=page.locator('#mg3-calendar .mg3-day').first();
+     await firstDay.click();
+     assert.equal(await page.locator('#mg4-calendar-dialog').evaluate(el=>el.open),true,
+       'Clicking a calendar date must open the native dialog');
+     assert.equal((await page.locator('#mg4-event-status').textContent()).length>4,true);
+     assert.ok(await page.locator('#mg4-reasoning-cta').getAttribute('href')==='./reasoning-demo.html');
+     const dialogBounds=await page.locator('#mg4-calendar-dialog').boundingBox();
+     assert.ok(dialogBounds&&dialogBounds.x>=-2&&dialogBounds.y>=-2&&
+       dialogBounds.x+dialogBounds.width<=viewport.width+2&&
+       dialogBounds.y+dialogBounds.height<=viewport.height+2,
+       'Calendar dialog must fit within phone and desktop viewports');
+     await page.screenshot({path:resolve(screenshotDir,'calendar-popup-'+viewport.label+'.png'),fullPage:false});
+     await page.keyboard.press('Escape');
+     await page.waitForFunction(()=>!document.getElementById('mg4-calendar-dialog').open);
+     assert.ok(await page.evaluate(()=>document.activeElement?.classList.contains('mg3-day')),
+       'Closing a calendar preview must return keyboard focus to its selected day');
+     await page.locator('.mg3-control [data-role="parent"]').click();
+     await page.locator('#mg3-calendar .mg3-day').first().click();
+     assert.equal(await page.locator('#mg4-view-practice').isVisible(),false,
+       'Parent preview must not offer student assessment actions');
+     assert.match(await page.locator('#mg4-event-tags').textContent(),/Guardian read-only preview/);
+     await page.locator('#mg4-dialog-close').click();
+     await page.locator('.mg3-control [data-role="student"]').click();
+     await page.locator('.mg3-control [data-tier="exam"]').click();
+     const mockDay=page.locator('#mg3-calendar .mg3-day.mock').first();
+     assert.ok(await mockDay.count(),'Exam calendar must expose the fictional mock example');
+     await mockDay.click();
+     await page.locator('#mg4-start-trial').click();
+     assert.equal(await page.locator('#mg4-trial').isVisible(),true);
+     await page.locator('#mg4-trial-answer').fill('An illustrative working step');
+     await page.locator('#mg4-trial-next').click();
+     await page.locator('#mg4-trial-next').click();
+     await page.locator('#mg4-trial-finish').click();
+     assert.equal(await page.locator('#mg4-trial-results').isVisible(),true);
+     assert.match(await page.locator('#mg4-trial-answers').textContent(),/An illustrative working step/);
+     await page.locator('#mg4-trial-close').click();
+     assert.equal(await page.locator('#mg4-calendar-dialog').evaluate(el=>el.open),false);
+     for(const link of ['./portal.html','./family.html','./studio.html']){
+      assert.ok(await page.locator('.mg-role-access-links a[href="'+link+'"]').count(),
+        'Homepage must offer the correctly labelled verified role route '+link);
+     }
+     console.log('Calendar popup '+viewport.label+': open/close/ESC, focus, parent read-only, mock trial and account journeys passed');
+    }
     const stats=await page.evaluate(()=>{
      const doc=document.documentElement;
      const images=[...document.querySelectorAll('img')];
@@ -98,7 +144,8 @@ try{
     const status=response?.status()||0;
     const key=(path==='/'?'home':path.replace(/\W+/g,'-'))+'-'+viewport.label;
     await page.screenshot({path:resolve(screenshotDir,key+'.png'),fullPage:false});
-    reports.push({path,viewport:viewport.label,status,...stats,
+    const perf=await page.evaluate(()=>{const nav=performance.getEntriesByType('navigation')[0];return nav?{domContentLoadedMs:Math.round(nav.domContentLoadedEventEnd),loadMs:Math.round(nav.loadEventEnd),resourceCount:performance.getEntriesByType('resource').length}:null});
+    reports.push({path,viewport:viewport.label,status,...stats,perf,
      brokenAssets:brokenAssets.length,scriptErrors:pageErrors.length});
     if(status!==200)failures.push(key+' returned HTTP '+status);
     if(stats.bodyCharacters<80)failures.push(key+' rendered an empty or tiny document');
