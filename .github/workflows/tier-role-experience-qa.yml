@@ -1,0 +1,39 @@
+name: MathsGrove tier-aware student and family UX
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tier-role-experience.js'
+      - 'tier-role-experience.css'
+      - 'portal.html'
+      - 'portal.js'
+      - 'family.html'
+      - 'family-access.js'
+      - 'scripts/check-tier-role-experience.mjs'
+      - 'scripts/check-family-refresh-race.mjs'
+      - '.github/workflows/tier-role-experience-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse all role modules
+        run: |
+          node --input-type=module --check < tier-role-experience.js
+          node --input-type=module --check < family-access.js
+          node --input-type=module --check < portal.js
+      - name: Check programme differentiation and family permissions
+        run: |
+          node scripts/check-tier-role-experience.mjs
+          node scripts/check-family-access.mjs
+          node scripts/check-family-refresh-race.mjs
+          node scripts/check-family-timing-report.mjs
+          node scripts/check-dashboard-upgrade.mjs
+          node scripts/check-site.mjs
