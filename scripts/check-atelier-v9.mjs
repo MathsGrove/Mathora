@@ -13,7 +13,7 @@ const v5=read('marketing-experience-v5.js');
 const ids=[...home.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
 assert.equal(ids.length,new Set(ids).size,'No duplicated homepage IDs');
 assert.ok(home.includes('href="./atelier-v9.css"')&&home.includes('src="./atelier-v9.js"'),'Luxury style and motion must be loaded');
-assert.ok(workflow.includes('atelier-v9.css atelier-v9.js site/'),'Curated Pages must include v9 assets');
+assert.ok(workflow.split('\n').some(line=>/^\s*cp\s+/.test(line)&&line.includes('atelier-v9.css')&&line.includes('atelier-v9.js')&&/\s+site\/\s*$/.test(line)),'Curated Pages must include both v9 assets');
 assert.ok(workflow.includes('node --check atelier-v9.js'),'CI must check motion syntax');
 assert.ok(home.includes('id="signature-discovery"'),'Signature flagship must exist');
 assert.ok(home.includes('id="mg8-spotlight-heading"'),'Legacy welcome marketing heading anchor must remain');
