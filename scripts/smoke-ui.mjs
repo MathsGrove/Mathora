@@ -240,6 +240,25 @@ try{
      });
      assert.equal(await page.locator('#mgsf-feed .mgsf-item').count(),2);
      assert.equal((await page.locator('#mgsf-released').textContent()).trim(),'2');
+     const exampleInsights={baseline:{status:'submitted',score:14,total:20},
+      baseline_topics:[{topic:'Algebra',correct:1,total:3}],reviewed:2,
+      submitted:3,reviewed_accuracy:75,visible_minutes:118};
+     for(const [tier,title] of [['weekly','A stronger method'],['daily','Small practice'],['exam','Know the method']]){
+      await page.evaluate(([kind,details])=>
+       import('./tier-role-experience.js').then(m=>m.renderStudentTier(kind,details)),
+       [tier,exampleInsights]);
+      assert.equal(await page.locator('#mg-student-tier-experience').getAttribute('data-tier'),tier);
+      assert.match(await page.locator('#mgtr-student-title').textContent(),new RegExp(title));
+      assert.equal(await page.locator('#mgtr-student-stats .mgtr-stat').count(),4);
+      if(tier==='exam')assert.match(await page.locator('#mgtr-student-role-access').textContent(),/parent or assigned tutor/);
+      else assert.match(await page.locator('#mgtr-student-role-access').textContent(),/not included/);
+      await page.locator('#mg-student-tier-experience').scrollIntoViewIfNeeded();
+      await page.screenshot({path:resolve(screenshotDir,'student-'+tier+'-'+viewport.label+'.png'),fullPage:false});
+     }
+     await page.evaluate(()=>import('./tier-role-experience.js').then(m=>m.renderStudentTier(null,null)));
+     assert.equal(await page.locator('#mg-student-tier-experience').getAttribute('data-tier'),'pending');
+     assert.equal(await page.locator('#mgtr-student-stats .mgtr-stat').count(),0);
+
      await page.locator('#mg-student-releases').scrollIntoViewIfNeeded();
     }
     const overflow=await page.evaluate(()=>Math.max(
@@ -290,6 +309,27 @@ try{
    assert.equal(await page.locator('.fat-stat').count(),4);
    assert.equal(await page.locator('.fat-event').count(),2);
    assert.equal((await page.locator('.fat-stat strong').first().textContent()).trim(),'2 hr 23 min');
+   const evidence={papers_reviewed:2,papers_awaiting_review:1,
+    practice_timing:{submitted_sessions:5,recorded_visible_minutes:143},
+    topics:[{topic:'Algebra',earned:2,available:8,questions:3},
+            {topic:'Geometry',earned:7,available:9,questions:2}],
+    recent_results:[{topic:'Algebra',score:9,maximum:15,date:'2026-11-07'}],
+    teaching_feedback:[{topic:'Algebra',feedback:'TUTOR PRIVATE NOTES',marks:2,maximum:4}]};
+   await page.evaluate(payload=>import('./tier-role-experience.js').then(m=>
+    m.renderFamilyRole({...payload,view_role:'parent'})),evidence);
+   assert.equal(await page.locator('#mg-family-role-experience').getAttribute('data-role'),'parent');
+   assert.equal(await page.locator('#mgtr-family-cards .mgtr-card').count(),3);
+   assert.match(await page.locator('#mgtr-family-title').textContent(),/Support the learner/);
+   assert.doesNotMatch(await page.locator('#mg-family-role-experience').textContent(),/TUTOR PRIVATE NOTES|Examiner comment items/);
+   await page.locator('#mg-family-role-experience').scrollIntoViewIfNeeded();
+   await page.screenshot({path:resolve(screenshotDir,'parent-tailored-'+viewport.label+'.png'),fullPage:false});
+   await page.evaluate(payload=>import('./tier-role-experience.js').then(m=>
+    m.renderFamilyRole({...payload,view_role:'tutor'})),evidence);
+   assert.equal(await page.locator('#mg-family-role-experience').getAttribute('data-role'),'tutor');
+   assert.match(await page.locator('#mgtr-family-title').textContent(),/Plan the intervention/);
+   assert.match(await page.locator('#mg-family-role-experience').textContent(),/Examiner comment items/);
+   await page.screenshot({path:resolve(screenshotDir,'tutor-tailored-'+viewport.label+'.png'),fullPage:false});
+
    const over=await page.evaluate(()=>Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)-
      document.documentElement.clientWidth);
    if(over>12)failures.push('family mock '+viewport.label+' overflow '+over+'px');
