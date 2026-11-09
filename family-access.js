@@ -1,10 +1,12 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 import {renderFamilyTiming} from './family-timing.js';
+import {renderFamilyRole,clearTierRoleExperience} from './tier-role-experience.js';
 const $=id=>document.getElementById(id);
 const conf=window.MATHSGROVE_CONFIG||{};
 const ready=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(conf.url||'')&&Boolean(conf.publishableKey);
 const sb=ready?createClient(conf.url,conf.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
-let records=[],user=null;
+let records=[],user=null,selectedLearnerKey=null;
+const learnerKey=x=>String(x.student_id||'')+'::'+(x.view_role==='tutor'?'tutor':'parent');
 const view=id=>['fa-loading','fa-login','fa-pending','fa-dashboard'].forEach(x=>$(x).hidden=x!==id);
 const set=(id,s)=>$(id).textContent=String(s??'');
 const err=(id,s,bad=false)=>{set(id,s);$(id).classList.toggle('error',bad)};
@@ -12,11 +14,15 @@ const prettyDate=d=>{if(!d)return '—';const dt=new Date(d);return Number.isNaN
 const element=(type,cls,value)=>{const n=document.createElement(type);if(cls)n.className=cls;if(value!==undefined)n.textContent=String(value);return n};
 function render(){
  if(!records.length){view('fa-pending');return}
- const selected=$('fa-learner-select').value;
- const chooser=$('fa-learner-select');chooser.replaceChildren();
- records.forEach((x,i)=>chooser.add(new Option(x.student_name+' · '+(x.view_role==='parent'?'Parent view':'Tutor view'),String(i))));
+ const chooser=$('fa-learner-select');
+ const selected=selectedLearnerKey||chooser.value;
+ chooser.replaceChildren();
+ records.forEach(x=>chooser.add(new Option(x.student_name+' · '+(x.view_role==='parent'?'Parent view':'Tutor view'),learnerKey(x))));
  if([...chooser.options].some(o=>o.value===selected))chooser.value=selected;
- const p=records[Number(chooser.value)||0];if(!p){view('fa-pending');return}
+ else chooser.selectedIndex=0;
+ const p=records.find(x=>learnerKey(x)===chooser.value);
+ if(!p){view('fa-pending');return}
+ selectedLearnerKey=learnerKey(p);
  const parent=p.view_role==='parent';
  set('fa-role-kicker',parent?'GROVE EXAM / AUTHORISED FAMILY':'GROVE EXAM / ASSIGNED TUTOR');
  set('fa-title',parent?'A clearer picture of progress.':'Evidence for better teaching.');
@@ -80,6 +86,7 @@ function render(){
  }else baselineRoot.append(element('p','fa-fine','No released baseline evidence is available yet.'));
  set('fa-role-notice',parent?'Parent access is read-only: released scores and useful academic summaries only. No private tutor notes, student handwriting or draft answers.':'Assigned tutors may view released question-level examiner comments for this specific learner. This does not grant access to unmarked work, identity management, downloads or administrative functions.');
  renderFamilyTiming(p);
+ renderFamilyRole(p);
  window.MGInsights?.family(p,parent);
  view('fa-dashboard');
 }
@@ -90,7 +97,7 @@ async function access(){
  const generation=++accessGeneration;
  const isCurrent=()=>generation===accessGeneration;
  // Clear previously authorised learner records before every permissions check.
- records=[];view('fa-loading');
+ records=[];clearTierRoleExperience('family');view('fa-loading');
  if(!sb){view('fa-login');err('fa-login-message','The secure database connection has not been configured.',true);return}
  try{
   const session=await sb.auth.getSession();
@@ -103,6 +110,7 @@ async function access(){
      verify.data.user.id!==session.data.session.user.id){
    user=null;location.replace('./portal.html');return;
   }
+  if(user&&user.id!==verify.data.user.id)selectedLearnerKey=null;
   user=verify.data.user;$('fa-sign-out').hidden=false;
   const claim=await sb.rpc('claim_my_learner_views');
   if(!isCurrent())return;
@@ -135,7 +143,7 @@ async function access(){
 }
 async function leaveFamilyDashboard(){
  // Invalidate every in-flight permission response before initiating sign-out.
- ++accessGeneration;records=[];user=null;view('fa-loading');
+ ++accessGeneration;records=[];user=null;selectedLearnerKey=null;clearTierRoleExperience('family');view('fa-loading');
  $('fa-sign-out').hidden=true;
  try{if(sb)await sb.auth.signOut()}finally{location.replace('./portal.html')}
 }
@@ -143,6 +151,7 @@ $('fa-sign-out').addEventListener('click',()=>void leaveFamilyDashboard());
 $('fa-retry').addEventListener('click',()=>{view('fa-loading');void access()});
 $('fa-back').addEventListener('click',()=>void leaveFamilyDashboard());
 $('fa-learner-select').addEventListener('change',()=>{
+ selectedLearnerKey=$('fa-learner-select').value;
  const panel=$('fa-dashboard');
  panel.classList.remove('mg6-repaint');
  render();
