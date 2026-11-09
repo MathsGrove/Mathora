@@ -18,7 +18,7 @@ assert.ok(workflow.includes('node --check atelier-v9.js'),'CI must check motion 
 assert.ok(home.includes('id="signature-discovery"'),'Signature flagship must exist');
 assert.ok(home.includes('id="mg8-spotlight-heading"'),'Legacy welcome marketing heading anchor must remain');
 assert.ok(home.includes('id="signature-sample"'),'Seven-page report must remain available');
-assert.ok(home.includes('id="mg7-book"'),'Real specimen must remain intact');
+assert.ok(read('report-pages.html').includes('id="mg7-book"')&&read('report-reader.js').includes("fetch('./report-pages.html'"),'Real seven-page specimen must remain in its independently loaded reader');
 assert.ok(home.includes('id="signature"'),'Full Signature packages must remain intact');
 assert.ok(home.includes('href="#signature-discovery"'),'Hero and navigation must prominently link to Signature');
 assert.ok(home.includes('href="#signature-sample"'),'Signature must link to the seven-page report');
