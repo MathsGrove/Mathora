@@ -1,0 +1,109 @@
+{
+  "status": "public_open_practice_draft_not_approved",
+  "created_on": "2026-11-11",
+  "qualification": "TMUA",
+  "board_alignment": "candidate_only_pending_editorial_spec_review",
+  "official_endorsement": false,
+  "calculator_allowed": false,
+  "items": [
+    {
+      "id": "MG-TMUA-20261111-D",
+      "programme": "daily",
+      "paper": "paper_2_reasoning",
+      "stem": "For every integer n, which statement must be true?",
+      "options": [
+        {
+          "id": "A",
+          "text": "n² − n is odd"
+        },
+        {
+          "id": "B",
+          "text": "n² − n is even"
+        },
+        {
+          "id": "C",
+          "text": "n² − n is positive"
+        },
+        {
+          "id": "D",
+          "text": "n² − n is divisible by 4"
+        },
+        {
+          "id": "E",
+          "text": "n² − n is a multiple of 3"
+        }
+      ],
+      "correct_option": "B",
+      "marks": 1,
+      "worked_solution": "n² − n = n(n − 1). Two consecutive integers have opposite parity, so their product is even. Counterexample n = 2 disproves divisibility by 4 and by 3; n = 0 disproves positivity.",
+      "misconception": "Distinguish always-true claims from statements that work for only some integers.",
+      "review_status": "draft"
+    },
+    {
+      "id": "MG-TMUA-20261111-W",
+      "programme": "weekly",
+      "paper": "paper_1_applications",
+      "stem": "How many real values of x satisfy |x − 2| + |x + 1| = 5?",
+      "options": [
+        {
+          "id": "A",
+          "text": "0"
+        },
+        {
+          "id": "B",
+          "text": "1"
+        },
+        {
+          "id": "C",
+          "text": "2"
+        },
+        {
+          "id": "D",
+          "text": "3"
+        },
+        {
+          "id": "E",
+          "text": "Infinitely many"
+        }
+      ],
+      "correct_option": "C",
+      "marks": 1,
+      "worked_solution": "For −1 ≤ x ≤ 2, the sum equals 3, so no solutions. For x < −1, the sum is 1 − 2x = 5, giving x = −2. For x > 2, the sum is 2x − 1 = 5, giving x = 3. Both satisfy their intervals, so exactly two real solutions.",
+      "misconception": "Split absolute-value equations at both sign-change points, then check candidate domains.",
+      "review_status": "draft"
+    },
+    {
+      "id": "MG-TMUA-20261111-E",
+      "programme": "exam",
+      "paper": "paper_2_reasoning",
+      "stem": "A real number t satisfies t² − 4t + 7 = k. Which of the following is the complete set of possible values of k?",
+      "options": [
+        {
+          "id": "A",
+          "text": "k > 3"
+        },
+        {
+          "id": "B",
+          "text": "k ≥ 3"
+        },
+        {
+          "id": "C",
+          "text": "k ≥ 7"
+        },
+        {
+          "id": "D",
+          "text": "k ≤ 3"
+        },
+        {
+          "id": "E",
+          "text": "All real numbers"
+        }
+      ],
+      "correct_option": "B",
+      "marks": 1,
+      "worked_solution": "Complete the square: t² − 4t + 7 = (t − 2)² + 3. Since a real square is nonnegative, k ≥ 3. Equality occurs at t = 2, and every larger value is attained by t = 2 + √(k − 3).",
+      "misconception": "An attainable minimum must be included in the range.",
+      "review_status": "draft"
+    }
+  ]
+}
