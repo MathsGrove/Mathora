@@ -9,7 +9,14 @@ for(const example of examples){
   assert.equal(reviewModerationPacket(example).eligibleForIndependentSignoff,false);
   assert.equal(reviewModerationPacket(example).releaseAuthorised,false);
 }
-const rubric=examples[0],digest=rubricFingerprint(rubric);
+const rubric=structuredClone(examples[0]);
+rubric.route.board='Pearson Edexcel';
+rubric.route.syllabusYear='2026';
+rubric.route.syllabusStatus='independently mapped';
+rubric.route.syllabusObjective='GCSE ratio and proportional reasoning in original structured response';
+rubric.route.calculatorPolicy='Calculator status to be confirmed against the target paper';
+rubric.provenance='Original authored question with documented MathsGrove reuse rights';
+const digest=rubricFingerprint(rubric);
 const clone=structuredClone(rubric);clone.route={...clone.route};
 assert.equal(rubricFingerprint(clone),digest,'Object key order and cloning must not change the digest');
 const tampered=structuredClone(rubric);
@@ -35,6 +42,11 @@ assert.equal(positive.eligibleForIndependentSignoff,true);
 assert.equal(positive.blockers.length,0);
 assert.equal(positive.releaseAuthorised,false,'Even perfect editorial metadata cannot release learner work');
 assert.equal(positive.dataMigrationAuthorised,false,'Editorial metadata must not authorise SQL changes');
+assert.equal(reviewModerationPacket(examples[0],{...packet,rubricFingerprint:rubricFingerprint(examples[0])}).eligibleForIndependentSignoff,false,
+ 'Original board-neutral candidates cannot be approved by changing packet labels alone');
+const rubricMismatch=structuredClone(rubric);rubricMismatch.route.calculatorPolicy='Calculator permitted';
+assert.equal(reviewModerationPacket(rubricMismatch,{...packet,rubricFingerprint:rubricFingerprint(rubricMismatch)}).eligibleForIndependentSignoff,false,
+ 'Route changes require matching signed moderation metadata');
 const changed=(changes)=>reviewModerationPacket(rubric,{...packet,...changes});
 assert.equal(changed({board:'Board-neutral editorial draft'}).eligibleForIndependentSignoff,false);
 assert.equal(changed({syllabusYear:''}).eligibleForIndependentSignoff,false);
@@ -71,7 +83,7 @@ assert.throws(()=>compareIndependentMarking(rubric,sheet('examiner_one'),{...she
 assert.throws(()=>compareIndependentMarking(rubric,sheet('examiner_one'),{...sheet('examiner_two'),fingerprint:'0'.repeat(64)}),/different rubric version/);
 
 const adjudicated=adjudicateCalibration(rubric,conflict,{
- examinerId:'examiner_three',fixtureId:'fictional-ratio-script-a',
+ fingerprint:digest,examinerId:'examiner_three',fixtureId:'fictional-ratio-script-a',
  awards:adjusted,
  explanation:'The final result does not contain the required correct red-share value, so A1 is not awarded.'
 });
@@ -80,13 +92,13 @@ assert.equal(adjudicated.possible,4);
 assert.equal(adjudicated.publicationApproved,false);
 assert.equal(adjudicated.learnerReportReleased,false);
 assert.throws(()=>adjudicateCalibration(rubric,identical,{
- examinerId:'examiner_three',fixtureId:'fictional-ratio-script-a',awards:all,
+ fingerprint:digest,examinerId:'examiner_three',fixtureId:'fictional-ratio-script-a',awards:all,
  explanation:'No disagreement to resolve.'}),/No disagreement/);
 assert.throws(()=>adjudicateCalibration(rubric,conflict,{
- examinerId:'examiner_two',fixtureId:'fictional-ratio-script-a',awards:all,
+ fingerprint:digest,examinerId:'examiner_two',fixtureId:'fictional-ratio-script-a',awards:all,
  explanation:'Fictional statement explaining a full moderation decision.'}),/separate third/);
 assert.throws(()=>adjudicateCalibration(rubric,conflict,{
- examinerId:'examiner_three',fixtureId:'fictional-ratio-script-b',awards:all,
+ fingerprint:digest,examinerId:'examiner_three',fixtureId:'fictional-ratio-script-b',awards:all,
  explanation:'Fictional statement explaining a full moderation decision.'}),/same fictional/);
 
 const document=readFileSync('docs/staging/CRITERION_MARKING_SCHEMA_PROPOSAL.md','utf8');
