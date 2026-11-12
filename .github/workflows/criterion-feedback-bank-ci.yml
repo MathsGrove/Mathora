@@ -1,0 +1,25 @@
+name: MathsGrove original feedback bank editorial QA
+on:
+  pull_request:
+    paths:
+      - 'content/marking/criterion-feedback-bank.json'
+      - 'content/marking/feedback-bank-model.mjs'
+      - 'scripts/test-criterion-feedback-bank.mjs'
+      - '.github/workflows/criterion-feedback-bank-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detailed-feedback-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify marking evidence, role-safe feedback, and original-maths dependencies
+        run: |
+          node --check content/marking/criterion-engine.mjs
+          node --check content/marking/feedback-bank-model.mjs
+          node --check scripts/test-criterion-feedback-bank.mjs
+          node scripts/test-criterion-engine.mjs
+          node scripts/test-criterion-feedback-bank.mjs
