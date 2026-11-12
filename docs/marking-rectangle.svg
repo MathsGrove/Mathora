@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-labelledby="title desc">
+  <title id="title">Rectangle side-length reasoning diagram</title>
+  <desc id="desc">Schematic rectangle, not to scale, with horizontal side x metres, vertical side fifteen minus x metres, area fifty-four square metres, and perimeter thirty metres.</desc>
+  <rect x="1" y="1" width="638" height="338" rx="18" fill="#F7F4EF"/>
+  <rect x="134" y="86" width="366" height="174" fill="#FFFFFF" stroke="#0D1B32" stroke-width="4"/>
+  <path d="M134 79v-13h366v13M124 86h-13v174h13" fill="none" stroke="#A58A66" stroke-width="2"/>
+  <text x="317" y="55" text-anchor="middle" fill="#0D1B32" font-family="Arial,sans-serif" font-size="22">x metres</text>
+  <text x="87" y="176" text-anchor="middle" transform="rotate(-90 87 176)" fill="#0D1B32" font-family="Arial,sans-serif" font-size="22">15 − x metres</text>
+  <text x="317" y="167" text-anchor="middle" fill="#0D1B32" font-family="Arial,sans-serif" font-size="22" font-weight="700">Area = 54 m²</text>
+  <text x="317" y="197" text-anchor="middle" fill="#52647C" font-family="Arial,sans-serif" font-size="17">Perimeter = 30 m</text>
+  <text x="317" y="302" text-anchor="middle" fill="#52647C" font-family="Arial,sans-serif" font-size="17">Schematic only · not to scale</text>
+</svg>

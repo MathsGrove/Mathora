@@ -1,0 +1,25 @@
+name: Examiner feedback assistant checks
+on:
+  pull_request:
+    paths:
+      - 'practice-feedback-assist.mjs'
+      - 'scripts/test-practice-feedback-assist.mjs'
+      - 'assigned-admin.js'
+      - 'assigned-admin.css'
+      - '.github/workflows/pages.yml'
+      - '.github/workflows/feedback-assist-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  feedback-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify module syntax and examiner UI integration
+        run: |
+          node --check practice-feedback-assist.mjs
+          node --input-type=module --check < assigned-admin.js
+          node scripts/test-practice-feedback-assist.mjs
