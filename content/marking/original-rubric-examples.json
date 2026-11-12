@@ -1,0 +1,191 @@
+{
+  "batch": "12 Nov 2026",
+  "status": "Original open-practice editorial examples only; independent moderation required. Not secure mock content.",
+  "source": "MathsGrove independently-authored candidate practice; not an official awarding-body paper.",
+  "examples": [
+    {
+      "id": "ratio-kits-gcse-foundation",
+      "status": "public_editorial_example",
+      "route": {
+        "qualification": "GCSE",
+        "level": "Foundation",
+        "board": "Board-neutral editorial draft",
+        "syllabusStatus": "Needs examiner mapping"
+      },
+      "topic": "Ratio and sharing quantities",
+      "maxMarks": 4,
+      "question": "A charity packs 96 stationery kits. The numbers of red and blue kits are in the ratio 5:3. Calculate how many kits of each colour there are. Show your working.",
+      "solution": "There are 5+3=8 equal parts. Each part is 96÷8=12. Red = 5×12=60 kits and blue = 3×12=36 kits. Check 60+36=96 and 60:36=5:3.",
+      "diagram": "ratio-kits-diagram.svg",
+      "criteria": [
+        {
+          "id": "m-total-parts",
+          "code": "M1",
+          "skill": "Interpret the ratio",
+          "description": "Correctly identify 8 equal parts or an equivalent proportional representation.",
+          "dependsOn": [],
+          "missingFeedback": "Add the ratio parts before dividing the total. A 5:3 split has eight equal parts."
+        },
+        {
+          "id": "m-one-part",
+          "code": "M1",
+          "skill": "Find the unit share",
+          "description": "Find 96÷8=12 or apply a correct equivalent method.",
+          "dependsOn": [],
+          "missingFeedback": "Divide the total kits by the eight equal ratio parts."
+        },
+        {
+          "id": "a-red",
+          "code": "A1",
+          "skill": "Calculate the red share",
+          "description": "60 red kits from valid red-share calculation.",
+          "dependsOn": [
+            "m-one-part"
+          ],
+          "allowImpliedMethod": true,
+          "missingFeedback": "Multiply the value of one part by five; check the unit is kits."
+        },
+        {
+          "id": "b-blue",
+          "code": "B1",
+          "skill": "Check the blue share",
+          "description": "36 blue kits, independently correct by any valid method.",
+          "dependsOn": [],
+          "missingFeedback": "Use three equal parts or subtract the red share from the total, then check the ratio."
+        }
+      ]
+    },
+    {
+      "id": "intersection-igcse-extended",
+      "status": "public_editorial_example",
+      "route": {
+        "qualification": "IGCSE",
+        "level": "Extended",
+        "board": "Board-neutral editorial draft",
+        "syllabusStatus": "Needs examiner mapping"
+      },
+      "topic": "Intersections of linear and quadratic graphs",
+      "maxMarks": 5,
+      "question": "The curves y=x²−3x−4 and y=x+2 intersect at two points. Find the exact coordinates of both intersection points. Show your algebra.",
+      "solution": "Equating the two expressions gives x²−3x−4=x+2, so x²−4x−6=0. By the quadratic formula, x=(4±√(16+24))/2=2±√10. Substitution into y=x+2 gives y=4±√10. Coordinates are (2+√10,4+√10) and (2−√10,4−√10), with matching signs. Check in both equations.",
+      "criteria": [
+        {
+          "id": "m-equate",
+          "code": "M1",
+          "skill": "Set the graphs equal",
+          "description": "Set both y expressions equal and obtain x²−4x−6=0 or equivalent.",
+          "dependsOn": [],
+          "missingFeedback": "At an intersection, both equations have the same x and y values; equate the expressions for y."
+        },
+        {
+          "id": "m-quadratic",
+          "code": "M1",
+          "skill": "Apply a quadratic method",
+          "description": "Apply the quadratic formula or an equivalent exact method to the resulting equation.",
+          "dependsOn": [],
+          "missingFeedback": "Use a reliable quadratic method and check the discriminant before simplifying."
+        },
+        {
+          "id": "a-roots",
+          "code": "A1",
+          "skill": "Find exact x-coordinates",
+          "description": "Obtain both exact values x=2±√10.",
+          "dependsOn": [
+            "m-quadratic"
+          ],
+          "allowImpliedMethod": true,
+          "missingFeedback": "Simplify √40 as 2√10, then divide the entire numerator by two."
+        },
+        {
+          "id": "m-substitute",
+          "code": "M1",
+          "skill": "Find corresponding y-values",
+          "description": "Substitute both x-values into y=x+2 or the quadratic relationship.",
+          "dependsOn": [],
+          "missingFeedback": "Substitute each root back into either original expression to find its matching y-value."
+        },
+        {
+          "id": "a-pairs",
+          "code": "A1",
+          "skill": "Match the coordinate pairs",
+          "description": "Give both exact coordinates with corresponding ± signs correctly matched.",
+          "dependsOn": [
+            "m-substitute"
+          ],
+          "allowImpliedMethod": true,
+          "missingFeedback": "Keep the plus-root y-coordinate with the plus-root x-coordinate, and likewise for minus."
+        }
+      ]
+    },
+    {
+      "id": "stationary-points-alevel",
+      "status": "public_editorial_example",
+      "route": {
+        "qualification": "A Level",
+        "level": "Pure mathematics",
+        "board": "Board-neutral editorial draft",
+        "syllabusStatus": "Needs examiner mapping"
+      },
+      "topic": "Differentiation and classification of stationary points",
+      "maxMarks": 6,
+      "question": "For y=x³−6x²+9x+1, determine every stationary point and classify each as a local maximum or local minimum. Show how your classification follows.",
+      "solution": "dy/dx=3x²−12x+9=3(x−1)(x−3). Hence x=1 or x=3. At x=1, y=5; at x=3, y=1. Also d²y/dx²=6x−12. At x=1, d²y/dx²=−6, giving a local maximum (1,5). At x=3, d²y/dx²=6, giving a local minimum (3,1). A correct derivative-sign test is an alternative classification method.",
+      "criteria": [
+        {
+          "id": "m-derivative",
+          "code": "M1",
+          "skill": "Differentiate correctly",
+          "description": "Obtain 3x²−12x+9 or an equivalent first derivative.",
+          "dependsOn": [],
+          "missingFeedback": "Differentiate each power term and remember the constant differentiates to zero."
+        },
+        {
+          "id": "m-stationary",
+          "code": "M1",
+          "skill": "Solve the stationary condition",
+          "description": "Set a first derivative equal to zero and solve the resulting quadratic.",
+          "dependsOn": [],
+          "missingFeedback": "Stationary points satisfy dy/dx=0; factor the derivative and solve."
+        },
+        {
+          "id": "a-stationary-xs",
+          "code": "A1",
+          "skill": "Identify stationary x-values",
+          "description": "Obtain x=1 and x=3.",
+          "dependsOn": [
+            "m-stationary"
+          ],
+          "allowImpliedMethod": true,
+          "missingFeedback": "Check the factors of the derivative to find both x-values."
+        },
+        {
+          "id": "m-ordinates",
+          "code": "M1",
+          "skill": "Substitute into the original curve",
+          "description": "Evaluate y at both stationary x-values using the original equation.",
+          "dependsOn": [],
+          "missingFeedback": "Substitute each stationary x-value into y, not dy/dx, to obtain both points."
+        },
+        {
+          "id": "a-ordinates",
+          "code": "A1",
+          "skill": "State the stationary coordinates",
+          "description": "Give both (1,5) and (3,1) correctly.",
+          "dependsOn": [
+            "m-ordinates"
+          ],
+          "allowImpliedMethod": true,
+          "missingFeedback": "Recheck the powers and signs in y when calculating the coordinates."
+        },
+        {
+          "id": "b-classification",
+          "code": "B1",
+          "skill": "Classify the nature of both points",
+          "description": "Correctly identify (1,5) as a local maximum and (3,1) as a local minimum from a valid derivative-sign or second-derivative argument.",
+          "dependsOn": [],
+          "missingFeedback": "Use the second derivative or derivative sign changes to justify maximum and minimum."
+        }
+      ]
+    }
+  ]
+}
