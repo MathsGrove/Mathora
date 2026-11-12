@@ -1,0 +1,27 @@
+name: MathsGrove editorial moderation and staged-schema review
+on:
+  pull_request:
+    paths:
+      - 'content/marking/moderation-workflow.mjs'
+      - 'content/marking/criterion-engine.mjs'
+      - 'content/marking/original-rubric-examples.json'
+      - 'scripts/test-moderation-workflow.mjs'
+      - 'docs/staging/CRITERION_MARKING_SCHEMA_PROPOSAL.md'
+      - '.github/workflows/moderation-stage-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  moderation-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate independent moderation, calibration and staged schema static guards
+        run: |
+          node --check content/marking/criterion-engine.mjs
+          node --check content/marking/moderation-workflow.mjs
+          node --check scripts/test-moderation-workflow.mjs
+          node scripts/test-criterion-engine.mjs
+          node scripts/test-moderation-workflow.mjs
