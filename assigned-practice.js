@@ -1,4 +1,5 @@
 import {createEvidenceWorkspace} from './evidence-workspace.js';
+import {buildReleasedPracticeReport} from './released-practice-report.mjs';
 export function initAssignedPractice(db){
  const $=id=>document.getElementById(id),list=$('mg-auto-list'),cal=$('student-calendar');
  let schedule=null,task=null,pos=1,busy=false,clock=null,lastFocus=Date.now(),visibleBase=0,clockOffset=0;
@@ -138,19 +139,51 @@ export function initAssignedPractice(db){
  function report(){
   const root=$('mg-practice-report-body');root.replaceChildren();
   const reviewed=task.review_status==='released';
-  root.append(el('p',reviewed?task.score+' / '+task.question_count+' examiner marks':'Awaiting examiner review','mg-report-metric'));
-  root.append(el('p',task.report_note||'Your working is securely saved for an examiner.','mg-auto-disclaimer'));
-  if(reviewed){
-   const topics=(task.topics||[]).slice().sort((a,b)=>a.correct/a.total-b.correct/b.total);
-   const weaker=topics.filter(t=>t.correct<t.total).slice(0,3);
-   if(weaker.length)root.append(el('p','Your next topics: '+weaker.map(t=>t.topic).join('; '),'mg-report-priority'));
-   for(const q of task.review||[]){
-    const line=el('div',undefined,'mg-practice-report-row');
-    line.append(el('strong','Q'+q.position+' · '+q.topic),el('span',q.mark+'/1 · '+q.seconds+'s visible · '+(q.comment||'Examiner reviewed')));
-    root.append(line);
+  const model=reviewed?buildReleasedPracticeReport(task):null;
+  if(!model){
+   root.append(el('h3','Your submitted work is awaiting examiner review.','mg-report-state'));
+   root.append(el('p','Your answers and working remain private. Marks and comments appear only after an authorised examiner releases this set.','mg-report-priority'));
+   return;
+  }
+  const scoreLine=model.score?model.score.earned+' / '+model.score.possible+' examiner marks':'Reviewed question feedback';
+  root.append(el('p',scoreLine,'mg-report-metric'));
+  root.append(el('p',model.mode+' · Released examiner review','mg-report-eyebrow'));
+  root.append(el('p',model.caveat,'mg-auto-disclaimer'));
+  if(model.reportNote)root.append(el('p',model.reportNote,'mg-report-overview'));
+  if(model.focus.length){
+   const section=el('section',undefined,'mg-report-focus');
+   section.append(el('h3','Topics to revisit from this reviewed set'));
+   for(const item of model.focus){
+    section.append(el('p',item.topic+' · '+item.earned+' / '+item.possible+' marks in the available sampled questions'));
    }
-  }else root.append(el('p','Your submitted answers remain private until an examiner checks your methods and releases feedback.','mg-report-priority'));
-  if(reviewed)window.MGInsights?.assigned(task,root);
+   section.append(el('small','A topic focus is a suggestion for further practice, not a judgement of mastery.'));
+   root.append(section);
+  }
+  const section=el('section',undefined,'mg-report-questions');
+  section.append(el('h3','Your question-by-question feedback'));
+  section.append(el('p',model.commentedCount+' of '+model.questionCount+
+   ' reviewed questions have a written examiner comment. '+model.nextStepCount+
+   ' include a specific next-practice instruction.','mg-report-summary'));
+  if(!model.questions.length)section.append(el('p','A question-level breakdown is not available for this released set.','mg-auto-disclaimer'));
+  for(const question of model.questions){
+   const detail=el('details',undefined,'mg-report-question');
+   const heading=el('summary');
+   const label=el('span','Question '+question.position+' · '+question.topic,'mg-report-question-title');
+   const mark=el('strong',question.mark===null?'Reviewed':question.mark+' / 1 mark','mg-report-question-mark');
+   heading.append(label,mark);detail.append(heading);
+   const content=el('div',undefined,'mg-report-question-detail');
+   content.append(el('strong','Examiner observation','mg-report-subheading'));
+   content.append(el('p',question.observation||'A mark was recorded, but no written observation was included for this question.','mg-report-observation'));
+   if(question.nextPractice){
+    content.append(el('strong','Next practice, as advised by your examiner','mg-report-subheading'));
+    content.append(el('p',question.nextPractice,'mg-report-next'));
+   }
+   if(question.visibleSeconds!==null)content.append(el('small',
+    'Question visible on screen for approximately '+question.visibleSeconds+' seconds. This is not total independent study time.','mg-report-time'));
+   detail.append(content);section.append(detail);
+  }
+  root.append(section);
+  window.MGInsights?.assigned(task,root);
   if(task?.task_id)void loadExaminerFeedback(task.task_id,root);
  }
  const evidence=createEvidenceWorkspace({

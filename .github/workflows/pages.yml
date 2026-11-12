@@ -37,6 +37,8 @@ jobs:
           node --input-type=module --check < baseline-calc.js
           node --input-type=module --check < baseline-admin.js
           node --input-type=module --check < assigned-practice.js
+          node --check released-practice-report.mjs
+          node scripts/test-released-practice-report.mjs
           node scripts/check-practice-utc-date.mjs
           node --input-type=module --check < evidence-workspace.js
           node scripts/check-evidence-marking.mjs
@@ -115,6 +117,7 @@ jobs:
           cp student-welcome.js student-welcome.css site/
           cp studio-refine.css site/
           cp assigned-practice.js assigned-practice.css site/
+          cp released-practice-report.mjs site/
           cp evidence-workspace.js evidence-workspace.css student-analysis.css examiner-evidence.css site/
           cp baseline.html baseline.css baseline.js baseline-calc.js site/
           cp studio.html studio.css studio.js examiner-workspace.js examiner-workspace.css schedule-readiness.js schedule-readiness.css admin-learner.css content-bank.js content-bank.css timed-mock.css maths-notation.css access-management.css access-management.js access-router.js baseline-admin.js site/

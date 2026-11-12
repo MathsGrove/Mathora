@@ -49,10 +49,13 @@ const state={
  window:{addEventListener(){}},
  setInterval:()=>1,clearInterval(){},confirm:()=>true,
  fakeEvidence:()=>({refresh:async()=>{},switchQuestion(){},flush:async()=>{},totalSaved:()=>1}),
+ fakeReleasedReport:()=>null, // report transformation is unit-tested separately; this VM tests answer-save transport only
 };
 let source=readFileSync(new URL('../assigned-practice.js',import.meta.url),'utf8');
 source=source.replace(/^import \{createEvidenceWorkspace\} from '.\/evidence-workspace\.js';/m,
  'const createEvidenceWorkspace=globalThis.fakeEvidence;');
+source=source.replace(/^import \{buildReleasedPracticeReport\} from '.\/released-practice-report\.mjs';/m,
+ 'const buildReleasedPracticeReport=globalThis.fakeReleasedReport;');
 source=source.replace('export function initAssignedPractice(db){','function initAssignedPractice(db){');
 runInNewContext(source+'\nglobalThis.initAssignedPractice=initAssignedPractice;',state);
 const app=state.initAssignedPractice(db);
