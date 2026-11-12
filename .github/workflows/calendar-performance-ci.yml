@@ -1,0 +1,25 @@
+name: MathsGrove calendar and marketing responsiveness
+on:
+  pull_request:
+    paths:
+      - 'experience-v4.js'
+      - 'marketing-experience-v5.js'
+      - 'calendar-dialog-polish.css'
+      - 'scripts/test-calendar-motion-performance.mjs'
+      - '.github/workflows/calendar-performance-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ui-responsiveness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check native modal, marketing view, reduced motion and integrity
+        run: |
+          node --check experience-v4.js
+          node --check marketing-experience-v5.js
+          node scripts/test-calendar-motion-performance.mjs
+          node scripts/check-calendar-marketing.mjs
+          node scripts/check-marketing-v5.mjs
+          node scripts/check-site.mjs
