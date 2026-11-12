@@ -3,11 +3,11 @@
 **Status: DESIGN PROTOTYPE ONLY — DO NOT APPLY TO PRODUCTION.**
 **Date:** 12 November 2026 · **Tracker:** [#93](https://github.com/MathsGrove/Mathora/issues/93).
 **Dependency:** [PR #89](https://github.com/MathsGrove/Mathora/pull/89), which introduces the *public/editorial* M/A/B calculator.
-**Not a migration:** this file is under docs, not \`supabase/migrations\`. It ends with \`ROLLBACK\` and does not implement any grant or callable RPC.
+**Not a migration:** this file is under docs, not `supabase/migrations`. It ends with `ROLLBACK` and does not implement any grant or callable RPC.
 
 ## Grounded constraints
 
-Read-only inspection of the connected MathsGrove project found the existing \`private.grove_tasks\`, \`private.grove_task_items\`, and \`private.grove_practice_marks\` support **one point per multiple-choice question**. The existing staff marking RPC \`public.grove_staff_mark_task\` explicitly validates a \`0\` or \`1\` mark per question and uses an \`org_id\` and \`private.is_staff(org_id)\` check. Student feedback RPC \`public.grove_my_feedback\` reads only a task belonging to \`auth.uid()\` and returns feedback only after release. These contracts must not be repurposed to receive a constructed-response paper without new audited permissions and careful student-data migration planning.
+Read-only inspection of the connected MathsGrove project found the existing `private.grove_tasks`, `private.grove_task_items`, and `private.grove_practice_marks` support **one point per multiple-choice question**. The existing staff marking RPC `public.grove_staff_mark_task` explicitly validates a `0` or `1` mark per question and uses an `org_id` and `private.is_staff(org_id)` check. Student feedback RPC `public.grove_my_feedback` reads only a task belonging to `auth.uid()` and returns feedback only after release. These contracts must not be repurposed to receive a constructed-response paper without new audited permissions and careful student-data migration planning.
 
 This prototype deliberately creates a separate future path for constructed responses and does not touch those operational records.
 
@@ -15,7 +15,7 @@ This prototype deliberately creates a separate future path for constructed respo
 
 Run **only** in an isolated disposable PostgreSQL/Supabase test environment with fictional accounts, after reviewing all dependencies. This code has not been executed or database-integration tested in this review.
 
-\`\`\`sql
+```sql
 -- NOT AN APPLIED MIGRATION. Requires a dedicated disposable staging database.
 BEGIN;
 
@@ -158,17 +158,17 @@ CREATE INDEX grove_releases_org_idx
 
 -- Intentional rollback: this is an *architecture rehearsal*, not a deployment.
 ROLLBACK;
-\`\`\`
+```
 
 ## Non-negotiable release gates absent from the DDL
 
-This is a **schema proposal**, not a fully safe executable deployment. It deliberately contains *no* \`GRANT EXECUTE\`, no \`SECURITY DEFINER\`, and no public RPC. Additional safeguards MUST be implemented and validated before anyone permits a staging migration to persist:
+This is a **schema proposal**, not a fully safe executable deployment. It deliberately contains *no* `GRANT EXECUTE`, no `SECURITY DEFINER`, and no public RPC. Additional safeguards MUST be implemented and validated before anyone permits a staging migration to persist:
 
 1. **Moderation integrity:** an authenticated server action must verify that author != each moderator, that two reviewers are independent, and that both approvals match the exact saved SHA-256 rubric and the same board, syllabus year, calculator rule, answer-format and original-content provenance. Authenticated reviewer IDs come from the session, never client-supplied.
 2. **Immutable rubric versions:** disallow edits to approved rubric/criterion rows; new changes require a new version and fresh moderation. Enforce referenced criterion dependencies, no cycles, valid alternate methods, follow-through policies and exact mark totals **in the database transaction**, not just in JavaScript.
-3. **Staging mark RPC:** compare attempt student/org/rubric to the active examiner’s org; reject unauthorised graders, duplicate awards, omitted criteria at release and questionable implied-method exceptions. Server recalculates \`earned_marks\` and \`possible_marks\` from protected criterion rows, never trusts a browser total.
+3. **Staging mark RPC:** compare attempt student/org/rubric to the active examiner’s org; reject unauthorised graders, duplicate awards, omitted criteria at release and questionable implied-method exceptions. Server recalculates `earned_marks` and `possible_marks` from protected criterion rows, never trusts a browser total.
 4. **Released snapshots:** release needs explicit authorised human action after full review. Add append-only auditing/immutable snapshot enforcement (including preventing privileged UPDATE or DELETE outside a controlled append-only service). Role-filtered read RPCs must select only approved fields **after validating the student ID and parent/tutor assignment**, not return all three report text fields in one payload.
-5. **Existing scheme remains stable:** do not overwrite \`private.grove_practice_marks\`, \`private.grove_tasks.score\`, or the 0/1 practice workflow. Constructed-response work is a distinct pilot. No real student data, no full mock or entitlements changes.
+5. **Existing scheme remains stable:** do not overwrite `private.grove_practice_marks`, `private.grove_tasks.score`, or the 0/1 practice workflow. Constructed-response work is a distinct pilot. No real student data, no full mock or entitlements changes.
 6. **Permission tests:** isolated fictional student, parent, assigned tutor, non-assigned tutor, authorised examiner, second organisation, and revoked user. Test direct table access, horizontal/vertical permission checks, cross-org writes, released vs unreleased, role revocation, immutable snapshots, and signed evidence files. Verify expected deny outcomes and no row changes, not just exception messages.
 7. **Deployment decision:** provision a disposable isolated Supabase project or local PostgreSQL instance, test transactionally, review advisor deltas, then document rollback, backup, key handling and formal owner signoff. **Never apply this documentation block to the connected production database.**
 
