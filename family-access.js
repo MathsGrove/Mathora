@@ -26,7 +26,9 @@ function render(){
  const parent=p.view_role==='parent';
  set('fa-role-kicker',parent?'GROVE EXAM / AUTHORISED FAMILY':'GROVE EXAM / ASSIGNED TUTOR');
  set('fa-title',parent?'See the progress. Know how to help.':'Turn evidence into the next lesson.');
- set('fa-subtitle',parent?'Explore '+p.student_name+"'s released work, understand the evidence and find practical ways to support the next step.":'Use '+p.student_name+"'s released evidence to choose a specific teaching focus and a fresh independent recheck.');
+ set('fa-subtitle',parent
+  ?'Explore '+p.student_name+"\'s released work, understand the evidence and find practical ways to support the next step."
+  :'Use '+p.student_name+"\'s released evidence to choose a specific teaching focus and a fresh independent recheck.");
  set('fa-access-chip',parent?'READ-ONLY PARENT':'ASSIGNED TUTOR');
  set('fa-view-type',parent?'Guardian view':'Tutor evidence view');
  const statLabels=parent?['RELEASED PAPERS','AWAITING REVIEW','TOPICS REPORTED','LATEST ACTIVITY']:['REVIEWED ASSESSMENTS','AWAITING MARKING','REVIEWED TOPICS','LATEST EVIDENCE'];
