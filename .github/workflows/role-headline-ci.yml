@@ -1,0 +1,27 @@
+name: MathsGrove role and headline polish QA
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'portal.html'
+      - 'studio.html'
+      - 'family-access.js'
+      - 'family-access.css'
+      - 'scripts/check-role-headline-polish.mjs'
+      - '.github/workflows/role-headline-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  role-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check role, copy, website integrity and basic JS
+        run: |
+          node --input-type=module --check < family-access.js
+          node scripts/check-role-headline-polish.mjs
+          node scripts/check-family-access.mjs
+          node scripts/check-site.mjs
