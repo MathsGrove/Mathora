@@ -23,7 +23,7 @@ const tests=[
 ['Practice report waits for examiner review',daily.includes("task.review_status==='released'")],
 ['Student progress uses released marks',student.includes('grove_student_insights')&&sql.includes("review_status='released'")],
 ['Target grade admin controlled',admin.includes('programme-target-grade')&&adminJs.includes('update_student_setup_atomic')&&src('supabase/migrations/202611081200_atomic_student_programme_save.sql').includes('public.grove_admin_set_target(')],
-['Student sees exam and plan, not backend jargon',practiceUI.includes('mg-student-route-grid')&&practiceUI.includes('Your progress atlas.')],
+['Student sees exam and plan, not backend jargon',practiceUI.includes('mg-student-route-grid')&&practiceUI.includes('What your reviewed work shows.')],
 ['Examiner views secure work image',examiner.includes('createSignedUrl')&&admin.includes('mg-assigned-admin')],
 ['Baseline examiner evidence',src('baseline-admin.js').includes('grove_staff_evidence')],
 ['Student archive includes work and manual marks',archive.includes('manual_question_marks')&&archiveEdge.includes('grove_offboarding_extra')],
