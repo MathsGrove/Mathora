@@ -70,3 +70,16 @@
  .mgtr-stat strong{font-size:28px}.mgtr-highlight{padding:15px}
  .mgtr-highlight strong{font-size:24px}}
 @media(prefers-reduced-motion:reduce){.mgtr,.mgtr *{transition:none!important;animation:none!important}}
+
+/* Structured, non-animated evidence journey for student / parent / assigned tutor. */
+.mgtr-evidence-flow{margin:22px 0 0;padding:19px;border:1px solid #dfe2e3;background:#fff;border-radius:12px}
+.mgtr-evidence-title{font:400 clamp(23px,2.7vw,30px)/1.18 "Instrument Serif",Georgia,serif;color:#1c3a53;margin:0 0 16px}
+.mgtr-evidence-steps{counter-reset:step;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.mgtr-evidence-step{min-width:0;border:1px solid #e5e5e0;border-radius:10px;padding:15px 16px;background:#faf9f6;position:relative}
+.mgtr-evidence-step::before{counter-increment:step;content:counter(step,decimal-leading-zero);font-size:10px;letter-spacing:.12em;font-weight:800;color:#8c775f;display:block;margin:0 0 9px}
+.mgtr-evidence-step>strong{font-size:13px;color:#183750;display:block;margin:0 0 8px}
+.mgtr-evidence-status{display:inline-block;font-size:10px;font-weight:800;color:#7a623f;border-radius:5px;border:1px solid #e0d7c9;background:#f9f0e4;padding:4px 8px}
+.mgtr-evidence-status.is-confirmed{color:#315b4f;border-color:#d0e3d9;background:#edf7f2}
+.mgtr-evidence-step>p{font-size:11px;line-height:1.75;color:#5e7082;margin:10px 0 0;overflow-wrap:anywhere}
+@media(max-width:790px){.mgtr-evidence-steps{grid-template-columns:1fr}.mgtr-evidence-step{padding:14px}.mgtr-evidence-flow{padding:15px}}
+@media(prefers-reduced-motion:reduce){.mgtr-evidence-step,.mgtr-evidence-status{transition:none;animation:none}}

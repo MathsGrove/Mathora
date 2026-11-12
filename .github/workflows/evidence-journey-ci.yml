@@ -1,0 +1,25 @@
+name: MathsGrove evidence journey dashboard QA
+on:
+  pull_request:
+    paths:
+      - 'tier-role-experience.js'
+      - 'tier-role-experience.css'
+      - 'portal.html'
+      - 'family.html'
+      - 'scripts/test-evidence-journey.mjs'
+      - '.github/workflows/evidence-journey-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  three-role-journey:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify role, privacy, data provenance, motion and responsive markup
+        run: |
+          node --input-type=module --check < tier-role-experience.js
+          node scripts/test-evidence-journey.mjs
+          node scripts/check-tier-role-experience.mjs
+          node scripts/check-family-access.mjs
+          node scripts/check-site.mjs

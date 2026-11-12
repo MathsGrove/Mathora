@@ -41,6 +41,24 @@ const wording={
  }
 };
 const topicLabel=x=>String(x?.topic||'Mathematics');
+// An evidence journey, not an invented mastery journey. No delayed independent
+// recheck is currently exposed by the authorised RPCs, so it stays unverified.
+export function buildEvidenceJourney({baselineRecorded=false,releasedCount=0,role='student'}={}){
+ const student=role==='student',parent=role==='parent';
+ return [
+  {label:'Starting point',status:baselineRecorded?'Recorded':'Not yet recorded',
+   detail:baselineRecorded?'An initial baseline is recorded; topics are only a sample.':
+    'A starting-point record is not yet available.'},
+  {label:student?'Examiner feedback':parent?'Released family evidence':'Reviewed teaching evidence',
+   status:releasedCount>0?'Released':'Awaiting release',
+   detail:releasedCount>0?
+    'Authorised results have been released; read the working and the evidence before drawing conclusions.':
+    'No matching examiner-released result is available yet.'},
+  {label:'Independent recheck',status:'Not yet verified',
+   detail:'A fresh, separately reviewed question is needed to show whether the method transfers.'}
+ ];
+}
+
 export function summariseStudentTier(tier,insights=null){
  const plan=wording[tier];
  if(!plan)return {
@@ -51,7 +69,7 @@ export function summariseStudentTier(tier,insights=null){
   watch:'Your first diagnostic will help identify initial topics to revisit.',
   action:'Check your baseline and speak to the administrator about programme activation.',
   next:'No programme-specific completion statistics are available yet.',
-  label:'AWAITING PLAN',stats:[],focus:null,roleAccess:'Separate family and tutor accounts are available with Grove Exam only.'
+  label:'AWAITING PLAN',stats:[],journey:buildEvidenceJourney({}),focus:null,roleAccess:'Separate family and tutor accounts are available with Grove Exam only.'
  };
  const baseline=Array.isArray(insights?.baseline_topics)?insights.baseline_topics:[];
  const gaps=baseline.filter(x=>finite(x.correct)&&finite(x.total)&&Number(x.total)>0&&Number(x.correct)<Number(x.total))
@@ -71,6 +89,7 @@ export function summariseStudentTier(tier,insights=null){
  ];
  return {
   enabled:true,tier,tag:plan.tag,title:plan.title,lead:plan.lead,rhythm:plan.rhythm,
+  journey:buildEvidenceJourney({baselineRecorded:baseDone,releasedCount:reviewed||0,role:'student'}),
   watch:plan.watch,action:plan.action,label:plan.label,stats,
   focus:focus?{topic:topicLabel(focus),correct:count(focus.correct),total:count(focus.total)}:null,
   next:focus?
@@ -113,6 +132,7 @@ export function summariseFamilyRole(learner={}){
  const totalEarned=results.reduce((sum,r)=>sum+count(r.score),0);
  const totalPossible=results.reduce((sum,r)=>sum+count(r.maximum),0);
  if(role==='parent')return {
+  journey:buildEvidenceJourney({baselineRecorded:learner.baseline?.status==='completed',releasedCount:papers,role:'parent'}),
   role,tag:'GROVE EXAM · AUTHORISED PARENT',
   title:'Understand the learning. Support the learner.',
   lead:'A calm, read-only picture of released work and recorded practice. Useful conversations matter more than comparing scores.',
@@ -137,6 +157,7 @@ export function summariseFamilyRole(learner={}){
  };
  const ratio=totalPossible>0?percent(totalEarned,totalPossible):null;
  return {
+  journey:buildEvidenceJourney({baselineRecorded:learner.baseline?.status==='completed',releasedCount:papers,role:'tutor'}),
   role,tag:'GROVE EXAM · ASSIGNED TUTOR',
   title:'Diagnose the method. Plan the intervention.',
   lead:'A private teaching desk built around released question evidence and the next lesson—not another family scorecard.',
@@ -179,6 +200,20 @@ function renderStats(container,stats){
   container.append(card);
  }
 }
+function renderEvidenceJourney(container,steps){
+ if(!container)return;
+ container.replaceChildren();
+ const heading=node('h3','mgtr-evidence-title','From starting point to independent recheck');
+ const ordered=node('ol','mgtr-evidence-steps');
+ for(const step of steps||[]){
+  const item=node('li','mgtr-evidence-step');
+  const state=node('span','mgtr-evidence-status',step.status);
+  if(step.status==='Recorded'||step.status==='Released')state.classList.add('is-confirmed');
+  item.append(node('strong','',step.label),state,node('p','',step.detail));
+  ordered.append(item);
+ }
+ container.append(heading,ordered);
+}
 export function renderStudentTier(tier,insights){
  const root=document.getElementById('mg-student-tier-experience');if(!root)return;
  const model=summariseStudentTier(tier,insights);
@@ -194,6 +229,7 @@ export function renderStudentTier(tier,insights){
  set('mgtr-student-role-access',model.roleAccess);
  set('mgtr-student-badge',model.label);
  renderStats(document.getElementById('mgtr-student-stats'),model.stats);
+ renderEvidenceJourney(document.getElementById('mgtr-student-evidence-flow'),model.journey);
 }
 export function renderFamilyRole(learner){
  const root=document.getElementById('mg-family-role-experience');if(!root)return;
@@ -206,6 +242,7 @@ export function renderFamilyRole(learner){
  set('mgtr-family-bottom',model.bottom);
  renderStats(document.getElementById('mgtr-family-stats'),model.stats);
  renderCards(document.getElementById('mgtr-family-cards'),model.cards);
+ renderEvidenceJourney(document.getElementById('mgtr-family-evidence-flow'),model.journey);
 }
 export function clearTierRoleExperience(which){
  const root=document.getElementById(which==='student'?'mg-student-tier-experience':'mg-family-role-experience');
