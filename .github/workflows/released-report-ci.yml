@@ -1,0 +1,25 @@
+name: MathsGrove released practice report QA
+on:
+  pull_request:
+    paths:
+      - 'released-practice-report.mjs'
+      - 'assigned-practice.js'
+      - 'assigned-practice.css'
+      - 'scripts/test-released-practice-report.mjs'
+      - '.github/workflows/pages.yml'
+      - '.github/workflows/released-report-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  privacy-and-rendering:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check report model, UI syntax and privacy gates
+        run: |
+          node --check released-practice-report.mjs
+          node --input-type=module --check < assigned-practice.js
+          node scripts/test-released-practice-report.mjs
+          node scripts/check-evidence-marking.mjs
+          node scripts/check-site.mjs
