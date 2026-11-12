@@ -45,6 +45,16 @@ export function reviewModerationPacket(rubric, packet = {}) {
   issues(str(packet.qualification) === rubric.route.qualification &&
          str(packet.academicLevel) === rubric.route.level,
     'Moderation qualification and academic level must match the question.');
+  issues(str(packet.board) === str(rubric.route.board) &&
+         !/neutral|pending|unknown|example/i.test(str(rubric.route.board)),
+    'Awarding body must be mapped into the exact signed rubric route.');
+  issues(str(packet.syllabusYear) === str(rubric.route.syllabusYear) &&
+         rubric.route.syllabusStatus === 'independently mapped',
+    'Syllabus year and independent mapping must be recorded in the signed rubric.');
+  issues(str(packet.syllabusObjective) === str(rubric.route.syllabusObjective) &&
+         str(packet.calculatorPolicy) === str(rubric.route.calculatorPolicy) &&
+         str(packet.provenance) === str(rubric.provenance),
+    'Syllabus objective, calculator rule and rights provenance must be part of the signed rubric.');
   issues(reviewers.length >= 2,'At least two independent examiner approvals are needed.');
   issues(reviewers.length <= 5,'Reviewer count exceeds this pilot workflow.');
   const ids = new Set();
@@ -126,7 +136,8 @@ export function adjudicateCalibration(rubric, comparison, adjudication) {
      comparison.examiners.includes(adjudication.examinerId))
     fail('A separate third examiner is required for adjudication.');
   if(adjudication.fixtureId!==comparison.fixtureId)fail('Adjudication must use the same fictional fixture.');
-  const finalSheet = completeSheet(rubric,{...adjudication,fingerprint:comparison.fingerprint});
+  if(adjudication.fingerprint!==comparison.fingerprint)fail('Adjudication fingerprint mismatch.');
+  const finalSheet = completeSheet(rubric,adjudication);
   if(str(adjudication.explanation).length<25)fail('Adjudication needs an explicit explanation of the resolved mark decisions.');
   return Object.freeze({
     kind:'fictional-calibration-adjudicated',
