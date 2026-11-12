@@ -1,4 +1,5 @@
 /* MathsGrove examiner review — question-level marks, timings and original evidence. */
+import {EVIDENCE_FIELDS,composePracticeFeedback} from './practice-feedback-assist.mjs';
 export function initAssignedAdmin(db,state){
  const $=id=>document.getElementById(id),list=$('mg-assigned-admin-rows'),summary=$('mg-assigned-admin-summary');
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n};
@@ -55,8 +56,48 @@ export function initAssignedAdmin(db,state){
     mark.value=q.mark===null||q.mark===undefined?'':String(q.mark);markLabel.append(mark);
     const commentLabel=el('label','Question feedback');const comment=el('textarea');
     comment.rows=2;comment.maxLength=1000;comment.placeholder='Mention the method, any misconception and what to improve.';
-    comment.value=q.comment||'';commentLabel.append(comment);panel.append(markLabel,commentLabel);
-    container.append(panel);rows.push({position:q.position,mark,comment});
+    comment.value=q.comment||'';commentLabel.append(comment);
+    // The helper drafts prose from examiner-observed evidence; the actual /1 score remains unchanged.
+    const assist=el('details',undefined,'mg-feedback-assist');
+    const assistSummary=el('summary','Compose clearer feedback from your observations');
+    assist.append(assistSummary,el('p','Optional evidence checkpoints, not extra M1/A1/B1 marks. The saved 0/1 score remains examiner-awarded. Check the learner’s working before selecting any observation.','mg-feedback-assist-note'));
+    const observationSelectors={};
+    const group=el('div',undefined,'mg-feedback-assist-grid');
+    const options=[['not_assessed','Not assessed'],['demonstrated','Demonstrated in working'],['needs_work','Needs correction']];
+    for(const field of EVIDENCE_FIELDS){
+     const wrapper=el('label',field.label+' (evidence only)');
+     const selector=el('select');
+     for(const [value,label] of options)selector.append(new Option(label,value));
+     wrapper.append(selector);group.append(wrapper);observationSelectors[field.key]=selector;
+    }
+    assist.append(group);
+    const nextLabel=el('label','Specific next-practice step (optional)');
+    const next=el('input');next.type='text';next.maxLength=220;next.placeholder='e.g. check signs when expanding brackets';nextLabel.append(next);assist.append(nextLabel);
+    const generate=el('button','Add suggested wording to question feedback');generate.type='button';
+    const assistStatus=el('p','No text is saved until you use Save marks or Release.','mg-feedback-assist-status');
+    assistStatus.setAttribute('role','status');
+    assist.append(generate,assistStatus);panel.append(markLabel,commentLabel,assist);
+    let insertedText='',insertedSnapshot='';
+    const snapshot=()=>JSON.stringify({mark:mark.value,observations:Object.fromEntries(Object.entries(observationSelectors).map(([key,selector])=>[key,selector.value])),next:next.value});
+    const stale=()=>insertedText!==''&&insertedSnapshot!==snapshot()&&comment.value.includes(insertedText);
+    const signalChange=()=>{if(stale())assistStatus.textContent='The evidence or mark changed. Regenerate the suggested wording before saving.';};
+    mark.addEventListener('change',signalChange);next.addEventListener('input',signalChange);
+    Object.values(observationSelectors).forEach(selector=>selector.addEventListener('change',signalChange));
+    comment.addEventListener('input',()=>{insertedText='';insertedSnapshot='';});
+    generate.addEventListener('click',()=>{
+     try{
+      const observations=Object.fromEntries(Object.entries(observationSelectors).map(([key,selector])=>[key,selector.value]));
+      const result=composePracticeFeedback({mark:mark.value,observations,nextStep:next.value});
+      if(result.warnings.length){assistStatus.textContent=result.warnings.join(' ');return;}
+      const existing=comment.value.trim();
+      const proposed=insertedText&&existing.includes(insertedText)?existing.replace(insertedText,result.text):existing?existing+'\n\n'+result.text:result.text;
+      if(proposed.length>comment.maxLength)throw Error('The draft is too long for this feedback field. Shorten the existing note or next step.');
+      comment.value=proposed;insertedText=result.text;insertedSnapshot=snapshot();
+      assistStatus.textContent='Suggestion inserted for examiner editing. It will only reach the learner after authorised release.';
+      comment.focus();
+     }catch(error){assistStatus.textContent=error.message||'Could not draft feedback.';}
+    });
+    container.append(panel);rows.push({position:q.position,mark,comment,stale});
    }
    const overall=el('label','Examiner summary and next step');
    const input=el('textarea');input.rows=4;input.maxLength=2500;
@@ -69,6 +110,7 @@ export function initAssignedAdmin(db,state){
    async function save(releasing){
     draft.disabled=release.disabled=true;notice.textContent='Saving secure examiner marking…';
     try{
+     if(rows.some(x=>x.stale()))throw Error('A drafted comment is out of date after an observation or mark changed. Regenerate or edit it before saving.');
      const marks=rows.filter(x=>x.mark.value!=='').map(x=>({position:x.position,mark:Number(x.mark.value),comment:x.comment.value.trim()}));
      if(releasing&&marks.length!==rows.length)throw Error('Mark every question before releasing this assessment.');
      const {data:result,error}=await db.rpc('grove_staff_mark_task',{
