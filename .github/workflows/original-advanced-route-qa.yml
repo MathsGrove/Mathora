@@ -1,0 +1,19 @@
+name: MathsGrove original advanced-route editorial QA
+on:
+  pull_request:
+    paths:
+      - 'content/editorial/original-advanced-route-questions-20261113.json'
+      - 'scripts/test-original-advanced-route-questions.mjs'
+      - '.github/workflows/original-advanced-route-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-maths:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Independently verify mathematics, mark totals and unpublished state
+        run: |
+          node --check scripts/test-original-advanced-route-questions.mjs
+          node scripts/test-original-advanced-route-questions.mjs
