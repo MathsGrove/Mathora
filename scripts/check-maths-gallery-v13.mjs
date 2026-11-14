@@ -17,14 +17,15 @@ assert.ok(report.includes('maths-gallery-v13.css')&&report.includes('maths-galle
 assert.ok(reason.includes('maths-gallery-v13.css')&&reason.includes('maths-gallery-v13.js'),'Reasoning demo gets shared gallery');
 assert.ok(showcase.includes("MathsGroveMotion?.navigateHash?.('#'+b.dataset.nav"),'Dashboard navigation uses shared gallery');
 assert.ok(calendar.includes("MathsGroveMotion?.navigateHash?.('#interactive-sample'"),'Calendar-to-practice uses shared gallery');
-for(const token of ['mg13-passage','mg13-wall','mg13-tile','mg13-orbit','mg13-trails','mg13-hand-line','mg13-number-trail','mg13-spark'])assert.ok(js.includes(token)&&css.includes(token),'Missing gallery part '+token);
+for(const token of ['mg13-passage','mg13-wall','mg13-tile','mg13-orbit','mg13-trails','mg14-maths-quote','mg13-number-trail','mg13-spark'])assert.ok(js.includes(token)&&css.includes(token),'Missing gallery part '+token);
 for(const token of ['prefers-reduced-motion:reduce','@media(max-width:820px)','@media(max-width:480px)','@media print'])assert.ok(css.includes(token),'Missing accessibility or responsive style '+token);
 assert.ok(js.includes('navigator.connection?.saveData')&&js.includes('document.visibilityState'),'Data, battery and background preference respected');
 assert.ok(js.includes('event.metaKey||event.ctrlKey||event.shiftKey||event.altKey'),'Modified links must remain native');
 assert.ok(!/setInterval|setTimeout|requestAnimationFrame|addEventListener\(["']scroll/.test(js),'No continuous JavaScript animations or scroll work');
 assert.ok(!/\bfetch\s*\(|createClient\s*\(|localStorage\s*\.|sessionStorage\s*\./.test(js),'No student data calls or persistent navigation tracking');
-assert.ok(js.includes('x² − 5x + 6 = 0')&&js.includes('(x − 2)(x − 3) = 0')&&js.includes('x = 2 or x = 3'),'Quadratic working must be correct');
-assert.ok(js.includes('3(x + 4) = 27')&&js.includes('x + 4 = 9')&&js.includes('x = 5'),'Linear algebra demonstration must be correct');
+assert.ok(js.includes('Every mark has a reason worth exploring.')&&js.includes('Ask about the thinking, not only the score.'),'Transition must use original mathematical quotes');
+assert.ok(!js.includes('mg13-hand-line')&&!js.includes('mg13-paper'),'No handwritten transition notes');
+assert.ok(js.includes('Every step reveals another idea.')&&js.includes('Mathematics is a world of connections.'),'Reasoning and homepage quote cues required');
 assert.ok(workflow.includes('node --check maths-gallery-v13.js')&&workflow.includes('node scripts/check-maths-gallery-v13.mjs'),'Deployment must validate new controller');
 assert.ok(workflow.includes('maths-cinematic-v11.css maths-gallery-v13.css maths-gallery-v13.js site/'),'Deployment packages gallery and existing atmospheric backgrounds');
 assert.ok(!workflow.includes('maths-cinematic-v12.js site/'),'Avoid deploying deprecated controller');
@@ -81,7 +82,7 @@ function harness({mobile=false,reduced=false,saveData=false}={}){
 }
 const app=harness();
 assert.equal(app.find('mg13-tile').length,24,'The number gallery is a 24-panel mathematical exhibition');
-assert.equal(app.find('mg13-hand-line').length,3,'Worked solutions display three steps');
+assert.equal(app.find('mg14-maths-quote').length,1,'Display one concise mathematics quote');
 assert.equal(app.doc.body.children.length,1,'One hidden reusable gallery; no document markup inflation');
 assert.equal(app.stage.hidden,true,'Gallery is hidden before navigation');
 assert.equal(app.win.MathsGroveMotion.navigateHash('#unknown'),false,'Missing hashes fall back to native behavior');
@@ -90,7 +91,7 @@ assert.equal(app.stage.hidden,false,'Gallery opens immediately');
 assert.equal(app.stage.dataset.scene,'programmes','Programme entrance has its own scene');
 assert.equal(app.stage.dataset.mode,'major','Main destination uses full cinematic gallery');
 await tick();
-assert.deepEqual(app.animations,[450,650,520],'Flagship desktop phases should take 1.62 seconds');
+assert.deepEqual(app.animations,[490,420,590],'Smooth desktop phases should take 1.5 seconds');
 assert.deepEqual(app.history,['#services'],'Destination is reached once');
 assert.equal(app.targets.services.scrolled,1);
 assert.equal(app.targets.services.focused,true,'Keyboard focus should follow the destination');
@@ -98,14 +99,14 @@ assert.equal(app.stage.hidden,true,'Gallery must clear when animation finishes')
 app.win.MathsGroveMotion.navigateHash('#pathways');
 assert.equal(app.stage.dataset.mode,'small','Secondary anchor uses a lighter passage');
 await tick();
-assert.deepEqual(app.animations.slice(3),[210,145,250],'Small chapters transition smoothly without a long wait');
+assert.deepEqual(app.animations.slice(3),[210,145,275],'Small chapters keep a brief 630ms passage');
 app.win.MathsGroveMotion.navigateHash('#dashboards',{replace:true,theme:'parent'});
 assert.equal(app.stage.dataset.scene,'people','Role-specific parent scene remains distinct');
 await tick();
 assert.ok(app.history.includes('replace:#dashboards'));
 app.win.MathsGroveMotion.navigateReport('https://mathsgrove.github.io/Mathora/report.html');
 assert.equal(app.stage.dataset.scene,'report');
-assert.deepEqual(app.find('mg13-hand-line').map(x=>x.textContent),['x² − 5x + 6 = 0','(x − 2)(x − 3) = 0','x = 2 or x = 3']);
+assert.equal(app.find('mg14-maths-quote')[0].textContent,'See the thinking behind the mark.','Report transition uses a short quote, not handwritten working');
 await tick();
 assert.deepEqual(app.pages,['https://mathsgrove.github.io/Mathora/report.html']);
 const linkEvent=href=>{
@@ -137,9 +138,9 @@ assert.equal(app.pages.at(-1),'/Mathora/report.html','Save-Data must navigate im
 const mobileApp=harness({mobile:true});
 mobileApp.win.MathsGroveMotion.navigateHash('#signature-sample');
 await tick();
-assert.deepEqual(mobileApp.animations,[340,465,440],'Mobile cinematic passage should take 1.245 seconds');
+assert.deepEqual(mobileApp.animations,[350,330,480],'Mobile gallery is smooth at 1.16 seconds');
 const quick=harness({mobile:true});
 quick.win.MathsGroveMotion.navigateHash('#pathways');
 await tick();
-assert.deepEqual(quick.animations,[175,110,210],'Small mobile passages should take only 495ms');
-console.log('MathsGrove gallery v13: 24 formula panels, 3 working steps, all public links, lightweight control trails, 1.62s desktop / 1.245s phone, data and motion safeguards: OK');
+assert.deepEqual(quick.animations,[155,120,225],'Small mobile passages should take only 500ms');
+console.log('MathsGrove gallery v13: 24 formula panels, maths quotes, public links, lightweight control trails, 1.5s desktop / 1.16s phone, data and motion safeguards: OK');
