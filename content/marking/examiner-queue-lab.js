@@ -1,5 +1,6 @@
 import {mountExaminerReviewQueue} from './examiner-workbench-ui.mjs';
 import {mountQuestionModeration} from './examiner-moderation-ui.mjs';
+import {mountOriginalAuthoring} from './original-authoring-ui.mjs';
 
 const UUID_A='abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const UUID_B='abcdabcd-cccc-4ccc-8ccc-cccccccccccc';
@@ -100,3 +101,34 @@ const fakeModeration={
 };
 mountQuestionModeration(document.getElementById('moderation-workbench'),
  {client:fakeModeration,confirmSignoff:()=>window.confirm('Sign this fictional original question?')});
+
+
+// Authoring demonstration with fictional material. Even this local preview will
+// never release an authored draft without two real independent human examiners.
+let fictionalDraft=null;
+const fakeAuthoring={
+ async authorOriginalDraft(payload){
+  if(!payload.questionKey||payload.question.length<40||payload.solution.length<50||
+    payload.syllabusObjective.length<15||payload.sourceDeclaration.length<50||
+    !payload.criteria.length)throw Error('Original question authoring requirements incomplete.');
+  fictionalDraft=payload;
+  return {rubric_id:'abcdabcd-dddd-4ddd-8ddd-dddddddddddd',status:'draft',version_no:1};
+ },
+ async approvedOriginals(){
+  return {total:1,items:[{
+   rubric_id:rubricId,question_key:original.id,qualification:'GCSE',
+   academic_level:'Higher',exam_board:'AQA',syllabus_year:'2026',
+   plan:'weekly',max_marks:original.maxMarks
+  }]};
+ },
+ async assignConstructed({rubricId:got,studentId}){
+  if(got!==rubricId||studentId!=='cccccccc-cccc-4ccc-8ccc-cccccccccccc')
+   throw Error('Original question or fictional student not authorised.');
+  return {attempt_id:'dddddddd-bbbb-4bbb-8bbb-dddddddddddd',status:'assigned'};
+ }
+};
+window.__fictionalAuthoring=Object.freeze({get created(){return fictionalDraft;}});
+mountOriginalAuthoring(document.getElementById('authoring-workbench'),{
+ client:fakeAuthoring,orgId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+ roster:[{id:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',name:'Fictional enrolled learner'}]
+});
