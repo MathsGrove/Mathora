@@ -159,6 +159,184 @@ export function summariseFamilyRole(learner={}){
   bottom:'This is an assigned, permission-controlled Grove Exam tutor view. Examiner comments are visible only where released to the tutor; unmarked scripts and private student work remain restricted.'
  };
 }
+
+/* Decision support uses only permission-filtered, released evidence already
+ * delivered by the existing family RPC or student baseline. No score
+ * forecast, trend inference or private tutor notes are exposed to parents. */
+const topicConversation=topic=>{
+ const t=String(topic||'').toLowerCase();
+ if(/algebra|equation|expression|quadratic/.test(t))return{
+  home:'Which operation would you undo first, and how could you check by substituting your answer?',
+  lesson:'Give one worked and one contrasting equation; observe whether the learner preserves equal operations and checks the final result.'
+ };
+ if(/fraction|ratio|percent|number/.test(t))return{
+  home:'Could you estimate what a sensible answer looks like before calculating?',
+  lesson:'Contrast two fraction or ratio tasks with different wholes, then ask the learner to justify the quantity each part represents.'
+ };
+ if(/geometry|angle|triangle|trigonometry/.test(t))return{
+  home:'What do you know from the diagram, and which rule connects those facts?',
+  lesson:'Ask the learner to name the theorem and explain why its conditions apply before calculating a result.'
+ };
+ if(/probability|statistics|data/.test(t))return{
+  home:'How can you be sure every possible outcome or piece of data has been counted?',
+  lesson:'Compare a simple and a less familiar sample-space problem; require a complete argument before using a formula.'
+ };
+ return{
+  home:'What did you notice first, and how would you test whether your method works on a new example?',
+  lesson:'Use two related but unfamiliar problems; ask for an explanation of the first step and compare the methods.'
+ };
+};
+export function planFamilyNextSteps(learner={}){
+ const role=learner.view_role==='tutor'?'tutor':'parent';
+ const topics=sortedTopics(learner.topics);
+ const focus=topics[0]||null;
+ const coach=topicConversation(focus?.topic);
+ const sampled=focus&&focus.questions>0;
+ const evidence=topics.slice(0,5).map(t=>({
+  topic:t.topic,earned:t.earned,available:t.available,questions:t.questions,
+  percent:t.percent,quality:t.questions>=4?'Several reviewed questions':t.questions>0?'Small question sample':'Question count not supplied'
+ }));
+ const status=focus
+  ?focus.topic+' has '+focus.earned+' / '+focus.available+' released marks over '+
+    (sampled?focus.questions+' reviewed question'+(focus.questions===1?'':'s'):'an unspecified number of reviewed questions')+
+    '. This is a priority for conversation, not a mastery claim.'
+  :'There is no released topic breakdown yet. Choose one recently attempted method and focus on explaining it.';
+ const activity=learner.practice_timing||{};
+ const submitted=finite(activity.submitted_sessions)?count(activity.submitted_sessions):null;
+ const scheduled=finite(activity.scheduled_sessions)?count(activity.scheduled_sessions):null;
+ const visibility=finite(activity.recorded_visible_minutes)?Math.max(0,Math.round(Number(activity.recorded_visible_minutes))):null;
+ const activityNote=submitted===null
+  ?'No 28-day submission count has been released yet.'
+  :submitted+' recorded submitted session'+(submitted===1?'':'s')+' in the supplied 28-day window'+
+   (scheduled!==null?' out of '+scheduled+' scheduled opportunities':'')+
+   (visibility!==null?'; '+visibility+' min of recorded question-screen visibility':'')+
+   '. Visibility is not verified study time.';
+ if(role==='parent'){
+  return{
+   role,evidence,status,activityNote,
+   sections:[
+    {label:'ASK YOUR CHILD',heading:'A conversation that starts with thinking',
+     items:[
+      {title:'Start gently',body:focus?'What felt interesting or tricky about '+focus.topic+' this week?':'Which question made you think hardest this week?'},
+      {title:'Ask for the method',body:coach.home},
+      {title:'Notice a small win',body:'What did you check or correct that you could not explain before?'}
+     ]},
+    {label:'ASK THEIR TUTOR',heading:'Useful questions for the next check-in',
+     items:[
+      {title:'Evidence',body:focus?'The released sample in '+focus.topic+' is limited. Which step in their working should we discuss?':'Is there enough reviewed work to suggest one useful focus yet?'},
+      {title:'Support at home',body:'What one short, low-pressure practice activity would help without teaching a conflicting method?'},
+      {title:'Check understanding',body:'When will you recheck this idea using a different question, and what should we look for?'}
+     ]},
+    {label:'THIS WEEK AT HOME',heading:'Support without pressure',
+     items:[
+      {title:'One short explanation',body:'Invite your child to show one question they chose, talk through the reasoning and take a break.'},
+      {title:'Keep it manageable',body:'Ask if they want help choosing a calm time to practise. A longer session is not automatically better.'}
+     ]}
+   ],
+   caveat:'Parent prompts use released topic summaries and general pedagogy only. They never reveal tutor-only remarks, unpublished feedback or individual student working.'
+  };
+ }
+ const authorised=Array.isArray(learner.teaching_feedback)?learner.teaching_feedback:[];
+ return{
+  role,evidence,status,activityNote,
+  sections:[
+   {label:'BEFORE THE NEXT LESSON',heading:'Turn marks into a diagnosis',
+    items:[
+     {title:'Inspect released evidence',body:focus?'Review the '+focus.questions+' released '+focus.topic+' question'+(focus.questions===1?'':'s')+' and identify which reasoning step needs explanation.':'Use an approved starting-point example; wait for released work before selecting a narrow misconception.'},
+     {title:'Interpret with caution',body:'A lower topic percentage might reflect question difficulty or a small sample. Compare the actual reasoning, not just the bar height.'},
+     {title:'Read permitted comments',body:authorised.length?authorised.length+' examiner comment item'+(authorised.length===1?' is':'s are')+' available in your assigned teaching view. Compare them with the marked steps.':'No released tutor-only examiner comments are available yet.'}
+    ]},
+   {label:'TEACH AND CONTRAST',heading:'A focused lesson sequence',
+    items:[
+     {title:'Check the first move',body:coach.home},
+     {title:'Model a contrast',body:coach.lesson},
+     {title:'Hand back the reasoning',body:'Ask the learner to explain the decision before independently completing an approved fresh question.'}
+    ]},
+   {label:'FOLLOW UP WITH EVIDENCE',heading:'What to record after the next check',
+    items:[
+     {title:'Independent transfer',body:'Use a new, separately approved problem after feedback. Record the method and whether the earlier error recurs.'},
+     {title:'Family-friendly update',body:'Share one concrete strength, one next practice step and a date for the recheck—without disclosing restricted examiner notes.'},
+     {title:'Do not overclaim',body:'If there is only a single corrected response, describe it as an encouraging attempt, not secure mastery or a grade forecast.'}
+    ]}
+  ],
+  caveat:'Assigned tutor guidance only: use released, learner-scoped evidence and tutor-authorised feedback. Never infer unseen mistakes or expose draft scripts.'
+ };
+}
+export function planStudentNextSteps(tier,insights={}){
+ const model=summariseStudentTier(tier,insights);
+ if(!model.enabled)return{
+  title:'Begin with a clear starting point',
+  intro:'Until your programme is activated, focus on a diagnostic and asking useful questions.',
+  prompts:['What do I already understand?','Which question would I like to explain?','What should I ask my teacher next?']
+ };
+ const topic=model.focus?.topic;
+ return{
+  title:topic?'Build confidence in '+topic:'Make the method your focus',
+  intro:topic?'Your starting-point sample identifies a topic worth revisiting, not a judgement about what you can do.':'Use your next approved question to explain a clear method.',
+  prompts:[
+   topic?'Choose one new '+topic+' question and write or say why the first step works.':'Choose one available question and describe the first step.',
+   'Check your result using a different approach or by substituting it.',
+   'After feedback, try a different question without hints and notice whether the method still works.'
+  ]
+ };
+}
+function renderDecisionSupport(root,model){
+ if(!root)return;
+ root.replaceChildren();
+ const header=node('div','mg14-inquiry-header');
+ const left=node('div');
+ left.append(node('span','mg14-kicker',model.role==='parent'?'FOR FAMILIES / NEXT CONVERSATION':'FOR TUTORS / NEXT TEACHING DECISION'),
+  node('h3','',model.role==='parent'?'A better conversation at home.':'A lesson plan grounded in evidence.'),
+  node('p','',model.status));
+ header.append(left,node('span','mg14-evidence-chip','RELEASED EVIDENCE ONLY'));
+ root.append(header);
+ const grid=node('div','mg14-coverage');
+ const chart=node('section','mg14-evidence-panel');
+ chart.append(node('h4','','What the topic samples show'),
+  node('p','mg14-subtle',model.evidence.length?'Sorted by available mark percentage. Different topics may have different question counts and difficulty.':'Topic evidence will appear after reviewed marks are released.'));
+ if(model.evidence.length){
+  const list=node('div','mg14-bars');
+  for(const item of model.evidence){
+   const row=node('div','mg14-evidence-row');
+   const heading=node('div','mg14-bar-head');
+   heading.append(node('strong','',item.topic),node('span','',item.earned+' / '+item.available+' marks'));
+   const track=node('div','mg14-bar-track');
+   track.setAttribute('role','img');
+   track.setAttribute('aria-label',item.topic+': '+item.earned+' of '+item.available+' reviewed marks');
+   const fill=node('span','mg14-bar-fill');
+   fill.style.width=item.percent+'%';
+   track.append(fill);
+   row.append(heading,track,node('small','',item.questions?item.questions+' reviewed question'+(item.questions===1?'':'s')+' · '+item.quality:item.quality));
+   list.append(row);
+  }
+  chart.append(list);
+ }else chart.append(node('p','mg14-empty','No released topic results available yet.'));
+ const activity=node('section','mg14-activity-panel');
+ activity.append(node('h4','','Practice context'),node('p','',model.activityNote),
+  node('p','mg14-subtle',model.role==='parent'?'Ask about the learning routine rather than treating screen minutes as effort.':'Use timing information for context, not as evidence of attention or retention.'));
+ grid.append(chart,activity);root.append(grid);
+ const sections=node('div','mg14-guides');
+ for(const section of model.sections){
+  const panel=node('article','mg14-guide');
+  panel.append(node('span','mg14-kicker',section.label),node('h4','',section.heading));
+  const list=node('ol');
+  for(const item of section.items){
+   const entry=node('li');
+   entry.append(node('strong','',item.title),node('p','',item.body));list.append(entry);
+  }
+  panel.append(list);sections.append(panel);
+ }
+ root.append(sections,node('p','mg14-caveat',model.caveat));
+}
+function renderStudentNext(root,model){
+ if(!root)return;
+ root.replaceChildren();
+ root.append(node('span','mg14-kicker','YOUR NEXT THREE MATHEMATICS MOVES'),node('h3','',model.title),node('p','',model.intro));
+ const list=node('ol','mg14-student-steps');
+ for(const item of model.prompts)list.append(node('li','',item));
+ root.append(list);
+}
+
 const node=(tag,klass,text)=>{
  const n=document.createElement(tag);if(klass)n.className=klass;
  if(text!==undefined)n.textContent=String(text);return n;
@@ -194,6 +372,7 @@ export function renderStudentTier(tier,insights){
  set('mgtr-student-role-access',model.roleAccess);
  set('mgtr-student-badge',model.label);
  renderStats(document.getElementById('mgtr-student-stats'),model.stats);
+ renderStudentNext(document.getElementById('mgtr-student-inquiry'),planStudentNextSteps(tier,insights));
 }
 export function renderFamilyRole(learner){
  const root=document.getElementById('mg-family-role-experience');if(!root)return;
@@ -206,12 +385,13 @@ export function renderFamilyRole(learner){
  set('mgtr-family-bottom',model.bottom);
  renderStats(document.getElementById('mgtr-family-stats'),model.stats);
  renderCards(document.getElementById('mgtr-family-cards'),model.cards);
+ renderDecisionSupport(document.getElementById('mgtr-family-inquiry'),planFamilyNextSteps(learner));
 }
 export function clearTierRoleExperience(which){
  const root=document.getElementById(which==='student'?'mg-student-tier-experience':'mg-family-role-experience');
  if(!root)return;
  root.querySelectorAll('[id^="mgtr-"]').forEach(n=>{
-  if(n.id.endsWith('-stats')||n.id.endsWith('-cards'))n.replaceChildren();
+  if(n.id.endsWith('-stats')||n.id.endsWith('-cards')||n.id.endsWith('-inquiry'))n.replaceChildren();
   else n.textContent='';
  });
  delete root.dataset.tier;delete root.dataset.role;
