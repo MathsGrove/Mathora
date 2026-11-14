@@ -36,6 +36,24 @@ INSERT INTO public.student_entitlements(student_id,org_id,tier,starts_at,ends_at
   now()-interval '1 day',now()+interval '7 days'
  FROM auth.users WHERE email='mg2-other-student@example.com';
 
+-- Fictional guardian and tutor receive only their own linked learner role.
+INSERT INTO public.learner_view_invitations
+ (id,org_id,student_email,viewer_email,view_role,expires_at,revoked_at)
+VALUES
+ ('11110000-0000-4000-8000-000000000000',
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'mg2-student@example.com','mg2-parent@example.com','parent',now()+interval '7 days',NULL),
+ ('22220000-0000-4000-8000-000000000000',
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'mg2-student@example.com','mg2-tutor@example.com','tutor',now()+interval '7 days',NULL);
+INSERT INTO public.learner_view_links
+ (invitation_id,org_id,student_id,viewer_id,view_role,active)
+SELECT
+ i.id,i.org_id,s.id,v.id,i.view_role,true
+ FROM public.learner_view_invitations i
+ JOIN auth.users s ON lower(s.email)=lower(i.student_email)
+ JOIN auth.users v ON lower(v.email)=lower(i.viewer_email);
+
 INSERT INTO private.mg2_rubrics (
  id,org_id,question_key,version_no,qualification,academic_level,exam_board,
  syllabus_year,plan,question_prompt,worked_solution,max_marks,criteria,authored_by
