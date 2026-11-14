@@ -7,7 +7,7 @@ const service=process.env.SERVICE_ROLE_KEY;
 assert.match(base,/^http:\/\/(?:127\.0\.0\.1|localhost):[0-9]+$/,'Only an on-runner local Supabase API can be tested');
 assert.ok(anon&&service&&anon!==service,'A locally generated anon key and service key are required');
 assert.ok(!process.env.SUPABASE_ACCESS_TOKEN,'Must not run with a linked hosted Supabase account');
-const bucket='mg2-fictional-evidence';
+const bucket='mg2-original-evidence';
 const paper='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const password='Local-Fictional-Only-Secret-2026!';
 const emailNames=[
