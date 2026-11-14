@@ -49,6 +49,20 @@ try{
   assert.ok((await page.locator('#report').innerText()).includes('Examiner note:'));
   await page.locator('[data-role=student]').click();
   assert.ok(!(await page.locator('#report').innerText()).includes('Examiner note:'));
+  // Withheld A1 credit generates relevant student, guardian and tutor advice.
+  await page.locator('[data-criterion="a-roots"] select[data-award]').selectOption('missed');
+  await page.locator('#preview').click();
+  await page.locator('.score').getByText('2 / 3 marks').waitFor();
+  const studentText=await page.locator('#report').innerText();
+  assert.ok(studentText.includes('Correction · Give both roots'));
+  assert.ok(studentText.includes('Try independently next'));
+  assert.ok(studentText.includes('Solve x²−x−12=0'));
+  await page.locator('[data-role=parent]').click();
+  const guardianText=await page.locator('#report').innerText();
+  assert.ok(guardianText.includes('How to support'));
+  assert.ok(!guardianText.includes('Examiner note:'));
+  await page.locator('[data-role=tutor]').click();
+  assert.ok((await page.locator('#report').innerText()).includes('Teaching intervention'));
   await page.locator('#question').selectOption('stationary-ib-aa-hl');
   assert.equal(await page.locator('.criterion .code').filter({hasText:'R1'}).count(),1,
     'IB uses an explicit reasoning mark');
