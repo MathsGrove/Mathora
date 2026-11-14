@@ -10,6 +10,12 @@ on:
       - 'scripts/test-learner-lab-browser.mjs'
       - 'scripts/test-examiner-queue-browser.mjs'
       - 'scripts/test-examiner-assist.mjs'
+      - 'scripts/check-marking-v2-portal.mjs'
+      - 'portal.js'
+      - 'studio.js'
+      - 'portal.html'
+      - 'studio.html'
+      - 'mathsgrove-config.js'
       - 'docs/staging/marking-v2-examiner-queue.sql'
       - 'docs/staging/marking-v2-moderation-queue.sql'
       - 'docs/staging/marking-v2-operational-interfaces.sql'
@@ -45,6 +51,7 @@ jobs:
           node scripts/test-curriculum-coverage.mjs
           node scripts/test-staging-rpc-client.mjs
           node scripts/test-examiner-assist.mjs
+          node scripts/check-marking-v2-portal.mjs
           node scripts/test-route-feedback-bank.mjs
           node scripts/check-site.mjs
       - name: Assert draft lab is not published in Pages assets
