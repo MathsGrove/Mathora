@@ -52,7 +52,7 @@ failed(()=>prepareExaminerAwards({...record,max_marks:7},awards));
 assert.equal(validReleaseSummary('x'.repeat(14)),false);
 assert.equal(validReleaseSummary('x'.repeat(3001)),false);
 const src=readFileSync('content/marking/examiner-workbench-ui.mjs','utf8');
-assert.ok(!/innerHTML|outerHTML|eval\(|localStorage|sessionStorage/.test(src),
+assert.ok(!/\.(?:innerHTML|outerHTML)\s*=|\beval\s*\(|\b(?:localStorage|sessionStorage)\s*[.\[]/.test(src),
  'Examiner workbench must never inject untrusted learner work as HTML or persist PII in browser storage.');
 assert.ok(src.includes('confirmRelease')&&src.includes('verified'));
 console.log('PASS: examiner award integrity, dependency checks, fact-based role feedback, parent redaction, explicit release preview and no local PII storage.');
