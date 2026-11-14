@@ -130,7 +130,7 @@ CREATE TRIGGER mg2_release_lock BEFORE UPDATE OR DELETE ON private.mg2_releases
 -- for an immutable rubric fingerprint: distinct field boundaries can collide.
 -- Deliberately exclude mutable status; include identity, author and all marked content.
 CREATE FUNCTION private.mg2_fingerprint(p_rubric private.mg2_rubrics)
- RETURNS text LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $
+ RETURNS text LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $$
  SELECT encode(sha256(convert_to(
    jsonb_build_object(
      'id',p_rubric.id,'org_id',p_rubric.org_id,
@@ -141,7 +141,7 @@ CREATE FUNCTION private.mg2_fingerprint(p_rubric private.mg2_rubrics)
      'worked_solution',p_rubric.worked_solution,'max_marks',p_rubric.max_marks,
      'criteria',p_rubric.criteria,'authored_by',p_rubric.authored_by
    )::text,'UTF8')),'hex');
- $;
+ $$;
 
 CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
  RETURNS void LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$
