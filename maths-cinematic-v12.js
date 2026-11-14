@@ -86,7 +86,8 @@
    if(replace)window.history.replaceState(null,"",hash);
    else window.history.pushState(null,"",hash);
    target.scrollIntoView({behavior:"auto",block:"start"});
-   if(target.hasAttribute("tabindex"))target.focus?.({preventScroll:true});
+   if(!target.hasAttribute("tabindex"))target.setAttribute("tabindex","-1");
+   target.focus?.({preventScroll:true});
    target.classList.remove("mg11-destination");
    void target.offsetWidth;
    target.classList.add("mg11-destination");
