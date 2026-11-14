@@ -75,7 +75,7 @@ jobs:
           node --check examiner-report-book.js
           node --check welcome-experience-v8.js
           node --check atelier-v9.js
-          node --check maths-cinematic-v11.js
+          node --check maths-cinematic-v12.js
           node --input-type=module --check < content-bank.js
           node --input-type=module --check < supabase/functions/invitations/index.ts
           node scripts/check-studio-html-head.mjs
@@ -85,7 +85,7 @@ jobs:
           node scripts/check-examiner-book.mjs
           node scripts/check-welcome-v8.mjs
           node scripts/check-atelier-v9.mjs
-          node scripts/check-maths-cinematic-v11.mjs
+          node scripts/check-maths-cinematic-v12.mjs
           node scripts/check-insights.mjs
           node scripts/check-family-access.mjs
           node scripts/check-family-refresh-race.mjs
@@ -111,7 +111,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p site
-          cp index.html report.html report-pages.html reasoning-demo.html reasoning-demo.css reasoning-demo.js reasoning-model.mjs robots.txt sitemap.xml report-reader.css report-reader.js report-preview.css mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js calendar-dialog-polish.css maths-cinematic-v11.css maths-cinematic-v11.js site/
+          cp index.html report.html report-pages.html reasoning-demo.html reasoning-demo.css reasoning-demo.js reasoning-model.mjs robots.txt sitemap.xml report-reader.css report-reader.js report-preview.css mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js calendar-dialog-polish.css maths-cinematic-v11.css maths-cinematic-v12.css maths-cinematic-v12.js site/
           cp portal.html portal.css private-refresh.css student-features.css evidence-theme.css timed-mock.css maths-notation.css portal.js maths-render.js mathsgrove-config.js whiteboard.js student-release-feed.js student-release-feed.css site/
           cp auth-password.js auth-password.css site/
           cp student-welcome.js student-welcome.css site/
