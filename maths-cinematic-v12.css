@@ -21,7 +21,7 @@ body.mg-site .mg12-passage.mg12-active .mg12-galaxy-trace path{animation:mg12-dr
 body.mg-site .mg12-galaxy-trace path:nth-child(2){animation-delay:150ms!important}
 body.mg-site .mg12-galaxy-trace path:nth-child(3){animation-delay:300ms!important}
 body.mg-site .mg12-scene{position:relative;z-index:2;width:min(92vw,840px);display:grid;justify-items:center;align-content:center;text-align:center;padding:clamp(18px,4vw,36px);pointer-events:none}
-body.mg-site .mg12-scene-kicker{font:800 10px/1.7 "DM Sans",Arial,sans-serif;letter-spacing:.2em;color:#d6c3a7;max-width:100%;margin:0 0:22px;text-transform:uppercase}
+body.mg-site .mg12-scene-kicker{font:800 10px/1.7 "DM Sans",Arial,sans-serif;letter-spacing:.2em;color:#d6c3a7;max-width:100%;margin:0 0 22px;text-transform:uppercase}
 body.mg-site .mg12-scene-formula{font:400 clamp(67px,10vw,139px)/.96 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;color:#fff4e7;white-space:nowrap;max-width:100%;margin:6px 0 12px;text-shadow:0 8px 45px #0d1b3266}
 body.mg-site .mg12-scene-subtitle{font:700 clamp(11px,1.3vw,14px)/1.7 "DM Sans",Arial,sans-serif;color:#d2c3b0;letter-spacing:.095em;max-width:660px}
 body.mg-site .mg12-handwriting{margin:clamp(20px,3vw,28px) auto 0;width:min(100%,500px);min-height:120px;padding:16px 25px;text-align:left;background:#f8f3e90a;border:1px solid #d3c2a432;border-radius:9px;position:relative}
@@ -45,7 +45,7 @@ body.mg-site .mg12-passage[data-scene="report"] .mg12-handwriting,body.mg-site .
 body.mg-site .mg11-destination{animation:mg12-destination-enter .62s var(--mg12-ease)}
 body.mg-report-reader .mgr-hero{animation:mg12-report-enter .95s var(--mg12-ease) both}
 body.rg .rg-hero{animation:mg12-report-enter .85s var(--mg12-ease) both}
-@keyframes mg12-symbol-rise{0%{opacity:0;transform:translate3d(0,18px,0) scale(calc(var(--scale)*.9))}35%{opacity:var(--opacity,.45)}80%{opacity:var(--opacity,.45)}100%{opacity:0;transform:translate3d(var(--drift),-34px,0) scale(var(--scale))}}
+@keyframes mg12-symbol-rise{0%{opacity:0;transform:translate3d(0,18px,0) scale(var(--scale))}35%{opacity:var(--opacity,.45)}80%{opacity:var(--opacity,.45)}100%{opacity:0;transform:translate3d(var(--drift),-34px,0) scale(var(--scale))}}
 @keyframes mg12-orbit-arrive{0%{opacity:0;transform:translate(-50%,-50%) rotate(-39deg) scale(.87)}30%{opacity:.85}90%{opacity:.8}100%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1.08)}}
 @keyframes mg12-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 @keyframes mg12-formula-rise{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
