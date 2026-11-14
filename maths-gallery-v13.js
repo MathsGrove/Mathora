@@ -8,29 +8,29 @@
  const phone=window.matchMedia?.("(max-width: 720px)");
  const galleryTiles=["01","π","x²","∑","√2","∆","f(x)","∞","2x+3","∫","03","θ","x = 4","sin θ","y=mx+c","f′(x)","05","a²+b²","∴","cos θ","n²","Σm","Δy/Δx","07"];
  const scenes={
-  services:{kind:"programmes",eyebrow:"A PATH IN MATHEMATICS",title:"Discover your rhythm",equation:"1 → 2 → 3"},
-  "choose-your-view":{kind:"people",eyebrow:"ONE LEARNER, THREE PERSPECTIVES",title:"See what matters to you",equation:"x → y"},
-  dashboards:{kind:"people",eyebrow:"A CLEARER VIEW",title:"Explore the learning journey",equation:"Δx → Δy"},
-  "learning-journey":{kind:"people",eyebrow:"INTERACTIVE LEARNING EXPERIENCE",title:"The next step becomes clear",equation:"f(x)"},
-  "signature-discovery":{kind:"report",eyebrow:"SIGNATURE / AN EXAMINER'S EYE",title:"Every method has a meaning",equation:"∑ marks"},
-  "signature-sample":{kind:"report",eyebrow:"THE EXAMINER'S BOOKLET",title:"Look behind every mark",equation:"x² − 5x + 6"},
-  signature:{kind:"report",eyebrow:"HUMAN EXAMINER FEEDBACK",title:"From method to meaning",equation:"∴"},
-  "report-page":{kind:"report",eyebrow:"SEVEN-PAGE EXAMINER BOOKLET",title:"Open the examiner's notes",equation:"∑ method marks"},
-  "reasoning-page":{kind:"working",eyebrow:"TRY MATHEMATICAL REASONING",title:"Show the working",equation:"3(x + 4) = 27"},
-  "interactive-sample":{kind:"working",eyebrow:"YOUR MATHEMATICS WORKSPACE",title:"Make every step count",equation:"3(x + 4) = 27"},
-  "how-it-works":{kind:"working",eyebrow:"THE MATHSGROVE METHOD",title:"Practice. Explain. Recheck.",equation:"∫ understanding"},
-  experience:{kind:"working",eyebrow:"THE MATHSGROVE METHOD",title:"The method matters",equation:"∫"},
-  top:{kind:"home",eyebrow:"RETURN TO THE BIG PICTURE",title:"See the thinking",equation:"π"},
-  "portal-page":{kind:"home",eyebrow:"PRIVATE MATHSGROVE ACCESS",title:"Continue your journey",equation:"x → x + 1"},
-  "family-page":{kind:"people",eyebrow:"FAMILY AND TUTOR ACCESS",title:"See the wider picture",equation:"Δy/Δx"},
-  "studio-page":{kind:"report",eyebrow:"EXAMINER STUDIO",title:"A closer look at the method",equation:"∑ m"},
-  "home-page":{kind:"home",eyebrow:"MATHSGROVE / THE HOME PAGE",title:"Return to mathematics",equation:"∞"},
-  "chapter":{kind:"programmes",eyebrow:"EXPLORE MATHEMATICS",title:"Discover what's next",equation:"f(x)"}
+  services:{kind:"programmes"},
+  "choose-your-view":{kind:"people"},
+  dashboards:{kind:"people"},
+  "learning-journey":{kind:"people"},
+  "signature-discovery":{kind:"report"},
+  "signature-sample":{kind:"report"},
+  signature:{kind:"report"},
+  "report-page":{kind:"report"},
+  "reasoning-page":{kind:"working"},
+  "interactive-sample":{kind:"working"},
+  "how-it-works":{kind:"working"},
+  experience:{kind:"working"},
+  top:{kind:"home"},
+  "portal-page":{kind:"home"},
+  "family-page":{kind:"people"},
+  "studio-page":{kind:"report"},
+  "home-page":{kind:"home"},
+  "chapter":{kind:"programmes"}
  };
  const roles={
-  student:{kind:"people",eyebrow:"STUDENT / YOUR JOURNEY",title:"Learn by doing",equation:"x → progress"},
-  parent:{kind:"people",eyebrow:"PARENT / A CLEARER VIEW",title:"See the learning story",equation:"Δ understanding"},
-  tutor:{kind:"working",eyebrow:"TUTOR / THE EVIDENCE",title:"Turn mistakes into methods",equation:"f′(x)"}
+  student:{kind:"people"},
+  parent:{kind:"people"},
+  tutor:{kind:"working"}
  };
  const choose=(key,role)=>{
   if(role&&Object.prototype.hasOwnProperty.call(roles,role))return roles[role];
