@@ -1,0 +1,82 @@
+name: Free local Supabase Auth and Storage marking QA
+on:
+  pull_request:
+    paths:
+      - 'scripts/fixtures/marking-v2-supabase-local-*.sql'
+      - 'docs/staging/marking-v2-private-evidence-policy.sql'
+      - 'scripts/test-supabase-local-auth-storage.mjs'
+      - 'docs/staging/marking-v2-disposable-postgres.sql'
+      - 'docs/staging/marking-v2-learner-workflow.sql'
+      - 'docs/staging/marking-v2-examiner-queue.sql'
+      - 'docs/staging/marking-v2-moderation-queue.sql'
+      - 'docs/staging/marking-v2-operational-interfaces.sql'
+      - '.github/workflows/marking-v2-supabase-local-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel superseded runs to conserve GitHub's free Actions minute allowance.
+concurrency:
+  group: mg2-local-auth-staging
+  cancel-in-progress: true
+
+jobs:
+  local-auth-storage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # No hosted Supabase token, project reference, production secret or key.
+      SUPABASE_ACCESS_TOKEN: ''
+      SUPABASE_DB_PASSWORD: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 3.1.0
+      - name: Check local CLI and install local PostgreSQL client
+        run: |
+          supabase --version
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Start an isolated local Supabase Docker stack (no paid project)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/mathsgrove-local-auth"
+          cd "$RUNNER_TEMP/mathsgrove-local-auth"
+          supabase init --yes
+          # The stack and credentials only exist on this ephemeral Actions runner.
+          # No supabase login, link, branch, db push or remote host is used.
+          supabase start
+          echo "Local Supabase services healthy."
+      - name: Create fictional Auth schema, mark engine and private Storage guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/mathsgrove-local-auth"
+          set +x
+          eval "$(supabase status -o env)"
+          export API_URL ANON_KEY SERVICE_ROLE_KEY
+          [[ "$API_URL" == http://127.0.0.1:* || "$API_URL" == http://localhost:* ]] || {
+            echo 'Refusing non-local Supabase API URL'; exit 1;
+          }
+          test -n "$ANON_KEY" && test -n "$SERVICE_ROLE_KEY"
+          cd "$GITHUB_WORKSPACE"
+          export PGHOST=127.0.0.1 PGPORT=54322 PGUSER=postgres PGPASSWORD=postgres PGDATABASE=postgres
+          psql -v ON_ERROR_STOP=1 -f scripts/fixtures/marking-v2-supabase-local-schema.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-disposable-postgres.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-learner-workflow.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-examiner-queue.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-moderation-queue.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-operational-interfaces.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-private-evidence-policy.sql
+          psql -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
+          sleep 3
+          node scripts/test-supabase-local-auth-storage.mjs
+          echo 'PASS — real local JWT + private Storage + marking integration, no hosted connection.'

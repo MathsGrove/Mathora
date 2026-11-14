@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "status": "public_editorial_feedback_only",
+  "description": "Original, unmoderated feedback candidates; not official exam-board wording. Generated plans are hypotheses based on human-awarded criterion marks, not machine diagnoses. Never release from this file.",
+  "audienceSafety": "Parent summaries exclude examiner evidence notes; tutor detail requires future server-side assigned learner checks.",
+  "entries": [
+    {
+      "rubricId": "ratio-kits-gcse-foundation",
+      "criterionId": "m-total-parts",
+      "evidenceToInspect": "Look for whether the learner has identified all eight parts in the 5:3 ratio.",
+      "studentCorrection": "Sketch eight equal boxes. Label five red and three blue; then say what one box represents.",
+      "studentCheck": "Explain why the numbers 5 and 3 must be added before dividing the total.",
+      "independentRecheck": "A fresh ratio-sharing question with a different total and part counts; require a labelled strip model.",
+      "parentPrompt": "What do the five parts and three parts represent before you calculate?",
+      "tutorIntervention": "Compare a 5:3 ratio with a 5:8 ratio using counters; ask the learner to describe the whole and its parts."
+    },
+    {
+      "rubricId": "ratio-kits-gcse-foundation",
+      "criterionId": "m-one-part",
+      "evidenceToInspect": "The unit-part value may need checking; inspect whether the student divides by total parts rather than just one ratio number.",
+      "studentCorrection": "Write 96 ÷ 8 explicitly, with units, and verify that eight lots of the answer recover 96.",
+      "studentCheck": "Calculate the value of one equal part before finding either colour.",
+      "independentRecheck": "Choose an original ratio problem where the total is divisible by a new number of parts; explain each unit.",
+      "parentPrompt": "If one box stands for the same number of kits, how could you find that number?",
+      "tutorIntervention": "Model equal groups with manipulatives, then shift to a bar diagram with a different total."
+    },
+    {
+      "rubricId": "ratio-kits-gcse-foundation",
+      "criterionId": "a-red",
+      "evidenceToInspect": "A red-share answer was not credited; check the multiplication and whether the learner used five parts.",
+      "studentCorrection": "Multiply the value of one part by five, then write the unit 'kits' after the result.",
+      "studentCheck": "Use estimation: the red share must exceed half of 96 because five of eight parts are red.",
+      "independentRecheck": "Share 120 objects in a 7:3 ratio and justify the larger share without looking back.",
+      "parentPrompt": "Which colour should have more kits, and how can the ratio tell us before calculation?",
+      "tutorIntervention": "Have the learner estimate first, calculate the larger share, then check by subtraction."
+    },
+    {
+      "rubricId": "ratio-kits-gcse-foundation",
+      "criterionId": "b-blue",
+      "evidenceToInspect": "The independently marked blue quantity was not credited; ask how it was calculated or checked.",
+      "studentCorrection": "Find three equal parts or subtract the red count from 96; confirm both methods agree.",
+      "studentCheck": "Check that the red and blue counts total 96 and still have the required 5:3 ratio.",
+      "independentRecheck": "Rework a 5:3 split with total 64, finding the smaller group by two independent methods.",
+      "parentPrompt": "Could the two counts add to the total but still have the wrong ratio?",
+      "tutorIntervention": "Contrast arithmetic that preserves the total with arithmetic that preserves both the total and the ratio."
+    },
+    {
+      "rubricId": "intersection-igcse-extended",
+      "criterionId": "m-equate",
+      "evidenceToInspect": "The equations were not linked for the intersection step; inspect how equal y-values were represented.",
+      "studentCorrection": "Write x²−3x−4=x+2 before rearranging, because both expressions equal y at an intersection.",
+      "studentCheck": "Move terms to obtain x²−4x−6=0 and check signs term by term.",
+      "independentRecheck": "Use a different pair y=x²−x−2 and y=2x to form, but not necessarily solve, the correct equation.",
+      "parentPrompt": "Why should two formulas for y be equal at a crossing point?",
+      "tutorIntervention": "Use a simple sketch and two simultaneous descriptions of y, then develop the elimination equation."
+    },
+    {
+      "rubricId": "intersection-igcse-extended",
+      "criterionId": "m-quadratic",
+      "evidenceToInspect": "A valid quadratic-solving method was not credited; review factorisation, completing the square or the quadratic formula.",
+      "studentCorrection": "Identify a, b and c in x²−4x−6=0 and substitute them into the quadratic formula carefully.",
+      "studentCheck": "Check the discriminant before simplifying, and keep the ± symbol until both roots are found.",
+      "independentRecheck": "Solve an unfamiliar non-factorisable quadratic exactly and justify the chosen method.",
+      "parentPrompt": "Why might trial-and-error factorisation not be efficient for every quadratic?",
+      "tutorIntervention": "Compare a factorisable quadratic with one needing the formula; have the learner choose and justify methods."
+    },
+    {
+      "rubricId": "intersection-igcse-extended",
+      "criterionId": "a-roots",
+      "evidenceToInspect": "Exact x-values were not credited; inspect simplification of the square root and handling of both signs.",
+      "studentCorrection": "Simplify √40 to 2√10 and divide all numerator terms by two to obtain 2±√10.",
+      "studentCheck": "Substitute an exact root back into x²−4x−6 to verify zero without prematurely rounding.",
+      "independentRecheck": "Find exact roots of x²−6x−2=0 and check the surd simplification.",
+      "parentPrompt": "What is the difference between an exact surd and a rounded decimal answer?",
+      "tutorIntervention": "Use a short sequence simplifying √8, √18 and √40, then compare exact and approximate roots."
+    },
+    {
+      "rubricId": "intersection-igcse-extended",
+      "criterionId": "m-substitute",
+      "evidenceToInspect": "The coordinate calculation may have stopped at x; look for substitution into one original equation.",
+      "studentCorrection": "For each x-value, substitute into y=x+2 and write its corresponding y-value.",
+      "studentCheck": "Check that the resulting point satisfies both the line and the parabola.",
+      "independentRecheck": "Solve a fresh line–quadratic intersection, and write each y-value immediately beside its own x-root.",
+      "parentPrompt": "If you know x at a point on a line, how do you find y?",
+      "tutorIntervention": "Create a two-column x/y matching table before moving to coordinate notation."
+    },
+    {
+      "rubricId": "intersection-igcse-extended",
+      "criterionId": "a-pairs",
+      "evidenceToInspect": "The final ordered pairs were not credited; inspect whether the plus and minus roots were cross-matched.",
+      "studentCorrection": "Write the plus x-root beside the plus y-root, and the minus x-root beside the minus y-root.",
+      "studentCheck": "Verify each complete ordered pair in both original equations.",
+      "independentRecheck": "For a new intersection problem with two surd roots, show the pairing and confirm each point.",
+      "parentPrompt": "How could you test whether a stated point really lies on both graphs?",
+      "tutorIntervention": "Use a table or colour coding to keep matching signs together and verify by substitution."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "m-derivative",
+      "evidenceToInspect": "The first-derivative step was not credited; inspect the power rule and sign of each term.",
+      "studentCorrection": "Differentiate term by term: d(x³)/dx=3x², d(−6x²)/dx=−12x and d(9x)/dx=9.",
+      "studentCheck": "Explain why the constant contributes zero and why each power decreases by one.",
+      "independentRecheck": "Differentiate y=2x³−9x²+12x−5, then check with a numerical slope estimate.",
+      "parentPrompt": "What happens to the exponent and coefficient when you differentiate x cubed?",
+      "tutorIntervention": "Contrast derivative and original function values, then correct sign handling using two near-miss examples."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "m-stationary",
+      "evidenceToInspect": "The stationary-condition method was not credited; check whether dy/dx was set equal to zero.",
+      "studentCorrection": "Set 3x²−12x+9=0, divide by three, factor or solve the quadratic, and keep both roots.",
+      "studentCheck": "Explain why a stationary x-value makes the tangent gradient zero.",
+      "independentRecheck": "Choose a fresh cubic, set its derivative to zero and justify any candidate stationary x-values.",
+      "parentPrompt": "What does it mean geometrically when a tangent has gradient zero?",
+      "tutorIntervention": "Pair graph sketches with derivative-sign tables, focusing on stationary versus crossing points."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "a-stationary-xs",
+      "evidenceToInspect": "The stationary x-coordinates were not credited; examine algebraic roots after finding the derivative.",
+      "studentCorrection": "Factor 3(x−1)(x−3) and state both x=1 and x=3 before evaluating y.",
+      "studentCheck": "Substitute the roots into the derivative to check both make it zero.",
+      "independentRecheck": "Use another cubic derivative with two distinct roots and verify each root independently.",
+      "parentPrompt": "Why is it important to find every stationary x-coordinate?",
+      "tutorIntervention": "Use a roots checklist to guard against missing the second stationary point."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "m-ordinates",
+      "evidenceToInspect": "The y-coordinate method was not credited; check whether values were substituted into the original cubic.",
+      "studentCorrection": "Substitute each stationary x into y=x³−6x²+9x+1, not into dy/dx.",
+      "studentCheck": "Write the whole expression before arithmetic to reduce sign errors.",
+      "independentRecheck": "For a new cubic with two stationary x-values, compute both original y-values independently.",
+      "parentPrompt": "Where do you substitute x when you want the point, not its gradient?",
+      "tutorIntervention": "Contrast y(x) versus y′(x) with the same x-values and ask the learner to explain what each gives."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "a-ordinates",
+      "evidenceToInspect": "One or both stationary coordinates were not credited; inspect power arithmetic and ordered-pair notation.",
+      "studentCorrection": "Calculate y(1)=5 and y(3)=1, then present both (1,5) and (3,1).",
+      "studentCheck": "Check that both coordinates satisfy the original equation as well as dy/dx=0.",
+      "independentRecheck": "Find both stationary coordinates for a different cubic and verify values by substitution.",
+      "parentPrompt": "How can you check that both parts of an ordered pair belong to the same point?",
+      "tutorIntervention": "Use an x/y substitution table and double-check negative and positive terms before writing coordinates."
+    },
+    {
+      "rubricId": "stationary-points-alevel",
+      "criterionId": "b-classification",
+      "evidenceToInspect": "The local maximum/minimum classification was not credited; inspect whether the method actually justifies the stated nature.",
+      "studentCorrection": "Use d²y/dx²=6x−12: negative at x=1 indicates a local maximum; positive at x=3 indicates a local minimum.",
+      "studentCheck": "Explain the second-derivative test or show how dy/dx changes sign on either side.",
+      "independentRecheck": "For an unfamiliar cubic, classify its stationary points using a derivative-sign table and explain each conclusion.",
+      "parentPrompt": "What would the graph be doing near a local maximum compared with a local minimum?",
+      "tutorIntervention": "Compare a derivative-sign change with an inconclusive second-derivative case; require a correct justification."
+    }
+  ]
+}
