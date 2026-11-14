@@ -97,11 +97,47 @@ const signed={
  p_rubric:paper,p_hash:hash,p_note:note,
  p_maths_checked:true,p_syllabus_checked:true,p_mark_scheme_checked:true
 };
+const reviewerQueue=requireOk(await rpc('one','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'original math question appears only for authorised independent reviewer');
+assert.equal(reviewerQueue.total,1);
+assert.equal(reviewerQueue.items[0].rubric_id,paper);
+assert.equal(reviewerQueue.items[0].fingerprint,hash);
+assert.equal(reviewerQueue.items[0].criteria.length,3);
+assert.equal(reviewerQueue.items[0].independent_reviews,0);
+const ownQuestion=requireOk(await rpc('author','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'author must not self-review their own original question');
+assert.equal(ownQuestion.total,0);
+const otherOrgQuestion=requireOk(await rpc('otherExaminer','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'another organisation never sees a private question');
+assert.equal(otherOrgQuestion.total,0);
+denied(await rpc('student','mg2_examiner_moderation_queue',{p_limit:10,p_offset:0}),
+ 'student cannot read original private marking schemes');
+denied(await rpc('parent','mg2_examiner_moderation_queue',{p_limit:10,p_offset:0}),
+ 'guardian cannot inspect unseen question keys');
+denied(await rpc('one','mg2_examiner_moderation_queue',{p_limit:100,p_offset:0}),
+ 'moderation queue rejects excessive page limit');
+
 denied(await rpc('author','mg2_signoff_rubric',signed),'author self-approval');
 const first=requireOk(await rpc('one','mg2_signoff_rubric',signed),'first examiner signoff');
 assert.equal(first.approved,false);
+const ownSignedQueue=requireOk(await rpc('one','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'the same examiner cannot approve the same rubric twice');
+assert.equal(ownSignedQueue.total,0);
+const nextReviewer=requireOk(await rpc('two','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'a second independent examiner sees the unsigned rubric');
+assert.equal(nextReviewer.total,1);
+assert.equal(nextReviewer.items[0].independent_reviews,1);
 const second=requireOk(await rpc('two','mg2_signoff_rubric',signed),'second independent examiner');
 assert.equal(second.approved,true);
+const clearedReviewQueue=requireOk(await rpc('two','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'independently approved rubric leaves the moderation queue');
+assert.equal(clearedReviewQueue.total,0);
 
 denied(await rpc('otherExaminer','mg2_assign_constructed',{
  p_rubric:paper,p_student:identities.student.id
