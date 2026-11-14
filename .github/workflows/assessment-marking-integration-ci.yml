@@ -1,0 +1,97 @@
+name: MathsGrove complete marking lab verification
+on:
+  pull_request:
+    paths:
+      - 'content/marking/**'
+      - 'scripts/test-exam-style-policy.mjs'
+      - 'scripts/test-curriculum-coverage.mjs'
+      - 'scripts/test-staging-rpc-client.mjs'
+      - 'scripts/test-reviewer-lab-browser.mjs'
+      - 'scripts/fixtures/*marking-v2*.sql'
+      - 'docs/staging/marking-v2-disposable-postgres.sql'
+      - '.github/workflows/assessment-marking-integration-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  marking-and-feedback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate original M/A/B, IB reasoning, TMUA MCQ, moderation and feedback
+        run: |
+          node --check content/marking/criterion-engine.mjs
+          node --check content/marking/moderation-workflow.mjs
+          node --check content/marking/exam-style-policy.mjs
+          node --check content/marking/reviewer-lab.js
+          node scripts/test-criterion-engine.mjs
+          node scripts/test-moderation-workflow.mjs
+          node scripts/test-criterion-feedback-bank.mjs
+          node scripts/test-exam-style-policy.mjs
+          node scripts/test-curriculum-coverage.mjs
+          node scripts/test-staging-rpc-client.mjs
+          node scripts/test-route-feedback-bank.mjs
+          node scripts/check-site.mjs
+      - name: Assert draft lab is not published in Pages assets
+        run: |
+          if grep -E 'cp .*reviewer-lab|cp .*route-exam-style-examples' .github/workflows/pages.yml; then
+            echo 'Editorial lab and answer keys must not appear in the public Pages deployment'; exit 1
+          fi
+          echo 'PASS: no public-site packaging of editorial examiner lab.'
+
+  examiner-lab-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned test-only Chromium automation
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Chromium fictional examiner flow (desktop and mobile)
+        run: node scripts/test-reviewer-lab-browser.mjs
+
+  isolated-postgres-marking:
+    name: Disposable PostgreSQL permission and marking QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mathsgrove_staging_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mathsgrove_staging_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: mathsgrove_staging_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL command-line client
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Load synthetic accounts, new marking schema and negative tests
+        run: |
+          psql -v ON_ERROR_STOP=1 -f scripts/fixtures/marking-v2-postgres-fixture.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-disposable-postgres.sql
+          psql -v ON_ERROR_STOP=1 -f scripts/fixtures/test-marking-v2-postgres.sql

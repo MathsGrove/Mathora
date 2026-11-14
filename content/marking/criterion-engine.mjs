@@ -1,10 +1,12 @@
 /* MathsGrove — standalone, PUBLIC-EXEMPLAR rubric validator.
  * No database, auth, scoring automation, publication or student-data access.
  * A human examiner must explicitly award every criterion from observed work.
+ * R1 is permitted for IB-style reasoning only when a separate qualification
+ * profile validator explicitly authorises that mark code.
  */
 const OBJECT = x => x !== null && typeof x === 'object' && !Array.isArray(x);
 const ID = /^[a-z][a-z0-9-]{1,70}$/;
-const CODE = /^[MAB]1$/;
+const CODE = /^[MABR]1$/;
 const ensure = (ok, message) => { if (!ok) throw new Error(message); };
 const text = x => typeof x === 'string' ? x.trim() : '';
 
@@ -21,7 +23,7 @@ export function validateRubric(rubric) {
   const byId = new Map();
   for (const item of rubric.criteria) {
     ensure(OBJECT(item) && ID.test(item.id || '') && !byId.has(item.id), 'Criterion IDs must be unique.');
-    ensure(CODE.test(item.code || ''), 'Only explicit M1, A1, B1 single-point criteria are supported.');
+    ensure(CODE.test(item.code || ''), 'Only explicit M1, A1, B1 or IB R1 single-point criteria are supported.');
     ensure(text(item.description) && text(item.missingFeedback) && text(item.skill),
       'Each criterion needs award conditions, misconception feedback and a skill.');
     ensure(Array.isArray(item.dependsOn) && item.dependsOn.every(x => typeof x === 'string'),
