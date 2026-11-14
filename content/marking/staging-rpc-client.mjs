@@ -18,6 +18,36 @@ export function createExperimentalMarkingClient(db,{environment,enabled}={}){
  }
  function id(x){check(typeof x==='string'&&uuid.test(x),'Valid fictional attempt or rubric UUID required.');return x}
  return Object.freeze({
+  async assignConstructed({rubricId,studentId}={}){
+   // The server resolves the organisation from the approved rubric and verifies
+   // the learner's active programme; no caller-supplied org or staff identity.
+   return rpc('mg2_assign_constructed',{p_rubric:id(rubricId),p_student:id(studentId)});
+  },
+  async assignedWork(attemptId){
+   // Server returns only the caller's question prompt and their own draft.
+   return rpc('mg2_my_constructed',{p_attempt:id(attemptId)});
+  },
+  async saveConstructed({attemptId,writtenWork,expectedRevision=null,submit=false}={}){
+   id(attemptId);
+   check(submit===true||submit===false,'An explicit draft or submit decision is required.');
+   check(typeof writtenWork==='string'&&writtenWork.length<=12000,
+     'Working must be text within the 12,000-character pilot limit.');
+   check(expectedRevision===null||
+     (Number.isInteger(expectedRevision)&&expectedRevision>=1&&expectedRevision<=2147483647),
+     'Expected revision must be null on first save or a positive integer.');
+   if(submit)check(writtenWork.trim().length>=30,
+     'Final submission requires meaningful written working.');
+   // No client-supplied mark, grade, user ID, organisation or release status.
+   // The revision check and one-time submission lock execute transactionally in SQL.
+   return rpc('mg2_save_constructed',{
+    p_attempt:attemptId,p_work:writtenWork,
+    p_expected_revision:expectedRevision,p_submit:submit
+   });
+  },
+  async examinerSubmission(attemptId){
+   // Only server-authorised staff see solution, rubric and submitted answer.
+   return rpc('mg2_examiner_constructed',{p_attempt:id(attemptId)});
+  },
   async signoffRubric({rubricId,fingerprint,note,mathsChecked,syllabusChecked,markSchemeChecked}={}){
    id(rubricId);check(typeof fingerprint==='string'&&/^[a-f0-9]{64}$/i.test(fingerprint),'Rubric hash required.');
    check(clean(note).length>=25,'Substantive reviewer note required.');
