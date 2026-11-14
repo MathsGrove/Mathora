@@ -17,11 +17,13 @@ INSERT INTO private.mg2_rubrics(
  ]'::jsonb,
  '33333333-3333-4333-8333-333333333333'
 );
-INSERT INTO private.mg2_attempts(id,rubric_id,org_id,student_id) VALUES(
+-- Legacy test fixture explicitly represents a previously submitted fictional answer.
+-- New learner assignments instead default to 'assigned' with no submission date.
+INSERT INTO private.mg2_attempts(id,rubric_id,org_id,student_id,status,submitted_at) VALUES(
  'abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
  'abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
- '44444444-4444-4444-8444-444444444444'
+ '44444444-4444-4444-8444-444444444444','submitted',now()
 );
 SELECT private.mg2_fingerprint(r) AS fp FROM private.mg2_rubrics r
  WHERE id='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa' \gset
