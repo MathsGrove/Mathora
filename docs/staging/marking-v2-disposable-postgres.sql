@@ -147,8 +147,8 @@ CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
       OR length(coalesce(c->>'skill',''))<4
       OR length(coalesce(c->>'description',''))<10
       OR length(coalesce(c->>'missingFeedback',''))<15
-      OR jsonb_typeof(c->'dependsOn')<>'array'
-      OR code NOT IN('M1','A1','B1','R1')
+      OR jsonb_typeof(c->'dependsOn') IS DISTINCT FROM 'array'
+      OR code IS NULL OR code NOT IN('M1','A1','B1','R1')
    THEN RAISE EXCEPTION 'Invalid criterion metadata at position %',i+1;END IF;
    IF (p_rubric.qualification='IB' AND code='B1')
      OR (p_rubric.qualification<>'IB' AND code='R1')
@@ -200,9 +200,10 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
  v_uid uuid:=auth.uid();v_fp text;v_index integer;v_rule jsonb;v_award jsonb;v_matches jsonb;
  v_id text;v_code text;v_points integer:=0;v_count integer;
  v_notes text;v_reason text;v_implied boolean;v_yes boolean;v_dep text;
- v_prev jsonb;v_student jsonb:='[]'::jsonb;v_tutor jsonb:='[]'::jsonb;
+ v_prev jsonb;v_student jsonb:='[]'::jsonb;v_tutor jsonb:='[]'::jsonb;v_unearned boolean;
  BEGIN
   IF v_uid IS NULL THEN RAISE EXCEPTION 'Sign-in required';END IF;
+  IF p_release IS NULL THEN RAISE EXCEPTION 'Explicit release decision required';END IF;
   SELECT * INTO a FROM private.mg2_attempts WHERE id=p_attempt FOR UPDATE;
   IF a.id IS NULL OR a.status<>'submitted' OR NOT private.is_staff(a.org_id)
   THEN RAISE EXCEPTION 'Submitted attempt and authorised examiner required';END IF;
@@ -212,7 +213,7 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
    (SELECT count(DISTINCT s.reviewer_id) FROM private.mg2_signoffs s
      WHERE s.rubric_id=r.id AND s.fingerprint=v_fp)<2
   THEN RAISE EXCEPTION 'Two valid examiner approvals required';END IF;
-  IF jsonb_typeof(p_awards)<>'array' OR jsonb_array_length(p_awards)<>r.max_marks
+  IF jsonb_typeof(p_awards) IS DISTINCT FROM 'array' OR jsonb_array_length(p_awards)<>r.max_marks
   THEN RAISE EXCEPTION 'Exactly one marking decision per criterion required';END IF;
   PERFORM private.mg2_validate_criteria(r);
   FOR v_index IN 0..r.max_marks-1 LOOP
@@ -220,7 +221,8 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
    SELECT count(*),jsonb_agg(value) INTO v_count,v_matches
     FROM jsonb_array_elements(p_awards) value WHERE value->>'id'=v_id;
    v_award:=v_matches->0;
-   IF v_count<>1 OR jsonb_typeof(v_award->'awarded')<>'boolean'
+   IF v_count<>1 OR jsonb_typeof(v_award->'awarded') IS DISTINCT FROM 'boolean'
+     OR (v_award ? 'methodImplied' AND jsonb_typeof(v_award->'methodImplied') IS DISTINCT FROM 'boolean')
    THEN RAISE EXCEPTION 'Unknown, duplicate or missing examiner mark';END IF;
    v_yes:=(v_award->>'awarded')::boolean;
    v_notes:=btrim(coalesce(v_award->>'note',''));
@@ -232,11 +234,13 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
       OR coalesce((v_rule->>'allowImpliedMethod')::boolean,false)=false
       OR length(v_reason)<15)
    THEN RAISE EXCEPTION 'Invalid implied-method exception';END IF;
+   v_unearned:=false;
    IF v_yes THEN
     FOR v_dep IN SELECT jsonb_array_elements_text(v_rule->'dependsOn') LOOP
      SELECT value INTO v_prev FROM jsonb_array_elements(p_awards) value
       WHERE value->>'id'=v_dep;
      IF (v_prev->>'awarded')::boolean IS NOT TRUE THEN
+      v_unearned:=true;
       IF NOT (v_implied AND v_code='A1' AND
         EXISTS(SELECT 1 FROM jsonb_array_elements(r.criteria) cr
           WHERE cr->>'id'=v_dep AND cr->>'code'='M1'))
@@ -244,6 +248,7 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
      END IF;
     END LOOP;
    END IF;
+   IF v_implied AND NOT v_unearned THEN RAISE EXCEPTION 'Implied-method exception not needed when dependency is earned';END IF;
    v_points:=v_points+CASE WHEN v_yes THEN 1 ELSE 0 END;
    INSERT INTO private.mg2_awards(attempt_id,rubric_id,org_id,criterion_id,code,
     awarded,examiner_note,method_implied,implied_reason,examiner_id)
@@ -302,11 +307,12 @@ CREATE FUNCTION public.mg2_student_report(p_attempt uuid)
 
 -- Roles are rechecked on *every read*, including verified viewer email,
 -- invitation revocation, student membership and active Grove Exam entitlement.
-CREATE FUNCTION public.mg2_family_report(p_attempt uuid)
+CREATE FUNCTION public.mg2_family_report(p_attempt uuid,p_role text)
  RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
  DECLARE v_uid uuid:=auth.uid();v_email text;v_role text;v jsonb;
  BEGIN
   IF v_uid IS NULL THEN RAISE EXCEPTION 'Sign-in required';END IF;
+  IF p_role NOT IN('parent','tutor') OR p_role IS NULL THEN RAISE EXCEPTION 'Explicit parent or tutor audience required';END IF;
   SELECT lower(email) INTO v_email FROM auth.users
    WHERE id=v_uid AND email_confirmed_at IS NOT NULL;
   IF v_email IS NULL THEN RAISE EXCEPTION 'Verified email required';END IF;
@@ -323,7 +329,7 @@ CREATE FUNCTION public.mg2_family_report(p_attempt uuid)
    JOIN public.memberships m ON m.user_id=a.student_id AND m.org_id=a.org_id
      AND m.member_role='student'
    JOIN auth.users su ON su.id=a.student_id AND lower(su.email)=lower(i.student_email)
-  WHERE a.id=p_attempt AND a.status='released' AND l.view_role IN('parent','tutor')
+  WHERE a.id=p_attempt AND a.status='released' AND l.view_role=p_role
   LIMIT 1;
   IF v_role IS NULL THEN RAISE EXCEPTION 'Released linked-learner report not found';END IF;
   IF v_role='parent' THEN
@@ -351,13 +357,13 @@ REVOKE ALL ON FUNCTION
  public.mg2_signoff_rubric(uuid,text,text),
  public.mg2_staff_mark(uuid,jsonb,boolean,text,text,text),
  public.mg2_student_report(uuid),
- public.mg2_family_report(uuid)
+ public.mg2_family_report(uuid,text)
  FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION
  public.mg2_signoff_rubric(uuid,text,text),
  public.mg2_staff_mark(uuid,jsonb,boolean,text,text,text),
  public.mg2_student_report(uuid),
- public.mg2_family_report(uuid)
+ public.mg2_family_report(uuid,text)
  TO authenticated;
 
 COMMIT;
