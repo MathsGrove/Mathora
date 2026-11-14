@@ -107,3 +107,23 @@
  .mg14-inquiry,.mg14-student-inquiry{box-shadow:none;break-inside:avoid}
  .mg14-guide{break-inside:avoid;box-shadow:none!important}
 }
+
+
+/* The public interactive example has meaningful role-specific questions, not invented live analytics. */
+.mg14-showcase{margin:29px 0 0;padding:clamp(20px,3.2vw,36px);background:linear-gradient(125deg,#eaf0f3,#fff 50%,#f7f1e7);border:1px solid #dce3e6;border-radius:17px;box-shadow:0 20px 50px #102b460b}
+.mg14-showcase[hidden]{display:none!important}
+.mg14-showcase *{box-sizing:border-box}
+.mg14-showcase-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.mg14-showcase h3{font:400 clamp(30px,3.6vw,45px)/1.11 "Instrument Serif",Georgia,serif!important;color:#18354d!important;margin:0 0 9px!important}
+.mg14-showcase-heading p,.mg14-showcase-focus{font:400 12px/1.7 "DM Sans",Arial,sans-serif;color:#647a8d}
+.mg14-showcase-focus{margin:17px 0 3px;padding:11px 14px;border-left:3px solid #ba9b73;background:#f9f7f2}
+.mg14-showcase-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.mg14-showcase-card{padding:20px 18px;background:#fff;border:1px solid #e2e4e2;border-radius:12px;min-width:0;transition:transform .28s cubic-bezier(.16,.72,.2,1),box-shadow .28s ease}
+.mg14-showcase-card:hover{transform:translateY(-4px);box-shadow:0 13px 30px #172c480c}
+.mg14-showcase-card small{display:block;color:#a0825c;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.13em}
+.mg14-showcase-card h4{font:400 26px/1.12 "Instrument Serif",Georgia,serif!important;color:#17394e!important;margin:11px 0!important}
+.mg14-showcase-card p{font:400 11px/1.75 "DM Sans",Arial,sans-serif;color:#597083}
+.mg14-showcase-card .mg14-showcase-topic{color:#25526c;background:#eef5f8;border-radius:7px;margin:13px 0 0;padding:9px 11px}
+@media(max-width:800px){.mg14-showcase-panels{grid-template-columns:1fr}.mg14-showcase-card{padding:16px 17px}}
+@media(prefers-reduced-motion:reduce){.mg14-showcase-card{transition:none!important}.mg14-showcase-card:hover{transform:none}}
+@media print{.mg14-showcase-card{box-shadow:none!important}}
