@@ -125,14 +125,23 @@ CREATE TRIGGER mg2_signoff_lock BEFORE UPDATE OR DELETE ON private.mg2_signoffs
 CREATE TRIGGER mg2_release_lock BEFORE UPDATE OR DELETE ON private.mg2_releases
  FOR EACH ROW EXECUTE FUNCTION private.mg2_no_immutable_edits();
 
+-- Canonical typed JSONB is unambiguous when question text includes separators,
+-- quotes, null-like words or newlines. Never use concat_ws('|', text columns)
+-- for an immutable rubric fingerprint: distinct field boundaries can collide.
+-- Deliberately exclude mutable status; include identity, author and all marked content.
 CREATE FUNCTION private.mg2_fingerprint(p_rubric private.mg2_rubrics)
- RETURNS text LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $$
+ RETURNS text LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $
  SELECT encode(sha256(convert_to(
-  concat_ws('|',p_rubric.org_id::text,p_rubric.question_key,p_rubric.version_no::text,
-   p_rubric.qualification,p_rubric.academic_level,p_rubric.exam_board,p_rubric.syllabus_year,
-   p_rubric.plan,p_rubric.question_prompt,p_rubric.worked_solution,
-   p_rubric.max_marks::text,p_rubric.criteria::text),'UTF8')),'hex');
- $$;
+   jsonb_build_object(
+     'id',p_rubric.id,'org_id',p_rubric.org_id,
+     'question_key',p_rubric.question_key,'version_no',p_rubric.version_no,
+     'qualification',p_rubric.qualification,'academic_level',p_rubric.academic_level,
+     'exam_board',p_rubric.exam_board,'syllabus_year',p_rubric.syllabus_year,
+     'plan',p_rubric.plan,'question_prompt',p_rubric.question_prompt,
+     'worked_solution',p_rubric.worked_solution,'max_marks',p_rubric.max_marks,
+     'criteria',p_rubric.criteria,'authored_by',p_rubric.authored_by
+   )::text,'UTF8')),'hex');
+ $;
 
 CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
  RETURNS void LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$
