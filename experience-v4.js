@@ -90,7 +90,7 @@ $('mg4-dialog-close').addEventListener('click',closeDialog);$('mg4-calendar-dial
 });
 $('mg4-calendar-dialog').addEventListener('cancel',()=>{stopClock();trial=null});
 $('mg4-calendar-dialog').addEventListener('click',e=>{if(e.target===$('mg4-calendar-dialog'))closeDialog()});
-$('mg4-view-practice').addEventListener('click',()=>{restoreCalendarFocus=false;closeDialog();$('interactive-sample').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
+$('mg4-view-practice').addEventListener('click',()=>{restoreCalendarFocus=false;closeDialog();(window.MathsGroveMotion?.navigateHash?.('#interactive-sample',{replace:true})||$('interactive-sample').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}))});
 $('mg4-start-trial').addEventListener('click',startTrial);
 $('mg4-trial-back').addEventListener('click',()=>trialSet(trial.index-1));$('mg4-trial-next').addEventListener('click',()=>trialSet(trial.index+1));$('mg4-trial-finish').addEventListener('click',()=>finish(false));$('mg4-trial-close').addEventListener('click',closeDialog);
 function buildAnalytics(){

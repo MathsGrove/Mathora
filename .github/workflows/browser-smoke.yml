@@ -31,10 +31,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate Studio HTML structure
         run: node scripts/check-studio-html-head.mjs
-      - name: Validate cinematic maths constellation and handwritten solutions
+      - name: Validate mathematical gallery journeys and number trails
         run: |
-          node --check maths-cinematic-v12.js
-          node scripts/check-maths-cinematic-v12.mjs
+          node --check maths-gallery-v13.js
+          node scripts/check-maths-gallery-v13.mjs
       - name: Check all public entry pages
         run: node scripts/smoke-ui.mjs
       - name: Upload viewport screenshots
