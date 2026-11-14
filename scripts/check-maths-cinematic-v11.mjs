@@ -57,7 +57,7 @@ const document={
 };
 const historyPaths=[];
 const preference={matches:false,addEventListener:()=>{}};
-const window={matchMedia:()=>preference,history:{pushState:(_1,_2,url)=>historyPaths.push(url),replaceState:(_1,_2,url)=>historyPaths.push('replace:'+url)},location:{assign:()=>{}}};
+const window={IntersectionObserver:true,matchMedia:()=>preference,history:{pushState:(_1,_2,url)=>historyPaths.push(url),replaceState:(_1,_2,url)=>historyPaths.push('replace:'+url)},location:{assign:()=>{}}};
 class IntersectionObserver{
  constructor(fn){observerCall=fn}
  observe(node){observerTargets.push(node)}
