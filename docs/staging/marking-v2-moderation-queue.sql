@@ -37,6 +37,9 @@ BEGIN
   'criteria',q.criteria,
   'max_marks',q.max_marks,
   'plan',q.plan,
+  'calculator_rule',q.calculator_rule,
+  'syllabus_objective',q.syllabus_objective,
+  'source_declaration',q.source_declaration,
   'fingerprint',q.fingerprint,
   'independent_reviews',q.review_count
   ) ORDER BY q.created_at,q.id),'[]'::jsonb) INTO v_items
@@ -44,6 +47,7 @@ BEGIN
   SELECT r.id,r.question_key,r.qualification,r.academic_level,
     r.exam_board,r.syllabus_year,r.question_prompt,r.worked_solution,
     r.criteria,r.max_marks,r.plan,r.created_at,
+    r.calculator_rule,r.syllabus_objective,r.source_declaration,
     private.mg2_fingerprint(r) AS fingerprint,
     (SELECT count(*) FROM private.mg2_signoffs s
      WHERE s.rubric_id=r.id
