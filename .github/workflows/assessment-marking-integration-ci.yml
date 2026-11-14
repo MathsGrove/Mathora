@@ -7,6 +7,7 @@ on:
       - 'scripts/test-curriculum-coverage.mjs'
       - 'scripts/test-staging-rpc-client.mjs'
       - 'scripts/test-reviewer-lab-browser.mjs'
+      - 'scripts/test-learner-lab-browser.mjs'
       - 'scripts/fixtures/*marking-v2*.sql'
       - 'docs/staging/marking-v2-disposable-postgres.sql'
       - 'docs/staging/marking-v2-learner-workflow.sql'
@@ -30,6 +31,8 @@ jobs:
           node --check content/marking/moderation-workflow.mjs
           node --check content/marking/exam-style-policy.mjs
           node --check content/marking/reviewer-lab.js
+          node --check content/marking/constructed-practice-ui.mjs
+          node --check content/marking/learner-lab.js
           node scripts/test-criterion-engine.mjs
           node scripts/test-moderation-workflow.mjs
           node scripts/test-criterion-feedback-bank.mjs
@@ -58,7 +61,9 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Chromium fictional examiner flow (desktop and mobile)
-        run: node scripts/test-reviewer-lab-browser.mjs
+        run: |
+          node scripts/test-reviewer-lab-browser.mjs
+          node scripts/test-learner-lab-browser.mjs
 
   isolated-postgres-marking:
     name: Disposable PostgreSQL permission and marking QA
