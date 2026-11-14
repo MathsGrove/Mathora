@@ -1,0 +1,129 @@
+/* MathsGrove / v14 — smoother editorial mathematics and role-aware evidence.
+   Motion remains decorative; information is available instantly and as plain text. */
+.mg13-passage .mg14-maths-quote{
+ max-width:620px;margin:18px auto 8px;padding:21px clamp(18px,5vw,45px);
+ border-top:1px solid #ead6b65c;border-bottom:1px solid #ead6b640;
+ color:#f5e8d8;text-align:center;
+ font:italic 400 clamp(23px,3.3vw,37px)/1.27 "Instrument Serif",Georgia,serif;
+ letter-spacing:-.012em;text-wrap:balance;text-shadow:0 5px 28px #0007;
+}
+.mg13-passage .mg14-maths-quote::before{content:"“";color:#d3b38c;font-size:1.27em}
+.mg13-passage .mg14-maths-quote::after{content:"”";color:#d3b38c;font-size:1.27em}
+.mg13-passage.mg13-active .mg14-maths-quote{
+ animation:mg14-quote-enter .84s cubic-bezier(.18,.73,.24,1) .18s both;
+}
+.mg13-passage .mg13-title{margin:8px 0 3px}
+.mg13-passage .mg13-formula{filter:drop-shadow(0 8px 30px #0a142c77)}
+.mg13-passage.mg13-active .mg13-wall{
+ animation-duration:1.55s;animation-timing-function:cubic-bezier(.14,.72,.2,1);
+}
+.mg13-passage.mg13-active .mg13-tile{
+ animation-duration:1.04s;animation-timing-function:cubic-bezier(.16,.75,.23,1);
+}
+.mg13-passage.mg13-active .mg13-orbit{animation-duration:1.55s}
+.mg13-passage.mg13-active .mg13-trails path{animation-duration:1.33s}
+.mg13-passage[data-mode="small"] .mg14-maths-quote{display:none}
+.mg13-passage[data-mode="small"] .mg13-title{font-size:clamp(24px,3vw,34px)}
+.mg13-passage[data-mode="small"] .mg13-formula{font-size:clamp(55px,7vw,90px)}
+@keyframes mg14-quote-enter{
+ from{opacity:0;transform:translateY(14px) scale(.982)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* Explicit explanation and sample-size cautions; no colour-only signal. */
+.mg14-inquiry,.mg14-student-inquiry{
+ margin:24px 0 8px;padding:23px;
+ border:1px solid #dedad3;border-radius:15px;
+ background:linear-gradient(125deg,#faf8f4 0%,#fff 70%,#f5f1e9 100%);
+ color:#203750;box-shadow:0 12px 40px #142d4810;
+}
+.mg14-inquiry *,.mg14-student-inquiry *{box-sizing:border-box}
+.mg14-inquiry-header{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.mg14-kicker{display:block;color:#9b7b59;font:800 10px/1.5 "DM Sans",Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.mg14-inquiry h3,.mg14-student-inquiry h3{font:400 clamp(29px,3vw,40px)/1.12 "Instrument Serif",Georgia,serif!important;color:#17364f!important;margin:0 0 10px!important}
+.mg14-inquiry h4{font:400 clamp(22px,2.25vw,28px)/1.16 "Instrument Serif",Georgia,serif!important;color:#1e3b52!important;margin:0 0 12px!important}
+.mg14-inquiry p,.mg14-student-inquiry p{font:400 12px/1.75 "DM Sans",Arial,sans-serif!important;color:#536d80!important;margin:0}
+.mg14-evidence-chip{display:inline-flex;align-items:center;padding:8px 12px;border-radius:100px;background:#eee8df;color:#67513b;white-space:nowrap;font:800 9px/1.5 "DM Sans",Arial,sans-serif;letter-spacing:.08em}
+.mg14-coverage{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px;margin-top:20px}
+.mg14-evidence-panel,.mg14-activity-panel{border:1px solid #e5e5e3;border-radius:12px;padding:20px;background:#fff;min-width:0}
+.mg14-activity-panel{background:#17344d;border-color:#17344d}
+.mg14-activity-panel h4{color:#faf4ea!important}
+.mg14-activity-panel p{color:#dbe7ed!important}
+.mg14-subtle{font-size:10px!important;color:#76899a!important;margin-top:10px!important}
+.mg14-activity-panel .mg14-subtle{color:#c1d2db!important}
+.mg14-empty{padding:12px;border-radius:6px;background:#f4f1eb}
+.mg14-bars{display:grid;gap:15px;margin-top:17px}
+.mg14-bar-head{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:7px}
+.mg14-bar-head strong{font:700 12px/1.4 "DM Sans",Arial,sans-serif;color:#1c354d}
+.mg14-bar-head span{font:700 11px/1.4 "DM Sans",Arial,sans-serif;color:#597386;font-variant-numeric:tabular-nums}
+.mg14-bar-track{height:8px;border-radius:100px;background:#e9edf0;overflow:hidden}
+.mg14-bar-fill{display:block;height:100%;background:linear-gradient(90deg,#b8a080,#476f88);border-radius:inherit;max-width:100%;transform-origin:left center}
+.mg14-evidence-row small{display:block;margin-top:5px;font:400 10px/1.5 "DM Sans",Arial,sans-serif;color:#738698}
+.mg14-guides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
+.mg14-guide{background:#fff;border:1px solid #e6e4df;border-radius:12px;padding:18px 17px;min-width:0;transition:transform .26s cubic-bezier(.18,.7,.2,1),box-shadow .26s ease}
+.mg14-guide:hover{transform:translateY(-3px);box-shadow:0 12px 26px #14324c0e}
+.mg14-guide ol,.mg14-student-steps{margin:16px 0 0;padding:0;list-style:none;counter-reset:decision}
+.mg14-guide li,.mg14-student-steps li{counter-increment:decision;position:relative;padding:1px 0 16px 28px;margin-bottom:12px;border-bottom:1px solid #e9e8e4}
+.mg14-guide li:last-child,.mg14-student-steps li:last-child{border:0;margin:0;padding-bottom:0}
+.mg14-guide li::before,.mg14-student-steps li::before{content:counter(decision,decimal-leading-zero);position:absolute;left:0;top:2px;color:#987e60;font:800 10px/1.5 "DM Sans",Arial,sans-serif}
+.mg14-guide strong{display:block;margin-bottom:4px;color:#1f3d56;font:700 11px/1.5 "DM Sans",Arial,sans-serif}
+.mg14-guide p{font-size:11px!important;line-height:1.7!important}
+.mg14-caveat{margin-top:18px!important;padding-top:15px;border-top:1px solid #e6e1d9;font-size:10px!important;color:#677f90!important}
+.mg14-student-inquiry{background:linear-gradient(120deg,#f2f6f8,#fbfaf7);margin:22px 0}
+.mg14-student-inquiry .mg14-student-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mg14-student-inquiry .mg14-student-steps li{
+ min-width:0;border:1px solid #e1e5e5;border-radius:10px;padding:15px 14px 15px 42px;margin:0;background:#fff;
+ font:400 12px/1.65 "DM Sans",Arial,sans-serif;color:#476175
+}
+.mg14-student-inquiry .mg14-student-steps li::before{left:13px;top:17px}
+
+/* Decorative motion for *existing* private dashboard controls: no latency or data access. */
+.mg14-private-trail{position:fixed;z-index:1800;width:0;height:0;pointer-events:none;animation:mg14-trail-life .56s linear both}
+.mg14-private-spark{position:absolute;left:0;top:0;color:#9c8061;font:italic 400 24px/1 "Instrument Serif",Georgia,serif;text-shadow:0 2px 14px #cdbba088;animation:mg14-private-drift .55s cubic-bezier(.16,.72,.22,1) calc(var(--n)*23ms) both}
+.mg14-private-spark:nth-child(1){--x:-32px;--y:-26px}
+.mg14-private-spark:nth-child(2){--x:28px;--y:-36px}
+.mg14-private-spark:nth-child(3){--x:36px;--y:23px}
+.mg14-private-spark:nth-child(4){--x:-27px;--y:27px}
+@keyframes mg14-trail-life{from{opacity:1}90%{opacity:1}to{opacity:0}}
+@keyframes mg14-private-drift{from{opacity:0;transform:translate(-50%,-50%) scale(.45)}35%{opacity:.9}to{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.08)}}
+#dashboard-view button,#fa-dashboard button,.mgtr button,.mgx button{transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s ease}
+#dashboard-view button:not(:disabled):active,#fa-dashboard button:not(:disabled):active{transform:scale(.985)}
+#dashboard-view button:focus-visible,#fa-dashboard button:focus-visible{outline:3px solid #98adbc;outline-offset:3px}
+@media(max-width:940px){.mg14-guides{grid-template-columns:1fr}.mg14-coverage{grid-template-columns:1fr}.mg14-student-inquiry .mg14-student-steps{grid-template-columns:1fr}}
+@media(max-width:600px){
+ .mg14-inquiry,.mg14-student-inquiry{padding:16px 13px}
+ .mg14-inquiry h3,.mg14-student-inquiry h3{font-size:32px!important}
+ .mg14-evidence-panel,.mg14-activity-panel,.mg14-guide{padding:15px}
+ .mg14-bar-head{align-items:flex-start}
+ .mg13-passage .mg14-maths-quote{font-size:clamp(23px,6.4vw,31px);margin-top:11px;padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mg14-private-trail,.mg14-private-spark{display:none!important;animation:none!important}
+ .mg14-guide,#dashboard-view button,#fa-dashboard button{transition:none!important;transform:none!important}
+ .mg13-passage.mg13-active .mg14-maths-quote{animation:none!important}
+}
+@media print{
+ .mg14-private-trail{display:none!important}
+ .mg14-inquiry,.mg14-student-inquiry{box-shadow:none;break-inside:avoid}
+ .mg14-guide{break-inside:avoid;box-shadow:none!important}
+}
+
+
+/* The public interactive example has meaningful role-specific questions, not invented live analytics. */
+.mg14-showcase{margin:29px 0 0;padding:clamp(20px,3.2vw,36px);background:linear-gradient(125deg,#eaf0f3,#fff 50%,#f7f1e7);border:1px solid #dce3e6;border-radius:17px;box-shadow:0 20px 50px #102b460b}
+.mg14-showcase[hidden]{display:none!important}
+.mg14-showcase *{box-sizing:border-box}
+.mg14-showcase-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.mg14-showcase h3{font:400 clamp(30px,3.6vw,45px)/1.11 "Instrument Serif",Georgia,serif!important;color:#18354d!important;margin:0 0 9px!important}
+.mg14-showcase-heading p,.mg14-showcase-focus{font:400 12px/1.7 "DM Sans",Arial,sans-serif;color:#647a8d}
+.mg14-showcase-focus{margin:17px 0 3px;padding:11px 14px;border-left:3px solid #ba9b73;background:#f9f7f2}
+.mg14-showcase-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.mg14-showcase-card{padding:20px 18px;background:#fff;border:1px solid #e2e4e2;border-radius:12px;min-width:0;transition:transform .28s cubic-bezier(.16,.72,.2,1),box-shadow .28s ease}
+.mg14-showcase-card:hover{transform:translateY(-4px);box-shadow:0 13px 30px #172c480c}
+.mg14-showcase-card small{display:block;color:#a0825c;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.13em}
+.mg14-showcase-card h4{font:400 26px/1.12 "Instrument Serif",Georgia,serif!important;color:#17394e!important;margin:11px 0!important}
+.mg14-showcase-card p{font:400 11px/1.75 "DM Sans",Arial,sans-serif;color:#597083}
+.mg14-showcase-card .mg14-showcase-topic{color:#25526c;background:#eef5f8;border-radius:7px;margin:13px 0 0;padding:9px 11px}
+@media(max-width:800px){.mg14-showcase-panels{grid-template-columns:1fr}.mg14-showcase-card{padding:16px 17px}}
+@media(prefers-reduced-motion:reduce){.mg14-showcase-card{transition:none!important}.mg14-showcase-card:hover{transform:none}}
+@media print{.mg14-showcase-card{box-shadow:none!important}}
