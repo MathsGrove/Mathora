@@ -71,12 +71,26 @@ try{
   await page.locator('.mg2-criterion').first().waitFor();
   assert.equal(await page.locator('.mg2-criterion').count(),5);
   assert.equal(await page.locator('.mg2-criterion-head').filter({hasText:'R1'}).count(),1);
+  // Separate examiner verification of the question itself (not student marks).
+  await page.locator('.mg2-moderation-list button').first().waitFor();
+  await page.locator('.mg2-moderation-list button').first().click();
+  await page.locator('.mg2-mod-checks').waitFor();
+  assert.equal(await page.locator('.mg2-moderation-detail .mg2-criterion').count(),3);
+  await page.getByRole('button',{name:'Sign off this exact question'}).click();
+  await page.locator('.mg2-moderation .mg2-status').getByText(/Complete all three/).waitFor();
+  for(const input of await page.locator('input[data-review-check]').all())await input.check();
+  await page.locator('.mg2-moderation-detail textarea').fill(
+    'I have independently verified the original quadratic solution, syllabus level, method dependencies and final answers.'
+  );
+  await page.getByRole('button',{name:'Sign off this exact question'}).click();
+  await page.locator('.mg2-moderation .mg2-status').getByText(/Another independent reviewer must approve/).waitFor();
+  assert.equal(await page.locator('.mg2-moderation-list button').count(),0);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
    'No horizontal overflow at '+viewport.width);
   assert.deepEqual(errors,[],'No JavaScript runtime errors');
   assert.deepEqual(external,[],'Preview must not use any hosted Supabase network');
-  passed+=18;
+  passed+=24;
   await page.close();
  }
- console.log('PASS — '+passed+' responsive examiner queue checks, saved M/A/B evidence, human report edits, release confirmation, IB reasoning and no external requests.');
+ console.log('PASS — '+passed+' responsive examiner/reviewer checks, saved M/A/B evidence, editable reports, human release, independent moderation checks and no external requests.');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
