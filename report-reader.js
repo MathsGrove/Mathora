@@ -5,6 +5,7 @@
  'use strict';
  const $=id=>document.getElementById(id);
  const root=$('mgr-pages'),status=$('mgr-status'),prev=$('mgr-prev'),next=$('mgr-next'),select=$('mgr-select');
+ const chapters=[...document.querySelectorAll('[data-mgr-page]')],progress=$('mgr-progress-fill');
  const labels=['Cover','Executive summary','Topic analysis','Question review','Examiner annotations','Four-week action plan','Family and tutor guidance'];
  let pages=[],current=0,observer=null;
  const reduce=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -14,6 +15,11 @@
   select.value=String(current+1);
   prev.disabled=current===0;next.disabled=current===pages.length-1;
   status.textContent='Page '+(current+1)+' of '+pages.length+' · '+labels[current];
+  if(progress)progress.style.width=Math.round(100*(current+1)/pages.length)+'%';
+  chapters.forEach(button=>{
+   const chosen=Number(button.dataset.mgrPage)===current+1;
+   if(chosen)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+  });
  };
  const go=index=>{
   if(!pages.length)return;
@@ -45,6 +51,7 @@
   prev.addEventListener('click',()=>go(current-1));
   next.addEventListener('click',()=>go(current+1));
   select.addEventListener('change',()=>go(Number(select.value)-1));
+  chapters.forEach(button=>button.addEventListener('click',()=>go(Number(button.dataset.mgrPage)-1)));
   $('mgr-print').addEventListener('click',()=>window.print());
   if('IntersectionObserver' in window){
    observer=new IntersectionObserver(entries=>{

@@ -65,9 +65,9 @@ for(const [file,body,id] of [['portal.html',portal,'mgtr-student-inquiry'],['fam
 }
 assert.ok(home.includes('maths-preview-insights-v14.js'),'Public tour must show distinct family/tutor questions');
 for(const page of [home,report,reason])assert.ok(page.includes('maths-refinement-v14.css'),'Page missing smoother quote styling');
-assert.ok(gallery.includes('mg14-maths-quote')&&gallery.includes('const quotes={'),'Gallery must show mathematical quote, not handwriting');
+assert.ok(gallery.includes('mg15-galaxy-core')&&!gallery.includes('mg14-maths-quote'),'Gallery must show maths only, with no written quote');
 assert.ok(!gallery.includes('mg13-hand-line')&&!gallery.includes('mg13-paper'),'No handwritten notes or writing animation');
-assert.ok(css.includes('mg14-maths-quote')&&css.includes('mg14-coverage')&&css.includes('mg14-showcase')&&css.includes('prefers-reduced-motion:reduce'),'Responsive quote, inquiry and reduced-motion styles required');
+assert.ok(css.includes('mg14-coverage')&&css.includes('mg14-showcase')&&css.includes('prefers-reduced-motion:reduce'),'Responsive inquiry and reduced-motion styles required');
 assert.ok(preview.includes('window.MathsGroveV3')&&preview.includes('FICTIONAL DASHBOARD PREVIEW'),'Only the fictional public showcase may be used');
 assert.ok(preview.includes("state.tier!=='exam'&&state.role!=='student'"),'Restricted roles must not appear in Weekly or Daily');
 assert.ok(!/fetch\s*\(|createClient\s*\(|localStorage\s*\.|sessionStorage\s*\.|\.rpc\s*\(/.test(roleSource+micro+preview),'No new learner-data retrieval, storage or permissions');
@@ -75,4 +75,4 @@ assert.ok(!roleSource.includes('innerHTML'),'Role guidance must render arbitrary
 assert.ok(pages.includes('node scripts/check-maths-refinement-v14.mjs')&&pages.includes('maths-preview-insights-v14.js'),'Publish gate checks v14 and ships its assets');
 assert.ok(browser.includes('node scripts/check-maths-refinement-v14.mjs'),'Browser CI runs v14 integrity test');
 assert.ok(home.length<65000,'Homepage remains below original 65k size budget');
-console.log('MathsGrove v14: maths quotes, patient easing, confidential family boundaries, real evidence-driven parent/tutor prompts, student next steps, fictional preview and safe private motion: OK');
+console.log('MathsGrove v14+: wordless galaxy, confidential family boundaries, real evidence-driven parent/tutor prompts, student next steps, fictional preview and safe private motion: OK');
