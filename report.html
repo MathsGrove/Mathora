@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="./maths-cinematic-v11.css">
   <link rel="stylesheet" href="./maths-gallery-v13.css">
 <link rel="stylesheet" href="./maths-refinement-v14.css">
+<link rel="stylesheet" href="./maths-journey-v15.css">
  <script defer src="./report-reader.js"></script>
  <script defer src="./maths-gallery-v13.js"></script>
 </head>
@@ -30,8 +31,19 @@
  <section class="mgr-hero" aria-labelledby="mgr-heading">
   <p>MATHEMATICS, WITH MEANING · AN ILLUSTRATIVE EXAMINER REPORT</p>
   <h1 id="mgr-heading">Read the complete <em>examiner story.</em></h1>
-  <p>Each page has its own space. Scroll through the full fictional report, jump to a specific page, or print the original page format. All learner details, marks and feedback shown here are illustrative.</p>
+  <p>Seven chapters connect the overall mark, examiner reasoning and a practical follow-up plan. Choose a chapter or scroll through the fictional report at your own pace.</p>
  </section>
+ <nav class="mgr-chapters" aria-label="Seven chapters in this fictional examiner report">
+  <div class="mgr-chapter-list">
+   <button type="button" class="mgr-chapter-button" data-mgr-page="1" aria-current="page"><b>01</b> Cover</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="2"><b>02</b> Summary</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="3"><b>03</b> Topic evidence</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="4"><b>04</b> Questions</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="5"><b>05</b> Examiner notes</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="6"><b>06</b> Action plan</button>
+   <button type="button" class="mgr-chapter-button" data-mgr-page="7"><b>07</b> Guidance</button>
+  </div>
+ </nav>
  <nav class="mgr-controls" aria-label="Specimen report page navigation">
   <button id="mgr-prev" type="button">← Previous page</button>
   <label for="mgr-select">Go to page <select id="mgr-select" aria-label="Select report page">
@@ -44,6 +56,7 @@
   <button id="mgr-print" type="button">Print / Save PDF</button>
   <span id="mgr-status" role="status" aria-live="polite">Reading specimen pages…</span>
  </nav>
+ <div class="mgr-reader-progress" aria-hidden="true"><span id="mgr-progress-fill"></span></div>
  <main><div class="mg-v3"><section id="signature-sample" aria-label="Fictional seven-page examiner specimen">
  <div class="wrap"><div class="mg7-book" id="mg7-book">
   <div class="mg7-pages" id="mgr-pages"><p id="mgr-loading">Opening the seven-page examiner specimen…</p></div>
