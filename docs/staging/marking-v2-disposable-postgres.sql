@@ -161,6 +161,9 @@ CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
   IF jsonb_array_length(p_rubric.criteria)<>p_rubric.max_marks
      OR p_rubric.qualification='TMUA' OR length(btrim(p_rubric.worked_solution))<30
      OR length(btrim(p_rubric.question_prompt))<20
+     OR length(btrim(p_rubric.syllabus_objective))<15
+     OR length(btrim(p_rubric.source_declaration))<50
+     OR p_rubric.calculator_rule NOT IN('allowed','not_allowed','paper_specific')
   THEN RAISE EXCEPTION 'Invalid original multi-mark rubric';END IF;
   FOR i IN 0..p_rubric.max_marks-1 LOOP
    c:=p_rubric.criteria->i;code:=c->>'code';
