@@ -224,8 +224,9 @@
    });
    document.body.append(spark);
    spark.addEventListener("animationend",event=>{
+    // Child animations bubble; only the trail container finishing should remove it.
     if(event.target===spark)spark.remove();
-   },{once:true});
+   });
  };
  document.addEventListener("click",event=>{
    if(event.defaultPrevented||event.button!==0)return;
