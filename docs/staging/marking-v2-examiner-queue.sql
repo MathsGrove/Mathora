@@ -8,6 +8,30 @@ CREATE INDEX mg2_examiner_submitted_queue_idx
  ON private.mg2_attempts (org_id,submitted_at,id)
  WHERE status='submitted';
 
+-- The first examiner owns the private draft. Other authorised staff can
+-- inspect it but may not silently replace another examiner's awards.
+-- Explicit audited reassignment must be a separate later admin workflow.
+CREATE FUNCTION private.mg2_no_cross_examiner_overwrite()
+ RETURNS trigger LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$
+BEGIN
+ IF OLD.examiner_id IS DISTINCT FROM auth.uid() THEN
+  RAISE EXCEPTION 'Another examiner owns these saved mark decisions; request supervised reassignment';
+ END IF;
+ IF NEW.examiner_id IS DISTINCT FROM OLD.examiner_id OR
+    NEW.attempt_id IS DISTINCT FROM OLD.attempt_id OR
+    NEW.rubric_id IS DISTINCT FROM OLD.rubric_id OR
+    NEW.org_id IS DISTINCT FROM OLD.org_id OR
+    NEW.criterion_id IS DISTINCT FROM OLD.criterion_id OR
+    NEW.code IS DISTINCT FROM OLD.code
+ THEN RAISE EXCEPTION 'Award identity fields cannot change';END IF;
+ RETURN NEW;
+END $$;
+CREATE TRIGGER mg2_award_examiner_lock BEFORE UPDATE
+ ON private.mg2_awards FOR EACH ROW
+ EXECUTE FUNCTION private.mg2_no_cross_examiner_overwrite();
+REVOKE ALL ON FUNCTION private.mg2_no_cross_examiner_overwrite()
+ FROM PUBLIC,anon,authenticated;
+
 -- Triage only. Do not return the student's text, account email, private
 -- marking criteria, or the worked solution in queue summaries.
 CREATE FUNCTION public.mg2_examiner_queue(
