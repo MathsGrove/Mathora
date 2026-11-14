@@ -226,7 +226,7 @@ BEGIN
    WHERE l.student_id=p_student AND l.viewer_id=v_uid AND l.active
     AND l.view_role=p_role AND i.view_role=p_role
  ) THEN RAISE EXCEPTION 'This learner is not linked for the requested audience';END IF;
- SELECT count(*) INTO v_total FROM private.mg2_attempts a
+ SELECT count(DISTINCT a.id) INTO v_total FROM private.mg2_attempts a
   JOIN private.mg2_rubrics r ON r.id=a.rubric_id AND r.org_id=a.org_id
   JOIN public.learner_view_links l ON l.student_id=a.student_id
    AND l.org_id=a.org_id AND l.viewer_id=v_uid AND l.active AND l.view_role=p_role
