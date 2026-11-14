@@ -29,8 +29,8 @@ try{
   page.on('dialog',dialog=>dialog.accept());
   await page.goto('http://127.0.0.1:'+port+'/content/marking/examiner-queue-lab.html',{waitUntil:'networkidle'});
   await page.getByRole('button',{name:/quadratic-roots-gcse-higher/}).waitFor();
-  assert.equal(await page.locator('.mg2-queue-entry').count(),2);
-  await page.locator('.mg2-queue-entry').first().click();
+  assert.equal(await page.locator('.mg2-queue-list .mg2-queue-entry').count(),2);
+  await page.locator('.mg2-queue-list .mg2-queue-entry').first().click();
   await page.locator('.mg2-criterion').first().waitFor();
   assert.equal(await page.locator('.mg2-criterion').count(),3);
   assert.match(await page.locator('.mg2-student-work').innerText(),/I factor x squared/);
@@ -57,7 +57,7 @@ try{
   await page.locator('.mg2-status').getByText(/Confirm that you personally reviewed/).waitFor();
   await page.getByRole('button',{name:'Save completed marking draft'}).click();
   await page.locator('.mg2-status').getByText(/Mark decisions saved/).waitFor();
-  await page.locator('.mg2-queue-entry').first().click();
+  await page.locator('.mg2-queue-list .mg2-queue-entry').first().click();
   await page.locator('.mg2-criterion').first().waitFor();
   assert.equal(await page.locator('.mg2-criterion').nth(0).locator('select[data-award]').inputValue(),'earned');
   assert.equal(await page.locator('.mg2-criterion').nth(2).locator('select[data-award]').inputValue(),'missed');
@@ -65,9 +65,9 @@ try{
   await page.locator('input[data-verified]').check();
   await page.getByRole('button',{name:'Release reviewed report'}).click();
   await page.locator('.mg2-status').getByText(/released and its score recalculated server-side/).waitFor();
-  assert.equal(await page.locator('.mg2-queue-entry').count(),1);
-  assert.ok((await page.locator('.mg2-queue-entry').first().innerText()).includes('stationary-ib-aa-hl'));
-  await page.locator('.mg2-queue-entry').first().click();
+  assert.equal(await page.locator('.mg2-queue-list .mg2-queue-entry').count(),1);
+  assert.ok((await page.locator('.mg2-queue-list .mg2-queue-entry').first().innerText()).includes('stationary-ib-aa-hl'));
+  await page.locator('.mg2-queue-list .mg2-queue-entry').first().click();
   await page.locator('.mg2-criterion').first().waitFor();
   assert.equal(await page.locator('.mg2-criterion').count(),5);
   assert.equal(await page.locator('.mg2-criterion-head').filter({hasText:'R1'}).count(),1);
