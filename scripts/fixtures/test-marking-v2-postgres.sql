@@ -193,7 +193,7 @@ SELECT set_config('request.jwt.claim.sub','66666666-6666-4666-8666-666666666666'
 DO $$
 DECLARE j jsonb;
 BEGIN
- j:=public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ j:=public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','parent');
  IF j->>'view_role'<>'parent' OR j ? 'criteria' OR j ? 'teaching_plan' OR
   j->>'summary' NOT LIKE '%eight equal parts%'
  THEN RAISE EXCEPTION 'Parent view improperly exposes tutor notes';END IF;
@@ -202,17 +202,26 @@ SELECT set_config('request.jwt.claim.sub','77777777-7777-4777-8777-777777777777'
 DO $$
 DECLARE j jsonb;
 BEGIN
- j:=public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ j:=public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','tutor');
  IF j->>'view_role'<>'tutor' OR jsonb_array_length(j->'criteria')<>3 OR
     j->>'teaching_plan' NOT LIKE '%contrasting ratio%'
  THEN RAISE EXCEPTION 'Tutor report missing approved teaching evidence';END IF;
 END $$;
+-- A parent account cannot request the tutor-only report, even with a valid parent link.
+SELECT set_config('request.jwt.claim.sub','66666666-6666-4666-8666-666666666666',false);
+DO $
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','tutor');
+ EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%not found%';END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Parent could request tutor-only evidence';END IF;
+END $;
 -- No role link => no family access.
 SELECT set_config('request.jwt.claim.sub','88888888-8888-4888-8888-888888888888',false);
 DO $$
 DECLARE blocked boolean:=false;
 BEGIN
- BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','parent');
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%not found%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Unlinked viewer read a family report';END IF;
 END $$;
@@ -239,7 +248,7 @@ SELECT set_config('request.jwt.claim.sub','66666666-6666-4666-8666-666666666666'
 DO $$
 DECLARE blocked boolean:=false;
 BEGIN
- BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','parent');
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%not found%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Revoked guardian still had report access';END IF;
 END $$;
