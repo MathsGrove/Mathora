@@ -13,6 +13,8 @@ on:
       - 'scripts/check-marking-v2-portal.mjs'
       - 'scripts/check-marking-v2-public-bundle.mjs'
       - 'scripts/test-marking-v2-pages-assembly.mjs'
+      - 'scripts/generate-marking-v2-migration.mjs'
+      - 'supabase/migrations/20261114165829_marking_v2_constructed.sql'
       - '.github/workflows/pages.yml'
       - 'portal.js'
       - 'studio.js'
@@ -55,6 +57,7 @@ jobs:
           node scripts/test-staging-rpc-client.mjs
           node scripts/test-examiner-assist.mjs
           node scripts/check-marking-v2-portal.mjs
+          node scripts/generate-marking-v2-migration.mjs --verify supabase/migrations/20261114165829_marking_v2_constructed.sql
           node scripts/test-route-feedback-bank.mjs
           node scripts/check-site.mjs
       - name: Verify exact curated Pages artifact in a PR runner (NO deployment)
