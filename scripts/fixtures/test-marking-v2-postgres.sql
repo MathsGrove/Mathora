@@ -132,6 +132,41 @@ BEGIN
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Exactly one%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Incomplete criterion award array was accepted';END IF;
 END $$;
+-- A missing awarded boolean must NOT silently become zero.
+DO $
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    '[{"id":"m-parts","note":"A note without an explicit decision."},
+      {"id":"a-unit","awarded":false},{"id":"b-check","awarded":false}]'::jsonb,false);
+ EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%missing examiner mark%';END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Missing boolean silently marked as zero';END IF;
+END $;
+-- String "true" is not a typed examiner decision.
+DO $
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    '[{"id":"m-parts","awarded":"true","note":"A string is not a boolean."},
+      {"id":"a-unit","awarded":false},{"id":"b-check","awarded":false}]'::jsonb,false);
+ EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%missing examiner mark%';END;
+ IF NOT blocked THEN RAISE EXCEPTION 'String boolean was accepted';END IF;
+END $;
+-- Implied-method exceptions cannot be claimed when associated M1 was earned.
+DO $
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    '[{"id":"m-parts","awarded":true,"note":"All eight parts were identified."},
+      {"id":"a-unit","awarded":true,"note":"Accurate unit share was shown.",
+        "methodImplied":true,"impliedReason":"Both explicit method and final answer are visible."},
+      {"id":"b-check","awarded":true,"note":"The total was checked correctly."}]'::jsonb,false);
+ EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%exception not needed%';END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Unnecessary implied-method exception was accepted';END IF;
+END $;
 -- Full reviewed save: all marks come from these human decisions.
 SELECT public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
  '[{"id":"m-parts","awarded":true,"note":"Eight total ratio parts shown."},
