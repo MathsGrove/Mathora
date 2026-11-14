@@ -97,11 +97,47 @@ const signed={
  p_rubric:paper,p_hash:hash,p_note:note,
  p_maths_checked:true,p_syllabus_checked:true,p_mark_scheme_checked:true
 };
+const reviewerQueue=requireOk(await rpc('one','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'original math question appears only for authorised independent reviewer');
+assert.equal(reviewerQueue.total,1);
+assert.equal(reviewerQueue.items[0].rubric_id,paper);
+assert.equal(reviewerQueue.items[0].fingerprint,hash);
+assert.equal(reviewerQueue.items[0].criteria.length,3);
+assert.equal(reviewerQueue.items[0].independent_reviews,0);
+const ownQuestion=requireOk(await rpc('author','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'author must not self-review their own original question');
+assert.equal(ownQuestion.total,0);
+const otherOrgQuestion=requireOk(await rpc('otherExaminer','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'another organisation never sees a private question');
+assert.equal(otherOrgQuestion.total,0);
+denied(await rpc('student','mg2_examiner_moderation_queue',{p_limit:10,p_offset:0}),
+ 'student cannot read original private marking schemes');
+denied(await rpc('parent','mg2_examiner_moderation_queue',{p_limit:10,p_offset:0}),
+ 'guardian cannot inspect unseen question keys');
+denied(await rpc('one','mg2_examiner_moderation_queue',{p_limit:100,p_offset:0}),
+ 'moderation queue rejects excessive page limit');
+
 denied(await rpc('author','mg2_signoff_rubric',signed),'author self-approval');
 const first=requireOk(await rpc('one','mg2_signoff_rubric',signed),'first examiner signoff');
 assert.equal(first.approved,false);
+const ownSignedQueue=requireOk(await rpc('one','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'the same examiner cannot approve the same rubric twice');
+assert.equal(ownSignedQueue.total,0);
+const nextReviewer=requireOk(await rpc('two','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'a second independent examiner sees the unsigned rubric');
+assert.equal(nextReviewer.total,1);
+assert.equal(nextReviewer.items[0].independent_reviews,1);
 const second=requireOk(await rpc('two','mg2_signoff_rubric',signed),'second independent examiner');
 assert.equal(second.approved,true);
+const clearedReviewQueue=requireOk(await rpc('two','mg2_examiner_moderation_queue',{
+ p_limit:10,p_offset:0
+}),'independently approved rubric leaves the moderation queue');
+assert.equal(clearedReviewQueue.total,0);
 
 denied(await rpc('otherExaminer','mg2_assign_constructed',{
  p_rubric:paper,p_student:identities.student.id
@@ -114,6 +150,17 @@ assert.match(attempt,/^[0-9a-f-]{36}$/i);
 denied(await rpc('one','mg2_assign_constructed',{
  p_rubric:paper,p_student:identities.student.id
 }),'duplicate version assignment');
+// Before final submission the queue remains empty; no staff solution leak.
+const queueBefore=requireOk(await rpc('one','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'same-organisation examiner queue before student submission');
+assert.equal(queueBefore.total,0);
+denied(await rpc('student','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'learner cannot list the examiner queue');
+denied(await rpc('parent','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'guardian cannot list examiner queue');
+denied(await rpc('one','mg2_examiner_queue',{p_limit:100,p_offset:0}),
+ 'queue refuses excessive page size');
+
 const learner=requireOk(await rpc('student','mg2_my_constructed',{p_attempt:attempt}),'student question read');
 assert.equal(learner.status,'assigned');
 assert.match(learner.question,/96 kits/);
@@ -158,6 +205,27 @@ denied(await rpc('student','mg2_save_constructed',{
 }),'resubmission');
 denied(await storage('POST',identities.student.id+'/'+attempt+'/work.jpg','student','image/jpeg',image),
  'image upload after final submission');
+const queue=requireOk(await rpc('one','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'real JWT examiner sees submitted answer queue');
+assert.equal(queue.total,1);
+assert.equal(queue.items.length,1);
+assert.equal(queue.items[0].attempt_id,attempt);
+assert.equal(queue.items[0].decisions_recorded,0);
+assert.ok(!JSON.stringify(queue).includes(written),'Queue cannot disclose student text');
+assert.ok(!JSON.stringify(queue).includes('worked_solution'),'Queue cannot disclose answer key');
+const queueOtherOrg=requireOk(await rpc('otherExaminer','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'examiner of another organisation sees only own submissions');
+assert.equal(queueOtherOrg.total,0);
+denied(await rpc('student','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'learner cannot view staff draft marks');
+denied(await rpc('parent','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'guardian cannot view staff draft marks');
+const freshDraft=requireOk(await rpc('one','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'authorised examiner sees empty mark draft');
+assert.equal(freshDraft.recorded,0);
+assert.equal(freshDraft.complete,false);
+assert.deepEqual(freshDraft.awards,[]);
+
 const examinerRead=requireOk(await rpc('one','mg2_examiner_constructed',{p_attempt:attempt}),
  'authorised examiner reads working');
 assert.match(examinerRead.written_work,/Red has/);
@@ -173,6 +241,29 @@ const awards=[
  {id:'a-unit',awarded:true,note:'One part correctly calculated as 12.'},
  {id:'b-check',awarded:false,note:'The check was omitted.'}
 ];
+const savedMarks=requireOk(await rpc('one','mg2_staff_mark',{
+ p_attempt:attempt,p_awards:awards,p_release:false
+}),'examiner saves all three human-awarded criteria without release');
+assert.equal(savedMarks.earned,2);
+assert.equal(savedMarks.released,false);
+denied(await rpc('two','mg2_staff_mark',{
+ p_attempt:attempt,p_awards:awards,p_release:false
+}),'second staff member cannot overwrite a colleague’s signed draft evidence');
+
+const resumed=requireOk(await rpc('one','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'examiner resumes recorded marking decisions');
+assert.equal(resumed.recorded,3);
+assert.equal(resumed.complete,true);
+assert.equal(resumed.awards.find(x=>x.id==='b-check').awarded,false);
+assert.ok(resumed.awards.some(x=>x.note.includes('All eight equal parts')));
+denied(await rpc('otherExaminer','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'other organisation examiner cannot read saved evidence');
+const activeQueue=requireOk(await rpc('two','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'second same-organisation examiner sees saved progress');
+assert.equal(activeQueue.total,1);
+assert.equal(activeQueue.items[0].decisions_recorded,3);
+assert.equal(activeQueue.items[0].marks_awarded,2);
+
 const released=requireOk(await rpc('one','mg2_staff_mark',{
  p_attempt:attempt,p_awards:awards,p_release:true,
  p_student_summary:'You found the parts and unit size. Add a final independent check.',
@@ -181,6 +272,12 @@ const released=requireOk(await rpc('one','mg2_staff_mark',{
 }),'human examiner publishes a fictional review');
 assert.equal(released.earned,2);
 assert.equal(released.possible,3);
+const clearedQueue=requireOk(await rpc('one','mg2_examiner_queue',{p_limit:10,p_offset:0}),
+ 'released answer disappears from pending examiner queue');
+assert.equal(clearedQueue.total,0);
+denied(await rpc('one','mg2_examiner_saved_marks',{p_attempt:attempt}),
+ 'released answer cannot be reopened for draft editing');
+
 const studentReport=requireOk(await rpc('student','mg2_student_report',{p_attempt:attempt}),
  'learner gets only released result');
 assert.equal(studentReport.earned,2);
