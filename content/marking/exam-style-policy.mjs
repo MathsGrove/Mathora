@@ -48,9 +48,9 @@ export function validateExamStyle(example){
     'TMUA options do not earn fabricated M1/A1/B1 working marks.');
   assert(route.calculator==='not_allowed','TMUA has a no-calculator policy.');
  }else{
-  validateRubric({...example,status:'public_editorial_example'});
-  assert(example.criteria.every(c=>policy.codes.includes(c.code)),
+  assert(Array.isArray(example.criteria)&&example.criteria.every(c=>policy.codes.includes(c.code)),
    'The marking-code system is not valid for this exam family.');
+  validateRubric({...example,status:'public_editorial_example'});
   if(qualification==='IB')assert(example.criteria.some(c=>c.code==='R1'),
    'This IB reasoning example must actually credit reasoning.');
   if(qualification!=='IB')assert(!example.criteria.some(c=>c.code==='R1'),
