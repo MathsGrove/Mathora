@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="title desc">
+<title id="title">Original ratio bar showing five red parts and three blue parts</title>
+<desc id="desc">Eight equal sections represent 96 stationery kits. Five sections for red kits and three for blue kits. Each section represents 12 kits. Diagram is illustrative, not to scale.</desc>
+<rect x="1" y="1" width="818" height="258" rx="14" fill="#F7F4EF" stroke="#DFD5C7"/>
+<text x="32" y="45" font-family="Arial,sans-serif" font-size="23" fill="#10253D" font-weight="bold">96 stationery kits split in the ratio 5 : 3</text>
+<g transform="translate(32 70)">
+<rect x="0" y="0" width="472" height="80" rx="6" fill="#E9CFC9" stroke="#8C3B32" stroke-width="2"/>
+<rect x="472" y="0" width="288" height="80" rx="6" fill="#D5E5EF" stroke="#2E5979" stroke-width="2"/>
+<path d="M94 0V80M188 0V80M282 0V80M376 0V80M472 0V80M568 0V80M664 0V80" fill="none" stroke="#6F7380" stroke-width="2"/>
+<text x="235" y="48" font-family="Arial,sans-serif" font-size="24" fill="#612820" font-weight="bold" text-anchor="middle">5 red parts</text>
+<text x="616" y="48" font-family="Arial,sans-serif" font-size="23" fill="#1C4260" font-weight="bold" text-anchor="middle">3 blue parts</text>
+</g>
+<text x="32" y="190" font-family="Arial,sans-serif" font-size="19" fill="#10253D">8 equal parts · 96 ÷ 8 = 12 kits per part</text>
+<text x="32" y="225" font-family="Arial,sans-serif" font-size="18" fill="#52647C">This schematic makes the ratio visible. It is not to scale.</text>
+</svg>

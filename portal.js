@@ -231,6 +231,30 @@ async function refreshStudentReleases(){
   if(!$('progress-panel').hidden)await renderProgress();
  }finally{releaseRefreshBusy=false}
 }
+
+async function mountControlledV2StudentPilot(){
+ if(config.markingV2Enabled!==true||!sb||
+    state.member?.member_role!=='student')return;
+ const root=$('mg2-student-pilot');
+ if(!root||root.dataset.mounted==='true')return;
+ try{
+  const [{createControlledMarkingClient},{mountStudentOriginalAssignments}]=await Promise.all([
+   import('./content/marking/staging-rpc-client.mjs'),
+   import('./content/marking/student-assignment-feed.mjs')
+  ]);
+  const client=createControlledMarkingClient(sb,{enabled:true,pilotApproved:true});
+  const link=document.createElement('link');
+  link.rel='stylesheet';link.href='./content/marking/pilot-integration.css';
+  document.head.append(link);
+  root.dataset.mounted='true';root.hidden=false;
+  mountStudentOriginalAssignments($('mg2-student-pilot-root'),{client});
+ }catch(error){
+  root.hidden=true;root.dataset.mounted='false';
+  message('global-message','Additional examiner-reviewed practice is unavailable: '+
+   (error?.message||'Your regular assignments remain available.'),true);
+ }
+}
+
 async function dashboard(){
  if(isStaff()){location.replace('./studio.html');return}
  // Existing students are routed into their one-time, qualification-level baseline
@@ -243,7 +267,7 @@ async function dashboard(){
    location.replace('./baseline.html');return;
   }
  }catch{}
- const [p,org,prof]=await Promise.all([sb.from('profiles').select('id,display_name').eq('id',state.user.id).maybeSingle(),sb.from('organisations').select('id,name').eq('id',state.member.org_id).maybeSingle(),sb.from('student_preferences').select('qualification,exam_board,tier').eq('student_id',state.user.id).maybeSingle()]);if(p.error||org.error||prof.error)throw(p.error||org.error||prof.error);state.profile=p.data||{display_name:'Student'};state.preference=prof.data||null;$('student-name').value=state.profile.display_name==='Student'?'':(state.profile.display_name||'');text('organisation-label',org.data?.name?.toUpperCase()||'YOUR PROGRAMME');text('sidebar-name',state.profile.display_name||'Student');text('sidebar-role',state.member.member_role.toUpperCase());text('member-initials',initials(state.profile.display_name));text('welcome-text','Welcome'+(state.profile.display_name?' back, '+state.profile.display_name.split(' ')[0]:'')+'.');text('membership-pill',state.member.member_role==='student'?'Student access':'Organisation team');$('pathway-form').hidden=isStaff();$('begin-paper').disabled=isStaff();if(state.preference){$('qualification-select').value=state.preference.qualification||'';$('exam-board').value=state.preference.exam_board||'';$('exam-tier').value=state.preference.tier||''}text('mg-student-route-qualification',state.preference?.qualification?(quals[state.preference.qualification]||state.preference.qualification):'To be assigned');text('mg-student-route-board',state.preference?.exam_board||'Your assigned route');text('mg-student-route-level',state.preference?.tier||'Not yet assigned');show('dashboard-view');await refresh();showPanel('overview');await assignedPractice?.refresh();await loadStudentAnalysis()}
+ const [p,org,prof]=await Promise.all([sb.from('profiles').select('id,display_name').eq('id',state.user.id).maybeSingle(),sb.from('organisations').select('id,name').eq('id',state.member.org_id).maybeSingle(),sb.from('student_preferences').select('qualification,exam_board,tier').eq('student_id',state.user.id).maybeSingle()]);if(p.error||org.error||prof.error)throw(p.error||org.error||prof.error);state.profile=p.data||{display_name:'Student'};state.preference=prof.data||null;$('student-name').value=state.profile.display_name==='Student'?'':(state.profile.display_name||'');text('organisation-label',org.data?.name?.toUpperCase()||'YOUR PROGRAMME');text('sidebar-name',state.profile.display_name||'Student');text('sidebar-role',state.member.member_role.toUpperCase());text('member-initials',initials(state.profile.display_name));text('welcome-text','Welcome'+(state.profile.display_name?' back, '+state.profile.display_name.split(' ')[0]:'')+'.');text('membership-pill',state.member.member_role==='student'?'Student access':'Organisation team');$('pathway-form').hidden=isStaff();$('begin-paper').disabled=isStaff();if(state.preference){$('qualification-select').value=state.preference.qualification||'';$('exam-board').value=state.preference.exam_board||'';$('exam-tier').value=state.preference.tier||''}text('mg-student-route-qualification',state.preference?.qualification?(quals[state.preference.qualification]||state.preference.qualification):'To be assigned');text('mg-student-route-board',state.preference?.exam_board||'Your assigned route');text('mg-student-route-level',state.preference?.tier||'Not yet assigned');show('dashboard-view');await refresh();showPanel('overview');await assignedPractice?.refresh();await loadStudentAnalysis();await mountControlledV2StudentPilot()}
 async function refresh(){if(!state.member)return;let query=sb.from('attempts').select('*').eq('org_id',state.member.org_id).order('started_at',{ascending:false}).limit(80);if(!isStaff())query=query.eq('student_id',state.user.id);let {data,error}=await query;if(error)throw error;state.attempts=data||[];text('metric-progress',state.attempts.filter(a=>a.status==='draft').length);text('metric-submitted',state.attempts.filter(a=>a.status==='submitted').length);text('metric-marked',state.attempts.filter(a=>a.status==='marked').length);const q=state.preference?.qualification;text('paper-availability',q?('Your selected pathway: '+quals[q]+'. Only original pilot questions are currently available; board-specific past papers are not yet provided.'): 'Ask your administrator to assign an exam pathway before building a paper.');if(q)await loadTopicOptions(q);await loadProgrammeAndEvidence()}
 
 const programmeNames={weekly:'Grove Weekly',daily:'Grove Daily',exam:'Grove Exam'};

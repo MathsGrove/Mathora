@@ -1,0 +1,20 @@
+name: MathsGrove criterion-level editorial checks
+on:
+  pull_request:
+    paths:
+      - 'content/marking/**'
+      - 'scripts/test-criterion-engine.mjs'
+      - '.github/workflows/criterion-marking-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-marks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify method and accuracy dependency logic
+        run: |
+          node --check content/marking/criterion-engine.mjs
+          node --check scripts/test-criterion-engine.mjs
+          node scripts/test-criterion-engine.mjs

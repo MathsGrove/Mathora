@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "status": "public_editorial_feedback_only",
+  "description": "Original unmoderated and fictional examiner-guidance examples for six constructed-response routes; no private unseen keys.",
+  "entries": [
+    {
+      "rubricId": "quadratic-roots-gcse-higher",
+      "criterionId": "m-factor",
+      "evidenceToInspect": "Inspect this original quadratics: factorisation and roots response for: Use (x−7)(x+2) or a correct equivalent root-finding method.",
+      "studentCorrection": "Find two numbers with product −14 and sum −5. Write the corrected mathematical step clearly.",
+      "studentCheck": "Expand your two brackets and compare coefficients of x and the constant term.",
+      "independentRecheck": "Factor x²−3x−10=0 with a new pair of factors, then expand to check. Explain the step targeting factorise a quadratic.",
+      "parentPrompt": "Could you show me why the two numbers multiply to the constant term in a quadratic? Encourage an explanation of factorise a quadratic, rather than checking only the score.",
+      "tutorIntervention": "Compare a correct factorisation with a sign-swapped pair; have the learner expand the brackets and spot the mismatch. Prioritise factorise a quadratic and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "quadratic-roots-gcse-higher",
+      "criterionId": "m-zero",
+      "evidenceToInspect": "Inspect this original quadratics: factorisation and roots response for: Set both linear factors to zero or use the equivalent quadratic method.",
+      "studentCorrection": "Set each factor equal to zero; do not set only the whole expression equal to zero. Write the corrected mathematical step clearly.",
+      "studentCheck": "Substitute each proposed root into x²−5x−14; both must give zero.",
+      "independentRecheck": "Solve x²+2x−15=0 independently and demonstrate each zero-product step. Explain the step targeting apply the zero-product rule.",
+      "parentPrompt": "Could you show me why the two numbers multiply to the constant term in a quadratic? Encourage an explanation of apply the zero-product rule, rather than checking only the score.",
+      "tutorIntervention": "Compare a correct factorisation with a sign-swapped pair; have the learner expand the brackets and spot the mismatch. Prioritise apply the zero-product rule and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "quadratic-roots-gcse-higher",
+      "criterionId": "a-roots",
+      "evidenceToInspect": "Inspect this original quadratics: factorisation and roots response for: State x=7 and x=−2 with signs correct.",
+      "studentCorrection": "Check both roots by substitution into the original equation. Write the corrected mathematical step clearly.",
+      "studentCheck": "Substitute 7 and −2 separately, keeping negative signs in the squared term.",
+      "independentRecheck": "Solve x²−x−12=0 and verify both roots in the unfactorised expression. Explain the step targeting give both roots.",
+      "parentPrompt": "Could you show me why the two numbers multiply to the constant term in a quadratic? Encourage an explanation of give both roots, rather than checking only the score.",
+      "tutorIntervention": "Compare a correct factorisation with a sign-swapped pair; have the learner expand the brackets and spot the mismatch. Prioritise give both roots and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "walking-percent-igcse-core",
+      "criterionId": "m-percent",
+      "evidenceToInspect": "Inspect this original percentages and quantities response for: Use 32/100 or an equivalent proportion.",
+      "studentCorrection": "Convert the percentage to a proportion of the whole. Write the corrected mathematical step clearly.",
+      "studentCheck": "Confirm 32% means 32 out of 100 before using the total of 250.",
+      "independentRecheck": "Calculate 24% of a new group of 200, showing the percentage conversion. Explain the step targeting interpret the percentage.",
+      "parentPrompt": "How would you estimate a percentage before doing the exact multiplication? Encourage an explanation of interpret the percentage, rather than checking only the score.",
+      "tutorIntervention": "Model 10%, 1% and a decimal multiplier as alternative methods, then compare on a new invented survey. Prioritise interpret the percentage and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "walking-percent-igcse-core",
+      "criterionId": "m-apply",
+      "evidenceToInspect": "Inspect this original percentages and quantities response for: Compute (32/100)×250 or correctly partition 30% and 2%.",
+      "studentCorrection": "Apply the percentage to all 250 learners, not just to 32. Write the corrected mathematical step clearly.",
+      "studentCheck": "Estimate one third of 250 and compare this with 80 to check reasonableness.",
+      "independentRecheck": "Find 18% of 350 by a different method and compare the two answers. Explain the step targeting apply a valid percentage method.",
+      "parentPrompt": "How would you estimate a percentage before doing the exact multiplication? Encourage an explanation of apply a valid percentage method, rather than checking only the score.",
+      "tutorIntervention": "Model 10%, 1% and a decimal multiplier as alternative methods, then compare on a new invented survey. Prioritise apply a valid percentage method and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "walking-percent-igcse-core",
+      "criterionId": "a-result",
+      "evidenceToInspect": "Inspect this original percentages and quantities response for: Obtain 80 learners with the unit indicated.",
+      "studentCorrection": "Check that the result is less than 250 and close to one third. Write the corrected mathematical step clearly.",
+      "studentCheck": "Check that 80/250×100=32% and label the answer learners.",
+      "independentRecheck": "A new survey of 400 has 15% choosing cycling: calculate and justify the count. Explain the step targeting state the correct count.",
+      "parentPrompt": "How would you estimate a percentage before doing the exact multiplication? Encourage an explanation of state the correct count, rather than checking only the score.",
+      "tutorIntervention": "Model 10%, 1% and a decimal multiplier as alternative methods, then compare on a new invented survey. Prioritise state the correct count and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "polynomial-integral-as",
+      "criterionId": "m-power",
+      "evidenceToInspect": "Inspect this original indefinite integration response for: Integrate at least one non-constant power term using n+1 in the exponent.",
+      "studentCorrection": "Increase the power by one and divide by the new exponent. Write the corrected mathematical step clearly.",
+      "studentCheck": "Differentiate your integrated x³ term and confirm it returns 6x².",
+      "independentRecheck": "Integrate 9x²+2x−7 and check by differentiation. Explain the step targeting use the integration power rule.",
+      "parentPrompt": "What can differentiation tell us about whether an antiderivative is correct? Encourage an explanation of use the integration power rule, rather than checking only the score.",
+      "tutorIntervention": "Use a two-column derivative/antiderivative table with different coefficients and negative signs before independent retrieval. Prioritise use the integration power rule and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "polynomial-integral-as",
+      "criterionId": "a-cubic",
+      "evidenceToInspect": "Inspect this original indefinite integration response for: Get 2x³ for ∫6x² dx.",
+      "studentCorrection": "Differentiate your cubic term; it should return 6x². Write the corrected mathematical step clearly.",
+      "studentCheck": "Differentiate the proposed −2x² term to recover −4x.",
+      "independentRecheck": "Find ∫(−8x+5)dx and verify the sign of the quadratic term. Explain the step targeting integrate the quadratic term.",
+      "parentPrompt": "What can differentiation tell us about whether an antiderivative is correct? Encourage an explanation of integrate the quadratic term, rather than checking only the score.",
+      "tutorIntervention": "Use a two-column derivative/antiderivative table with different coefficients and negative signs before independent retrieval. Prioritise integrate the quadratic term and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "polynomial-integral-as",
+      "criterionId": "a-linear",
+      "evidenceToInspect": "Inspect this original indefinite integration response for: Get −2x² for ∫−4x dx.",
+      "studentCorrection": "Check the negative sign and coefficient by differentiation. Write the corrected mathematical step clearly.",
+      "studentCheck": "Differentiate the full primitive including +C; it must reproduce all three original terms.",
+      "independentRecheck": "Integrate 3x²−10x+4 and differentiate the whole answer. Explain the step targeting integrate the linear term.",
+      "parentPrompt": "What can differentiation tell us about whether an antiderivative is correct? Encourage an explanation of integrate the linear term, rather than checking only the score.",
+      "tutorIntervention": "Use a two-column derivative/antiderivative table with different coefficients and negative signs before independent retrieval. Prioritise integrate the linear term and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "polynomial-integral-as",
+      "criterionId": "b-rest",
+      "evidenceToInspect": "Inspect this original indefinite integration response for: Include +3x and an arbitrary +C.",
+      "studentCorrection": "Remember the constant integrates to 3x, and indefinite integrals need +C. Write the corrected mathematical step clearly.",
+      "studentCheck": "Check that different values of C have the same derivative.",
+      "independentRecheck": "Find two primitives of 4x−1 that differ by a constant; explain why both work. Explain the step targeting include constant term and c.",
+      "parentPrompt": "What can differentiation tell us about whether an antiderivative is correct? Encourage an explanation of include constant term and c, rather than checking only the score.",
+      "tutorIntervention": "Use a two-column derivative/antiderivative table with different coefficients and negative signs before independent retrieval. Prioritise include constant term and c and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "complex-roots-further",
+      "criterionId": "m-disc",
+      "evidenceToInspect": "Inspect this original complex numbers and quadratic equations response for: Obtain 16−52=−36.",
+      "studentCorrection": "Use b²−4ac and preserve the negative sign. Write the corrected mathematical step clearly.",
+      "studentCheck": "Recalculate 4²−4×1×13 to confirm the discriminant is −36.",
+      "independentRecheck": "Solve z²+2z+5=0 and express both conjugate roots in a+bi form. Explain the step targeting calculate a negative discriminant.",
+      "parentPrompt": "Why do complex solutions often come in pairs with opposite imaginary parts? Encourage an explanation of calculate a negative discriminant, rather than checking only the score.",
+      "tutorIntervention": "Contrast positive and negative discriminants with paired roots and an Argand diagram; demand exact substitutions. Prioritise calculate a negative discriminant and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "complex-roots-further",
+      "criterionId": "m-formula",
+      "evidenceToInspect": "Inspect this original complex numbers and quadratic equations response for: Substitute the discriminant into z=(−b±√(b²−4ac))/(2a).",
+      "studentCorrection": "Use √(−36)=6i and keep both ± branches. Write the corrected mathematical step clearly.",
+      "studentCheck": "Square 6i and confirm that it equals −36.",
+      "independentRecheck": "Solve z²−6z+13=0 with the quadratic formula and check √−16. Explain the step targeting apply complex quadratic formula.",
+      "parentPrompt": "Why do complex solutions often come in pairs with opposite imaginary parts? Encourage an explanation of apply complex quadratic formula, rather than checking only the score.",
+      "tutorIntervention": "Contrast positive and negative discriminants with paired roots and an Argand diagram; demand exact substitutions. Prioritise apply complex quadratic formula and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "complex-roots-further",
+      "criterionId": "a-real",
+      "evidenceToInspect": "Inspect this original complex numbers and quadratic equations response for: Obtain real part −2 in both roots.",
+      "studentCorrection": "Divide the entire numerator by 2. Write the corrected mathematical step clearly.",
+      "studentCheck": "Check that both proposed roots have real part −2.",
+      "independentRecheck": "Solve z²+6z+18=0 and simplify both parts of the answer. Explain the step targeting find the real part.",
+      "parentPrompt": "Why do complex solutions often come in pairs with opposite imaginary parts? Encourage an explanation of find the real part, rather than checking only the score.",
+      "tutorIntervention": "Contrast positive and negative discriminants with paired roots and an Argand diagram; demand exact substitutions. Prioritise find the real part and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "complex-roots-further",
+      "criterionId": "a-imag",
+      "evidenceToInspect": "Inspect this original complex numbers and quadratic equations response for: Give −2+3i and −2−3i, including both signs.",
+      "studentCorrection": "Use both signs of the square root and check by substitution. Write the corrected mathematical step clearly.",
+      "studentCheck": "Substitute −2+3i and −2−3i back into the quadratic, comparing real and imaginary parts.",
+      "independentRecheck": "Verify both roots of z²+4z+20=0 by direct substitution. Explain the step targeting find both imaginary parts.",
+      "parentPrompt": "Why do complex solutions often come in pairs with opposite imaginary parts? Encourage an explanation of find both imaginary parts, rather than checking only the score.",
+      "tutorIntervention": "Contrast positive and negative discriminants with paired roots and an Argand diagram; demand exact substitutions. Prioritise find both imaginary parts and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "stationary-ib-aa-hl",
+      "criterionId": "m-derive",
+      "evidenceToInspect": "Inspect this original calculus: stationary points and mathematical justification response for: Obtain f′(x)=3x²−3 and set it to zero.",
+      "studentCorrection": "Differentiate first, then set the gradient equal to zero. Write the corrected mathematical step clearly.",
+      "studentCheck": "Differentiate x³−3x and substitute both x-values to verify a zero gradient.",
+      "independentRecheck": "Find stationary x-values of g(x)=x³−12x and show all derivative steps. Explain the step targeting differentiate to locate stationary points.",
+      "parentPrompt": "How could you explain the difference between a stationary point and a local maximum? Encourage an explanation of differentiate to locate stationary points, rather than checking only the score.",
+      "tutorIntervention": "Contrast derivative and curvature tests on a freshly drawn cubic; insist on geometric justification for classifications. Prioritise differentiate to locate stationary points and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "stationary-ib-aa-hl",
+      "criterionId": "a-xs",
+      "evidenceToInspect": "Inspect this original calculus: stationary points and mathematical justification response for: Obtain x=−1 and x=1.",
+      "studentCorrection": "Solve x²−1=0 carefully and state both signs. Write the corrected mathematical step clearly.",
+      "studentCheck": "Check 3x²−3=0 gives both x=−1 and x=1.",
+      "independentRecheck": "For h(x)=x³−3x², find stationary coordinates and check by substitution. Explain the step targeting find both stationary abscissae.",
+      "parentPrompt": "How could you explain the difference between a stationary point and a local maximum? Encourage an explanation of find both stationary abscissae, rather than checking only the score.",
+      "tutorIntervention": "Contrast derivative and curvature tests on a freshly drawn cubic; insist on geometric justification for classifications. Prioritise find both stationary abscissae and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "stationary-ib-aa-hl",
+      "criterionId": "m-value",
+      "evidenceToInspect": "Inspect this original calculus: stationary points and mathematical justification response for: Substitute stationary x-values into f and use the second derivative or equivalent sign analysis.",
+      "studentCorrection": "Use the original function for y-values and f′′ or sign changes for classification. Write the corrected mathematical step clearly.",
+      "studentCheck": "Substitute each x into x³−3x, not into its derivative.",
+      "independentRecheck": "For k(x)=x³−6x, find stationary ordinates accurately. Explain the step targeting evaluate ordinate and curvature.",
+      "parentPrompt": "How could you explain the difference between a stationary point and a local maximum? Encourage an explanation of evaluate ordinate and curvature, rather than checking only the score.",
+      "tutorIntervention": "Contrast derivative and curvature tests on a freshly drawn cubic; insist on geometric justification for classifications. Prioritise evaluate ordinate and curvature and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "stationary-ib-aa-hl",
+      "criterionId": "a-coords",
+      "evidenceToInspect": "Inspect this original calculus: stationary points and mathematical justification response for: Obtain (−1,2) and (1,−2).",
+      "studentCorrection": "Substitute each x-value into f, not f′. Write the corrected mathematical step clearly.",
+      "studentCheck": "Match (−1,2) with x=−1 and (1,−2) with x=1.",
+      "independentRecheck": "For q(x)=x³−3x, check both coordinates with a different working layout. Explain the step targeting give both coordinates.",
+      "parentPrompt": "How could you explain the difference between a stationary point and a local maximum? Encourage an explanation of give both coordinates, rather than checking only the score.",
+      "tutorIntervention": "Contrast derivative and curvature tests on a freshly drawn cubic; insist on geometric justification for classifications. Prioritise give both coordinates and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "stationary-ib-aa-hl",
+      "criterionId": "r-class",
+      "evidenceToInspect": "Inspect this original calculus: stationary points and mathematical justification response for: Explain why f′′(−1)<0 implies a maximum and f′′(1)>0 implies a minimum, or equivalent gradient changes.",
+      "studentCorrection": "Make the classification follow from a valid derivative sign argument. Write the corrected mathematical step clearly.",
+      "studentCheck": "Evaluate 6x at each stationary point and explain the sign test.",
+      "independentRecheck": "Classify stationary points of p(x)=x³−12x using either second derivative or gradient sign change. Explain the step targeting justify local max and min.",
+      "parentPrompt": "How could you explain the difference between a stationary point and a local maximum? Encourage an explanation of justify local max and min, rather than checking only the score.",
+      "tutorIntervention": "Contrast derivative and curvature tests on a freshly drawn cubic; insist on geometric justification for classifications. Prioritise justify local max and min and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "data-centre-ib-ai-sl",
+      "criterionId": "m-sum",
+      "evidenceToInspect": "Inspect this original statistics: mean, median and interpretation response for: Find a total of 35 minutes.",
+      "studentCorrection": "Add all five values, including both 6s. Write the corrected mathematical step clearly.",
+      "studentCheck": "Re-add the data 4,6,6,8,11, including both repeated sixes.",
+      "independentRecheck": "Find the sum and mean of the independent set 3,5,6,7,9. Explain the step targeting sum observed values.",
+      "parentPrompt": "How could a single unusually large observation affect the mean compared with the median? Encourage an explanation of sum observed values, rather than checking only the score.",
+      "tutorIntervention": "Use two small datasets, one with an outlier, and ask for mean, median and a reasoned comparison. Prioritise sum observed values and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "data-centre-ib-ai-sl",
+      "criterionId": "a-mean",
+      "evidenceToInspect": "Inspect this original statistics: mean, median and interpretation response for: Obtain 7 minutes by dividing 35 by 5.",
+      "studentCorrection": "Divide by the number of observations, not by their sum. Write the corrected mathematical step clearly.",
+      "studentCheck": "Verify 7×5=35 and compare that total with the sum of values.",
+      "independentRecheck": "For 5,5,8,10,12, calculate the mean and check the total. Explain the step targeting find the mean.",
+      "parentPrompt": "How could a single unusually large observation affect the mean compared with the median? Encourage an explanation of find the mean, rather than checking only the score.",
+      "tutorIntervention": "Use two small datasets, one with an outlier, and ask for mean, median and a reasoned comparison. Prioritise find the mean and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "data-centre-ib-ai-sl",
+      "criterionId": "m-middle",
+      "evidenceToInspect": "Inspect this original statistics: mean, median and interpretation response for: Identify the third of five ordered observations as the median position.",
+      "studentCorrection": "Order the data and locate the middle observation. Write the corrected mathematical step clearly.",
+      "studentCheck": "Count five ordered values and identify the third position.",
+      "independentRecheck": "Find the median of a new five-value list 2,3,8,9,12. Explain the step targeting locate middle ordered value.",
+      "parentPrompt": "How could a single unusually large observation affect the mean compared with the median? Encourage an explanation of locate middle ordered value, rather than checking only the score.",
+      "tutorIntervention": "Use two small datasets, one with an outlier, and ask for mean, median and a reasoned comparison. Prioritise locate middle ordered value and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "data-centre-ib-ai-sl",
+      "criterionId": "a-median",
+      "evidenceToInspect": "Inspect this original statistics: mean, median and interpretation response for: Obtain 6 minutes as the median.",
+      "studentCorrection": "Do not confuse the middle value with the mean. Write the corrected mathematical step clearly.",
+      "studentCheck": "Find the middle value directly; distinguish it from the average.",
+      "independentRecheck": "For 3,5,5,7,10, find the middle observation. Explain the step targeting find the median.",
+      "parentPrompt": "How could a single unusually large observation affect the mean compared with the median? Encourage an explanation of find the median, rather than checking only the score.",
+      "tutorIntervention": "Use two small datasets, one with an outlier, and ask for mean, median and a reasoned comparison. Prioritise find the median and note whether the learner can complete it independently."
+    },
+    {
+      "rubricId": "data-centre-ib-ai-sl",
+      "criterionId": "r-compare",
+      "evidenceToInspect": "Inspect this original statistics: mean, median and interpretation response for: Explain that mean (7) exceeds median (6) by 1 minute.",
+      "studentCorrection": "State the direction of the comparison and its numerical difference. Write the corrected mathematical step clearly.",
+      "studentCheck": "Subtract median 6 from mean 7 and state that the mean is larger by one minute.",
+      "independentRecheck": "Use the new data 2,3,6,7,12 to compare mean and median with units. Explain the step targeting interpret and compare statistics.",
+      "parentPrompt": "How could a single unusually large observation affect the mean compared with the median? Encourage an explanation of interpret and compare statistics, rather than checking only the score.",
+      "tutorIntervention": "Use two small datasets, one with an outlier, and ask for mean, median and a reasoned comparison. Prioritise interpret and compare statistics and note whether the learner can complete it independently."
+    }
+  ]
+}

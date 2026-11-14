@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>MathsGrove | Offline Examiner Marking Lab</title>
+<link rel="stylesheet" href="./reviewer-lab.css">
+<script type="module" src="./reviewer-lab.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to marking</a>
+<header class="site-head">
+  <span class="mark">M<span aria-hidden="true">.</span></span>
+  <div><p class="eyebrow">MathsGrove · assessment quality</p><h1>Mark the working. Explain the next step.</h1>
+  <p>Local editorial prototype. Original fictional example questions only. <strong>No student accounts, saved marks or released reports.</strong></p></div>
+  <span class="pill">NOT LIVE</span>
+</header>
+<main id="main" class="layout">
+<section class="workspace" aria-labelledby="review-title">
+ <div class="section-header"><div><p class="eyebrow">Examiner view / original draft</p><h2 id="review-title">Question and mark scheme</h2></div></div>
+ <div class="form-row">
+  <label for="question">Original example</label>
+  <select id="question" aria-describedby="qualification-notice"></select>
+ </div>
+ <p id="qualification-notice" class="fine">Assessment board mapping and moderation are required before any use with learners.</p>
+ <div class="metadata" id="meta" aria-live="polite"></div>
+ <div class="question-panel">
+  <p class="eyebrow">Question</p><p id="prompt" class="prompt"></p>
+  <details id="solution-panel"><summary>View worked solution — examiner/reference only</summary><p id="solution" class="solution"></p></details>
+ </div>
+ <div id="marking" aria-label="Question marking controls"></div>
+ <div class="actions">
+  <button type="button" id="preview" class="button-primary">Generate fictional feedback preview</button>
+  <button type="button" id="reset" class="button-secondary">Reset decisions</button>
+ </div>
+ <div id="notice" role="status" aria-live="polite"></div>
+</section>
+<aside class="reports" aria-labelledby="report-heading">
+ <div class="section-header"><div><p class="eyebrow">Report preview / restricted scope</p><h2 id="report-heading">Three useful perspectives.</h2></div></div>
+ <p class="fine">No preview appears until each mark decision is explicitly recorded. This lab cannot save, publish or release anything.</p>
+ <div class="role-tabs" role="group" aria-label="Report audience">
+  <button type="button" data-role="student" aria-pressed="true">Student</button>
+  <button type="button" data-role="parent" aria-pressed="false">Parent</button>
+  <button type="button" data-role="tutor" aria-pressed="false">Tutor</button>
+ </div>
+ <section id="report" aria-live="polite" aria-atomic="true" class="report-card">
+  <p class="empty">Select an original example, review the working and record your mark decisions to preview tailored feedback.</p>
+ </section>
+ <p class="privacy-note"><strong>Privacy rule:</strong> parents see supportive guidance, not staff-only evidence notes. Tutors see criterion-level interventions only within an authorised future backend. This demonstration has no authentication.</p>
+</aside>
+</main>
+<footer>MathsGrove · original editorial prototype · not an official examination paper or automatic marking service</footer>
+</body>
+</html>

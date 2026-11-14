@@ -1,0 +1,57 @@
+/* Role-scoped controlled-pilot style. Not loaded unless admin enabled. */
+.mg2-pilot-frame{border:1px solid #d8e1e3;border-radius:13px;padding:clamp(12px,2vw,24px);background:#f7f9f6;margin:22px 0}
+.mg2-pilot-frame>h2{font:normal clamp(25px,3vw,37px)/1.15 Georgia,serif;margin:0 0 12px}
+.mg2-pilot-frame>p{font-size:13px;color:#52697a}
+.mg2-pilot-column{display:grid;gap:20px}
+.mg2-pilot-frame [hidden]{display:none!important}
+.mg2-pilot-frame button{cursor:pointer}
+.mg2-pilot-frame :is(button,input,textarea,select):focus-visible{outline:3px solid #bd9258;outline-offset:2px}
+.mg2-pilot-frame .mg2-authoring{display:grid;gap:18px;padding:20px;border:1px solid #e0e6e7;background:white;border-radius:12px}
+.mg2-pilot-frame .mg2-authoring-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.mg2-pilot-frame .mg2-field{display:grid;gap:7px;min-width:0;font-size:12px;font-weight:700}
+.mg2-pilot-frame .mg2-field>span{font-weight:700;color:#496075}
+.mg2-pilot-frame .mg2-field :is(input,select,textarea){display:block;width:100%;padding:11px;border:1px solid #bbcacd;border-radius:7px;color:#1c344a;background:#fff;font:inherit;font-size:13px}
+.mg2-pilot-frame .mg2-field textarea{resize:vertical;line-height:1.6}
+.mg2-pilot-frame .mg2-authoring-form>h3,.mg2-pilot-frame .mg2-authoring-form>p,.mg2-pilot-frame .mg2-authoring-criteria,.mg2-pilot-frame .mg2-authoring-form>button,.mg2-pilot-frame .mg2-authoring-form>.mg2-status{grid-column:1/-1}
+.mg2-pilot-frame .mg2-authoring-criteria{display:grid;gap:12px}
+.mg2-pilot-frame .mg2-author-mark{padding:17px;border:1px solid #dce4e0;border-radius:9px;background:#fafcfb;display:grid;gap:12px}
+.mg2-pilot-frame .mg2-author-mark strong{font-size:14px}
+.mg2-pilot-frame .mg2-inline{display:flex;align-items:center;gap:9px;font-size:12px}
+.mg2-pilot-frame .mg2-inventory{border-top:1px solid #e3e8e5;padding-top:18px;display:grid;gap:14px}
+.mg2-pilot-frame .mg2-inventory-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.mg2-pilot-frame .mg2-approved-question{padding:15px;border:1px solid #dee5e3;border-radius:9px;background:#f9fbf9;display:grid;gap:9px}
+.mg2-pilot-frame .mg2-approved-question>strong{font-size:13px}
+.mg2-pilot-frame .mg2-inventory-paging{display:flex;gap:10px}
+.mg2-pilot-frame .mg2-status{font-size:12px;border-radius:8px;padding:10px;background:#eef4f0;min-height:36px}
+.mg2-pilot-frame .mg2-error{background:#fff0ee;color:#a1362e}
+.mg2-pilot-frame .mg2-student-assignments{display:grid;gap:15px;background:white;padding:clamp(15px,2vw,24px);border:1px solid #dce4e3;border-radius:11px}
+.mg2-pilot-frame .mg2-student-head .mg2-title{margin:5px 0}
+.mg2-pilot-frame .mg2-student-toolbar{display:flex;flex-wrap:wrap;gap:9px}
+.mg2-pilot-frame .mg2-student-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.mg2-pilot-frame .mg2-student-row{border:1px solid #dce5e2;border-radius:9px;background:#fafcfb;padding:15px;display:grid;gap:8px}
+.mg2-pilot-frame .mg2-student-row strong{font-size:13px}
+.mg2-pilot-frame .mg2-student-detail{display:grid;gap:12px}
+.mg2-pilot-frame .mg2-student-detail-head{display:flex;flex-wrap:wrap;align-items:center;gap:13px}
+.mg2-pilot-frame .mg2-student-detail-head h3{margin:0;font:normal 25px Georgia,serif}
+.mg2-pilot-frame .mg2-student-status{font-size:12px;min-height:34px;padding:10px;border-radius:6px;background:#edf4ee}
+.mg2-pilot-frame .mg2-report-criteria{display:grid;gap:9px;padding-left:25px}
+.mg2-pilot-frame .mg2-report-criteria li{padding:11px;border-left:3px solid #c7d4c9;background:#f6f9f6}
+.mg2-pilot-frame .mg2-mark-score{font:normal 29px Georgia,serif;color:#1c4b43}
+.mg2-pilot-frame .mgcw-panel{padding:20px;border:1px solid #d8e3e0;border-radius:10px;background:white}
+.mg2-pilot-frame .mgcw-title{font:normal 27px Georgia,serif}
+.mg2-pilot-frame .mgcw-meta{font-size:11px;font-weight:800;color:#698092}
+.mg2-pilot-frame .mgcw-question{white-space:pre-wrap;padding:16px;background:#f4f7f5;border:1px solid #dce8e4;border-radius:9px}
+.mg2-pilot-frame .mgcw-label{display:block;font-size:13px;font-weight:700;margin:14px 0 8px}
+.mg2-pilot-frame textarea#mgcw-working{min-height:210px;width:100%;padding:15px;border:1px solid #b9cbd1;border-radius:9px;resize:vertical;font:14px/1.7 ui-monospace,monospace}
+.mg2-pilot-frame .mgcw-help,.mg2-pilot-frame .mgcw-footnote{font-size:11px;color:#648091}
+.mg2-pilot-frame .mgcw-counter{display:block;text-align:right;font-size:11px;color:#657687}
+.mg2-pilot-frame .mgcw-actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
+.mg2-pilot-frame :is(.mgcw-primary,.mgcw-secondary,.mgcw-tertiary){min-height:44px;padding:10px 14px;border-radius:8px;font-size:12px;font-weight:800}
+.mg2-pilot-frame .mgcw-primary{background:#18374d;color:white;border:1px solid #18374d}
+.mg2-pilot-frame .mgcw-secondary{background:#ebf3ee;color:#285e50;border:1px solid #b5d2c6}
+.mg2-pilot-frame .mgcw-tertiary{background:white;color:#39566b;border:1px solid #c7d5dd}
+.mg2-pilot-frame .mgcw-status{padding:11px;border-radius:7px;background:#ebf5f0;color:#1f5c49;font-size:12px}
+.mg2-pilot-frame .mgcw-status.mgcw-error{background:#faedea;color:#a12d20}
+.mg2-pilot-frame button:disabled{cursor:not-allowed;opacity:.56}
+@media(max-width:750px){.mg2-pilot-frame .mg2-authoring-form{grid-template-columns:1fr}.mg2-pilot-frame .mg2-student-list,.mg2-pilot-frame .mg2-inventory-list{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.mg2-pilot-frame *, .mg2-pilot-frame *::before, .mg2-pilot-frame *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

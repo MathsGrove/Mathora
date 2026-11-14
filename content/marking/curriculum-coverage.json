@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "status": "editorial planning taxonomy, not syllabus-complete or examiner-approved",
+  "lastReviewed": "2026-11-14",
+  "families": {
+    "GCSE": {
+      "levels": [
+        "Foundation",
+        "Higher"
+      ],
+      "topics": [
+        "number",
+        "algebra",
+        "ratio",
+        "geometry",
+        "probability",
+        "statistics"
+      ],
+      "reference": "https://www.aqa.org.uk/qualifications/gcse/mathematics-8300",
+      "format": "constructed M1/A1/B1 style depends on board-specific mark scheme"
+    },
+    "IGCSE": {
+      "levels": [
+        "Core",
+        "Extended"
+      ],
+      "topics": [
+        "number",
+        "algebra",
+        "coordinate-geometry",
+        "geometry",
+        "mensuration",
+        "trigonometry",
+        "transformations-vectors",
+        "probability",
+        "statistics"
+      ],
+      "reference": "https://www.cambridgeinternational.org/Images/662466-2025-2027-syllabus.pdf",
+      "format": "Cambridge 0580 Core/Extended vary; paper-specific calculator rules"
+    },
+    "AS_A_LEVEL": {
+      "levels": [
+        "AS",
+        "A Level",
+        "Pure mathematics"
+      ],
+      "topics": [
+        "algebra",
+        "functions",
+        "coordinate-geometry",
+        "sequences",
+        "trigonometry",
+        "logarithms",
+        "differentiation",
+        "integration",
+        "statistics",
+        "mechanics"
+      ],
+      "reference": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/",
+      "format": "constructed M1/A1/B1; board/syllabus/paper-specific"
+    },
+    "Further Mathematics": {
+      "levels": [
+        "AS",
+        "A Level"
+      ],
+      "topics": [
+        "complex-numbers",
+        "matrices",
+        "proof",
+        "series",
+        "vectors",
+        "differential-equations",
+        "statistics",
+        "mechanics",
+        "decision-modelling"
+      ],
+      "reference": "https://www.ocr.org.uk/qualifications/as-a-level-gce/further-mathematics-a-h235-h245-from-2017/assessment/",
+      "format": "constructed M1/A1/B1; requires exact optional-unit mapping"
+    },
+    "IB": {
+      "levels": [
+        "AA SL",
+        "AA HL",
+        "AI SL",
+        "AI HL"
+      ],
+      "topics": [
+        "number-algebra",
+        "functions",
+        "geometry-trigonometry",
+        "statistics",
+        "calculus"
+      ],
+      "reference": "https://www.ibo.org/globalassets/new-structure/university-admission/pdfs/dp-mathematics-analysis-and-approaches-guide-en.pdf",
+      "format": "original constructed-response M1/A1/R1 examples; actual paper-specific IB notation"
+    },
+    "TMUA": {
+      "levels": [
+        "Paper 1",
+        "Paper 2"
+      ],
+      "topics": [
+        "algebra",
+        "functions",
+        "geometry",
+        "probability",
+        "reasoning"
+      ],
+      "reference": "https://esat-tmua.ac.uk/about-the-tests/tmua-test/",
+      "format": "20 five-choice questions per paper, one correct option each, no negative marks, non-calculator"
+    }
+  },
+  "qualityGates": {
+    "requireApprovedBoardMapping": true,
+    "requireSyllabusYear": true,
+    "requireIndependentMathsCheck": true,
+    "requireModeratedRubric": true,
+    "requireQuestionEvidence": true,
+    "allowGradePrediction": false,
+    "allowReleaseFromPublicEditorial": false
+  }
+}

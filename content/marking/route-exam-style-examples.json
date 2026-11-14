@@ -1,0 +1,442 @@
+{
+  "batch": "2026-11-14",
+  "status": "unmoderated original public exemplars only",
+  "note": "No private mocks. Board names indicate editorial format examples, NOT approved official exam schemes.",
+  "items": [
+    {
+      "id": "quadratic-roots-gcse-higher",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "GCSE",
+        "level": "Higher",
+        "board": "AQA",
+        "calculator": "not_allowed"
+      },
+      "topic": "Quadratics: factorisation and roots",
+      "question": "Solve x² − 5x − 14 = 0. Show your algebra and check both roots.",
+      "solution": "Find two numbers with product −14 and sum −5: −7 and 2. Factor x²−5x−14=(x−7)(x+2). By the zero-product rule x=7 or x=−2. Checks: 49−35−14=0 and 4+10−14=0.",
+      "maxMarks": 3,
+      "criteria": [
+        {
+          "id": "m-factor",
+          "code": "M1",
+          "skill": "Factorise a quadratic",
+          "description": "Use (x−7)(x+2) or a correct equivalent root-finding method.",
+          "missingFeedback": "Find two numbers with product −14 and sum −5.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-zero",
+          "code": "M1",
+          "skill": "Apply the zero-product rule",
+          "description": "Set both linear factors to zero or use the equivalent quadratic method.",
+          "missingFeedback": "Set each factor equal to zero; do not set only the whole expression equal to zero.",
+          "dependsOn": [
+            "m-factor"
+          ]
+        },
+        {
+          "id": "a-roots",
+          "code": "A1",
+          "skill": "Give both roots",
+          "description": "State x=7 and x=−2 with signs correct.",
+          "missingFeedback": "Check both roots by substitution into the original equation.",
+          "dependsOn": [
+            "m-zero"
+          ],
+          "allowImpliedMethod": true
+        }
+      ],
+      "curriculumTopicKey": "algebra"
+    },
+    {
+      "id": "walking-percent-igcse-core",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "daily",
+      "route": {
+        "qualification": "IGCSE",
+        "level": "Core",
+        "board": "Cambridge International 0580",
+        "calculator": "not_allowed"
+      },
+      "topic": "Percentages and quantities",
+      "question": "In a survey of 250 learners, 32% chose walking as their main route to school. Calculate how many learners chose walking. Show a method.",
+      "solution": "32%=32/100=0.32. Therefore 0.32×250=80 learners. Alternatively, 10%=25 so 30%=75 and 2%=5, giving 80.",
+      "maxMarks": 3,
+      "criteria": [
+        {
+          "id": "m-percent",
+          "code": "M1",
+          "skill": "Interpret the percentage",
+          "description": "Use 32/100 or an equivalent proportion.",
+          "missingFeedback": "Convert the percentage to a proportion of the whole.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-apply",
+          "code": "M1",
+          "skill": "Apply a valid percentage method",
+          "description": "Compute (32/100)×250 or correctly partition 30% and 2%.",
+          "missingFeedback": "Apply the percentage to all 250 learners, not just to 32.",
+          "dependsOn": [
+            "m-percent"
+          ]
+        },
+        {
+          "id": "a-result",
+          "code": "A1",
+          "skill": "State the correct count",
+          "description": "Obtain 80 learners with the unit indicated.",
+          "missingFeedback": "Check that the result is less than 250 and close to one third.",
+          "dependsOn": [
+            "m-apply"
+          ],
+          "allowImpliedMethod": true
+        }
+      ],
+      "curriculumTopicKey": "number"
+    },
+    {
+      "id": "polynomial-integral-as",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "weekly",
+      "route": {
+        "qualification": "AS_A_LEVEL",
+        "level": "AS",
+        "board": "Pearson Edexcel",
+        "calculator": "not_allowed"
+      },
+      "topic": "Indefinite integration",
+      "question": "Find the general indefinite integral of 6x² − 4x + 3 with respect to x. Include the constant of integration.",
+      "solution": "Integrate each term: ∫6x² dx=2x³, ∫−4x dx=−2x², ∫3 dx=3x. Therefore F(x)=2x³−2x²+3x+C. Check by differentiating F to obtain 6x²−4x+3.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-power",
+          "code": "M1",
+          "skill": "Use the integration power rule",
+          "description": "Integrate at least one non-constant power term using n+1 in the exponent.",
+          "missingFeedback": "Increase the power by one and divide by the new exponent.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-cubic",
+          "code": "A1",
+          "skill": "Integrate the quadratic term",
+          "description": "Get 2x³ for ∫6x² dx.",
+          "missingFeedback": "Differentiate your cubic term; it should return 6x².",
+          "dependsOn": [
+            "m-power"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "a-linear",
+          "code": "A1",
+          "skill": "Integrate the linear term",
+          "description": "Get −2x² for ∫−4x dx.",
+          "missingFeedback": "Check the negative sign and coefficient by differentiation.",
+          "dependsOn": [
+            "m-power"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "b-rest",
+          "code": "B1",
+          "skill": "Include constant term and C",
+          "description": "Include +3x and an arbitrary +C.",
+          "missingFeedback": "Remember the constant integrates to 3x, and indefinite integrals need +C.",
+          "dependsOn": []
+        }
+      ],
+      "curriculumTopicKey": "integration"
+    },
+    {
+      "id": "complex-roots-further",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "Further Mathematics",
+        "level": "A Level",
+        "board": "Pearson Edexcel",
+        "calculator": "paper_specific"
+      },
+      "topic": "Complex numbers and quadratic equations",
+      "question": "Solve z² + 4z + 13 = 0 over the complex numbers. Give both solutions in a + bi form.",
+      "solution": "Discriminant b²−4ac=16−52=−36. Quadratic formula z=(−4±√(−36))/2=(−4±6i)/2=−2±3i. Check (z+2)²=−9 for both.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-disc",
+          "code": "M1",
+          "skill": "Calculate a negative discriminant",
+          "description": "Obtain 16−52=−36.",
+          "missingFeedback": "Use b²−4ac and preserve the negative sign.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-formula",
+          "code": "M1",
+          "skill": "Apply complex quadratic formula",
+          "description": "Substitute the discriminant into z=(−b±√(b²−4ac))/(2a).",
+          "missingFeedback": "Use √(−36)=6i and keep both ± branches.",
+          "dependsOn": [
+            "m-disc"
+          ]
+        },
+        {
+          "id": "a-real",
+          "code": "A1",
+          "skill": "Find the real part",
+          "description": "Obtain real part −2 in both roots.",
+          "missingFeedback": "Divide the entire numerator by 2.",
+          "dependsOn": [
+            "m-formula"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "a-imag",
+          "code": "A1",
+          "skill": "Find both imaginary parts",
+          "description": "Give −2+3i and −2−3i, including both signs.",
+          "missingFeedback": "Use both signs of the square root and check by substitution.",
+          "dependsOn": [
+            "m-formula"
+          ],
+          "allowImpliedMethod": true
+        }
+      ],
+      "curriculumTopicKey": "complex-numbers"
+    },
+    {
+      "id": "stationary-ib-aa-hl",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "IB",
+        "level": "AA HL",
+        "board": "International Baccalaureate",
+        "calculator": "not_allowed"
+      },
+      "topic": "Calculus: stationary points and mathematical justification",
+      "question": "For f(x)=x³−3x, find the two stationary points and classify them as local maxima or minima. Explain your reasoning.",
+      "solution": "f′(x)=3x²−3=3(x²−1), so stationary x-values are −1 and 1. f(−1)=2 and f(1)=−2. f′′(x)=6x, so f′′(−1)=−6<0 gives local maximum (−1,2), and f′′(1)=6>0 gives local minimum (1,−2).",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-derive",
+          "code": "M1",
+          "skill": "Differentiate to locate stationary points",
+          "description": "Obtain f′(x)=3x²−3 and set it to zero.",
+          "missingFeedback": "Differentiate first, then set the gradient equal to zero.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-xs",
+          "code": "A1",
+          "skill": "Find both stationary abscissae",
+          "description": "Obtain x=−1 and x=1.",
+          "missingFeedback": "Solve x²−1=0 carefully and state both signs.",
+          "dependsOn": [
+            "m-derive"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-value",
+          "code": "M1",
+          "skill": "Evaluate ordinate and curvature",
+          "description": "Substitute stationary x-values into f and use the second derivative or equivalent sign analysis.",
+          "missingFeedback": "Use the original function for y-values and f′′ or sign changes for classification.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-coords",
+          "code": "A1",
+          "skill": "Give both coordinates",
+          "description": "Obtain (−1,2) and (1,−2).",
+          "missingFeedback": "Substitute each x-value into f, not f′.",
+          "dependsOn": [
+            "m-value"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "r-class",
+          "code": "R1",
+          "skill": "Justify local max and min",
+          "description": "Explain why f′′(−1)<0 implies a maximum and f′′(1)>0 implies a minimum, or equivalent gradient changes.",
+          "missingFeedback": "Make the classification follow from a valid derivative sign argument.",
+          "dependsOn": [
+            "m-value"
+          ]
+        }
+      ],
+      "curriculumTopicKey": "calculus"
+    },
+    {
+      "id": "data-centre-ib-ai-sl",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "daily",
+      "route": {
+        "qualification": "IB",
+        "level": "AI SL",
+        "board": "International Baccalaureate",
+        "calculator": "allowed"
+      },
+      "topic": "Statistics: mean, median and interpretation",
+      "question": "Five study-session times in minutes are 4, 6, 6, 8 and 11. Find the mean and median, then explain which measure is larger and by how much.",
+      "solution": "The total is 4+6+6+8+11=35, so the mean is 35/5=7 minutes. The values are ordered, and the middle (third) value is 6 minutes, the median. Thus the mean is 1 minute larger than the median.",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-sum",
+          "code": "M1",
+          "skill": "Sum observed values",
+          "description": "Find a total of 35 minutes.",
+          "missingFeedback": "Add all five values, including both 6s.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-mean",
+          "code": "A1",
+          "skill": "Find the mean",
+          "description": "Obtain 7 minutes by dividing 35 by 5.",
+          "missingFeedback": "Divide by the number of observations, not by their sum.",
+          "dependsOn": [
+            "m-sum"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-middle",
+          "code": "M1",
+          "skill": "Locate middle ordered value",
+          "description": "Identify the third of five ordered observations as the median position.",
+          "missingFeedback": "Order the data and locate the middle observation.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-median",
+          "code": "A1",
+          "skill": "Find the median",
+          "description": "Obtain 6 minutes as the median.",
+          "missingFeedback": "Do not confuse the middle value with the mean.",
+          "dependsOn": [
+            "m-middle"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "r-compare",
+          "code": "R1",
+          "skill": "Interpret and compare statistics",
+          "description": "Explain that mean (7) exceeds median (6) by 1 minute.",
+          "missingFeedback": "State the direction of the comparison and its numerical difference.",
+          "dependsOn": [
+            "a-mean",
+            "a-median"
+          ]
+        }
+      ],
+      "curriculumTopicKey": "statistics"
+    },
+    {
+      "id": "tmua-p1-reciprocal-roots",
+      "status": "public_editorial_mcq",
+      "format": "single_choice",
+      "reviewState": "unmoderated",
+      "plan": "weekly",
+      "route": {
+        "qualification": "TMUA",
+        "level": "Paper 1",
+        "board": "UAT-UK",
+        "calculator": "not_allowed"
+      },
+      "topic": "Algebra and roots",
+      "question": "The equation x²−5x+6=0 has two roots p and q. What is 1/p+1/q?",
+      "solution": "p+q=5 and pq=6 by Vieta’s formulas. Therefore 1/p+1/q=(p+q)/(pq)=5/6. Alternatively p=2 and q=3, so 1/2+1/3=5/6. Only C is correct.",
+      "maxMarks": 1,
+      "choices": [
+        {
+          "id": "A",
+          "text": "1/6"
+        },
+        {
+          "id": "B",
+          "text": "2/5"
+        },
+        {
+          "id": "C",
+          "text": "5/6"
+        },
+        {
+          "id": "D",
+          "text": "6/5"
+        },
+        {
+          "id": "E",
+          "text": "5/2"
+        }
+      ],
+      "correctOption": "C",
+      "curriculumTopicKey": "algebra"
+    },
+    {
+      "id": "tmua-p2-logic-equivalence",
+      "status": "public_editorial_mcq",
+      "format": "single_choice",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "TMUA",
+        "level": "Paper 2",
+        "board": "UAT-UK",
+        "calculator": "not_allowed"
+      },
+      "topic": "Logical equivalence and implication",
+      "question": "For real x, statement P is x²>4 and statement Q is |x|>2. Which claim is true?",
+      "solution": "For real x, x²>4 is equivalent to |x|²>2². Both sides are nonnegative, so taking square roots gives |x|>2. Conversely |x|>2 implies x²>4. Therefore P if and only if Q; answer C.",
+      "maxMarks": 1,
+      "choices": [
+        {
+          "id": "A",
+          "text": "P implies Q but Q does not imply P"
+        },
+        {
+          "id": "B",
+          "text": "Q implies P but P does not imply Q"
+        },
+        {
+          "id": "C",
+          "text": "P and Q are logically equivalent"
+        },
+        {
+          "id": "D",
+          "text": "Neither statement implies the other"
+        },
+        {
+          "id": "E",
+          "text": "They are equivalent only for x>0"
+        }
+      ],
+      "correctOption": "C",
+      "curriculumTopicKey": "reasoning"
+    }
+  ]
+}
