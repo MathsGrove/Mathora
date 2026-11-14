@@ -88,6 +88,40 @@ document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',(
 $('logout').onclick=async()=>{if(db)await db.auth.signOut();location.href='./portal.html'};
 function inviteStatus(a){if(a.redeemed_at)return 'Redeemed';if(a.revoked_at)return 'Revoked';if(new Date(a.expires_at).getTime()<=Date.now())return 'Expired';return 'Awaiting claim'}
 async function edge(action,body={}){if(!db)throw Error('Supabase is not configured.');const {data,error}=await db.functions.invoke('invitations',{body:{action,...body}});if(error)throw Error('Invitation service is unavailable. Check the Edge Function deployment.');if(!data?.ok)throw Error(data?.error||'Invitation request failed.');return data}
+
+async function mountControlledV2ExaminerPilot(){
+ if(config.markingV2Enabled!==true||!db||!markRole()||!state.membership)return;
+ const root=$('mg2-staff-pilot');if(!root||root.dataset.mounted==='true')return;
+ try{
+  const [
+   {createControlledMarkingClient},
+   {mountOriginalAuthoring},
+   {mountQuestionModeration},
+   {mountExaminerReviewQueue}
+  ]=await Promise.all([
+   import('./content/marking/staging-rpc-client.mjs'),
+   import('./content/marking/original-authoring-ui.mjs'),
+   import('./content/marking/examiner-moderation-ui.mjs'),
+   import('./content/marking/examiner-workbench-ui.mjs')
+  ]);
+  const client=createControlledMarkingClient(db,{enabled:true,pilotApproved:true});
+  for(const href of ['./content/marking/examiner-workbench.css',
+                      './content/marking/pilot-integration.css']){
+   const link=document.createElement('link');link.rel='stylesheet';link.href=href;
+   document.head.append(link);
+  }
+  root.dataset.mounted='true';root.hidden=false;
+  mountOriginalAuthoring($('mg2-authoring-pilot'),{
+   client,orgId:state.membership.org_id,roster:state.students
+  });
+  mountQuestionModeration($('mg2-moderation-pilot'),{client});
+  mountExaminerReviewQueue($('mg2-examiner-pilot'),{client});
+ }catch(error){
+  root.hidden=true;root.dataset.mounted='false';
+  inform('Detailed marking pilot is not available: '+(error?.message||'Contact the administrator.'),true);
+ }
+}
+
 async function init(){
  if(!connected){showStatus('Supabase connection required.','The marking board is installed on GitHub, but your Supabase project must be connected before it can create student keys or save marks. No example keys will be mistaken for real credentials.');return}
  try{
@@ -117,6 +151,7 @@ async function init(){
    $('invite-feedback').textContent='Only an authorised partner administrator can issue or revoke student invitation keys.';
   }
   await refresh();
+  await mountControlledV2ExaminerPilot();
   initContentBank(db,state);
   if(location.hash==='#student-removal' && state.membership?.member_role==='admin')openStudentRemoval();
   else setTab('overview');
