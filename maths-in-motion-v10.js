@@ -6,7 +6,7 @@
   const replay=document.getElementById("mg10-replay");
   const reduce=window.matchMedia?.("(prefers-reduced-motion: reduce)");
   const play=()=>{
-    if(reduce?.matches)return;
+    if(reduce?.matches){stage.classList.remove("mg10-playing");return;}
     stage.classList.remove("mg10-playing");
     // Reading layout restarts the finite CSS keyframes when Replay is used.
     void stage.offsetWidth;
