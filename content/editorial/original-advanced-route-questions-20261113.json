@@ -1,0 +1,229 @@
+{
+  "status": "PUBLIC_EDITORIAL_DRAFT_NOT_FOR_ASSIGNMENT",
+  "createdOn": "2026-11-13",
+  "copyright": "Original fictional open-practice examples; not official exam questions or secure mock material.",
+  "publicationApproved": false,
+  "requiresIndependentReview": true,
+  "academicRoutesFromRepository": [
+    "IB AI HL",
+    "Further Maths",
+    "AS/A2"
+  ],
+  "items": [
+    {
+      "id": "ib-ai-hl-logistic-capacity-20261113",
+      "route": {
+        "qualification": "IB",
+        "level": "AI HL",
+        "board": "IB Diploma Programme",
+        "syllabusStatus": "editorial_mapping_pending"
+      },
+      "tierUse": [
+        "Grove Weekly",
+        "Grove Exam"
+      ],
+      "topic": "Logistic models, derivatives and interpretation",
+      "maxMarks": 7,
+      "calculator": "Technology permitted for numerical evaluation; board-specific rules require review",
+      "prompt": "An original ecological model for a fictional colony gives the population P(t)=6000/(1+4e^(-0.5t)), where t is measured in years from the start of monitoring. (a) Find P(0). [1] (b) Find the exact time when P(t)=3000, and give your answer to 3 significant figures. [2] (c) Differentiate P(t), and hence calculate the instantaneous population growth rate at t=0. [2] (d) Determine the limiting population as t tends to infinity and explain what this means for the model. [2]",
+      "solutionSteps": [
+        "P(0)=6000/(1+4)=1200 individuals.",
+        "3000=6000/(1+4e^(-0.5t)) implies 1+4e^(-0.5t)=2, so e^(-0.5t)=1/4.",
+        "Taking natural logarithms: -0.5t=ln(1/4)=-ln4; hence t=2ln4=2.772588722... years, or 2.77 years (3 s.f.).",
+        "By the chain rule, P'(t)=12000e^(-0.5t)/(1+4e^(-0.5t))^2.",
+        "At t=0, P'(0)=12000/25=480 individuals per year.",
+        "As t approaches infinity, e^(-0.5t) approaches zero, so P(t) approaches 6000 individuals.",
+        "6000 is the model's carrying-capacity limit, not a guarantee about real future populations."
+      ],
+      "marks": [
+        {
+          "part": "a",
+          "points": 1,
+          "rule": "B1 correct initial population 1200"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "M1 correctly isolate exponential and apply logarithms"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "A1 exact t=2ln4 and correct 2.77 years"
+        },
+        {
+          "part": "c",
+          "points": 1,
+          "rule": "M1 chain/quotient differentiation giving equivalent expression"
+        },
+        {
+          "part": "c",
+          "points": 1,
+          "rule": "A1 evaluate 480 individuals/year"
+        },
+        {
+          "part": "d",
+          "points": 1,
+          "rule": "B1 limiting value 6000"
+        },
+        {
+          "part": "d",
+          "points": 1,
+          "rule": "B1 interpret 6000 as model limit with appropriate caution"
+        }
+      ],
+      "checks": {
+        "initial": 1200,
+        "halfCapacityTime": 2.772588722239781,
+        "growthAtZero": 480,
+        "limit": 6000
+      },
+      "review": "Independent IB AI HL examiner to verify fit, command terms, technology rules, marks and acceptable alternative methods."
+    },
+    {
+      "id": "further-maths-cube-roots-imaginary-20261113",
+      "route": {
+        "qualification": "Further Maths",
+        "level": "A Level",
+        "board": "Board-neutral",
+        "syllabusStatus": "editorial_mapping_pending"
+      },
+      "tierUse": [
+        "Grove Weekly",
+        "Grove Exam"
+      ],
+      "topic": "Complex numbers in polar form and roots",
+      "maxMarks": 7,
+      "calculator": "Exact algebra required; verify board calculator policy",
+      "prompt": "Solve z^3=-8i for all complex numbers z. (a) Write -8i in modulus-argument form using a principal argument. [2] (b) Find all three roots, giving answers in exact Cartesian form a+bi. [3] (c) Verify that the sum of your three roots is zero and their product is -8i. [2]",
+      "solutionSteps": [
+        "|-8i|=8 and a principal argument is -π/2, so -8i=8(cos(-π/2)+i sin(-π/2)).",
+        "The cube roots have modulus 2 and arguments (-π/2+2πk)/3=-π/6+2πk/3 for k=0,1,2.",
+        "For k=0, z=2(cos(-π/6)+i sin(-π/6))=√3-i.",
+        "For k=1, z=2(cos(π/2)+i sin(π/2))=2i.",
+        "For k=2, z=2(cos(7π/6)+i sin(7π/6))=-√3-i.",
+        "The sum is (√3-i)+2i+(-√3-i)=0.",
+        "The product is (√3-i)(-√3-i)(2i)=(-4)(2i)=-8i."
+      ],
+      "marks": [
+        {
+          "part": "a",
+          "points": 1,
+          "rule": "B1 modulus 8"
+        },
+        {
+          "part": "a",
+          "points": 1,
+          "rule": "B1 principal argument -π/2 and correct polar representation"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "M1 cube-root modulus 2 and argument formula"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "A1 two distinct correct exact roots"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "A1 all three correct exact roots"
+        },
+        {
+          "part": "c",
+          "points": 1,
+          "rule": "B1 verify sum zero using stated roots"
+        },
+        {
+          "part": "c",
+          "points": 1,
+          "rule": "B1 verify product -8i using stated roots"
+        }
+      ],
+      "checks": {
+        "rootRealPositive": 1.7320508075688772,
+        "rootImagPositive": 2,
+        "rootRealNegative": -1.7320508075688772,
+        "sumReal": 0,
+        "sumImag": 0,
+        "productImag": -8
+      },
+      "review": "Verify Further Maths board/level applicability and treatment of polar arguments, dependencies and follow-through."
+    },
+    {
+      "id": "cambridge-ial-m1-variable-velocity-20261113",
+      "route": {
+        "qualification": "AS/A Level",
+        "level": "Mechanics M1",
+        "board": "Cambridge International / International A Level mapping pending",
+        "syllabusStatus": "editorial_mapping_pending"
+      },
+      "tierUse": [
+        "Grove Daily",
+        "Grove Weekly"
+      ],
+      "topic": "Variable velocity, displacement and total distance",
+      "maxMarks": 7,
+      "calculator": "No calculator essential; syllabus mapping and permitted methods require review",
+      "prompt": "A particle moves on a straight line. Its velocity at time t seconds is v(t)=3t^2-12t+9 metres per second for 0≤t≤4. Its initial displacement from a fixed origin is zero. (a) Find the acceleration when t=2. [2] (b) Find the times when the particle is instantaneously at rest. [2] (c) Find the displacement from the origin when t=4. [1] (d) Find the total distance travelled during the first four seconds. [2]",
+      "solutionSteps": [
+        "Acceleration is dv/dt=6t-12 m/s²; at t=2 it is 0 m/s².",
+        "At rest, v=0: 3(t²-4t+3)=3(t-1)(t-3)=0, giving t=1 and t=3 seconds.",
+        "Displacement from the origin is s(t)=∫v(t)dt=t³-6t²+9t, using s(0)=0.",
+        "At t=4, s(4)=64-96+36=4 metres.",
+        "Because velocity changes sign at t=1 and t=3, total distance must be calculated on each interval.",
+        "s(0)=0, s(1)=4, s(3)=0, s(4)=4, so total distance=|4-0|+|0-4|+|4-0|=12 metres.",
+        "The displacement is 4 m but the distance is 12 m because the particle reverses direction twice."
+      ],
+      "marks": [
+        {
+          "part": "a",
+          "points": 1,
+          "rule": "M1 differentiate velocity to obtain acceleration"
+        },
+        {
+          "part": "a",
+          "points": 1,
+          "rule": "A1 a(2)=0 m/s²"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "M1 set velocity equal to zero and solve quadratic"
+        },
+        {
+          "part": "b",
+          "points": 1,
+          "rule": "A1 t=1,3 seconds"
+        },
+        {
+          "part": "c",
+          "points": 1,
+          "rule": "B1 displacement 4 m from correct integral and initial condition"
+        },
+        {
+          "part": "d",
+          "points": 1,
+          "rule": "M1 split intervals at both rest times and sum absolute displacement changes"
+        },
+        {
+          "part": "d",
+          "points": 1,
+          "rule": "A1 total distance 12 m"
+        }
+      ],
+      "checks": {
+        "accelerationAtTwo": 0,
+        "restTimes": [
+          1,
+          3
+        ],
+        "displacementAtFour": 4,
+        "distance": 12
+      },
+      "review": "Independent Mechanics examiner to verify correct board and module reference; no claim this is an official Cambridge item."
+    }
+  ]
+}
