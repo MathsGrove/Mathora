@@ -12,6 +12,39 @@ const set=(id,s)=>$(id).textContent=String(s??'');
 const err=(id,s,bad=false)=>{set(id,s);$(id).classList.toggle('error',bad)};
 const prettyDate=d=>{if(!d)return '—';const dt=new Date(d);return Number.isNaN(dt.getTime())?'—':dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})};
 const element=(type,cls,value)=>{const n=document.createElement(type);if(cls)n.className=cls;if(value!==undefined)n.textContent=String(value);return n};
+
+// Keep v2 report panels empty during every authorization refresh/revocation.
+// Any slow asynchronous response from a previous viewer is ignored.
+let mg2FamilyGeneration=0;
+async function mountFamilyOriginalReports(learner){
+ const serial=++mg2FamilyGeneration;
+ const root=$('mg2-family-pilot');root.hidden=true;
+ $('mg2-family-pilot-root').replaceChildren();
+ if(conf.markingV2Enabled!==true||!sb||!user||!learner)return;
+ try{
+  const [{createControlledMarkingClient},{mountLinkedOriginalReports}]=await Promise.all([
+   import('./content/marking/staging-rpc-client.mjs'),
+   import('./content/marking/linked-original-reports.mjs')
+  ]);
+  if(serial!==mg2FamilyGeneration||!user||learnerKey(learner)!==selectedLearnerKey)return;
+  const client=createControlledMarkingClient(sb,{enabled:true,pilotApproved:true});
+  if(!document.querySelector('link[data-mg2-family]')){
+   const style=document.createElement('link');style.rel='stylesheet';
+   style.href='./content/marking/pilot-integration.css';style.dataset.mg2Family='true';
+   document.head.append(style);
+  }
+  root.hidden=false;
+  mountLinkedOriginalReports($('mg2-family-pilot-root'),{
+   client,studentId:learner.student_id,role:learner.view_role
+  });
+ }catch(error){
+  if(serial!==mg2FamilyGeneration)return;
+  root.hidden=true;
+  err('fa-role-notice','New original-question reports are unavailable: '+
+   (error?.message||'Please continue using existing released reports.'),true);
+ }
+}
+
 function render(){
  if(!records.length){view('fa-pending');return}
  const chooser=$('fa-learner-select');
@@ -89,6 +122,7 @@ function render(){
  renderFamilyRole(p);
  window.MGInsights?.family(p,parent);
  view('fa-dashboard');
+ void mountFamilyOriginalReports(p);
 }
 // A user may sign out, switch accounts or trigger another refresh while a slow
 // network request is still pending. Only the newest permission check may render.
@@ -97,6 +131,8 @@ async function access(){
  const generation=++accessGeneration;
  const isCurrent=()=>generation===accessGeneration;
  // Clear previously authorised learner records before every permissions check.
+ ++mg2FamilyGeneration;
+ $('mg2-family-pilot').hidden=true;$('mg2-family-pilot-root').replaceChildren();
  records=[];clearTierRoleExperience('family');view('fa-loading');
  if(!sb){view('fa-login');err('fa-login-message','The secure database connection has not been configured.',true);return}
  try{
@@ -143,6 +179,8 @@ async function access(){
 }
 async function leaveFamilyDashboard(){
  // Invalidate every in-flight permission response before initiating sign-out.
+ ++mg2FamilyGeneration;
+ $('mg2-family-pilot').hidden=true;$('mg2-family-pilot-root').replaceChildren();
  ++accessGeneration;records=[];user=null;selectedLearnerKey=null;clearTierRoleExperience('family');view('fa-loading');
  $('fa-sign-out').hidden=true;
  try{if(sb)await sb.auth.signOut()}finally{location.replace('./portal.html')}

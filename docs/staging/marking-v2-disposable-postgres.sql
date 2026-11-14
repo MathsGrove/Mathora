@@ -19,6 +19,13 @@ CREATE TABLE private.mg2_rubrics (
  plan text NOT NULL CHECK(plan IN('weekly','daily','exam')),
  question_prompt text NOT NULL,
  worked_solution text NOT NULL,
+ -- No defaults: each original must have an actual recorded syllabus objective,
+ -- authored source declaration and paper-specific calculator rule.
+ -- The independently signed hash binds all three.
+ syllabus_objective text NOT NULL,
+ source_declaration text NOT NULL,
+ calculator_rule text NOT NULL
+   CHECK(calculator_rule IN ('allowed','not_allowed','paper_specific')),
  max_marks smallint NOT NULL CHECK(max_marks BETWEEN 1 AND 30),
  criteria jsonb NOT NULL CHECK(jsonb_typeof(criteria)='array'),
  authored_by uuid NOT NULL REFERENCES auth.users(id),
@@ -138,7 +145,11 @@ CREATE FUNCTION private.mg2_fingerprint(p_rubric private.mg2_rubrics)
      'qualification',p_rubric.qualification,'academic_level',p_rubric.academic_level,
      'exam_board',p_rubric.exam_board,'syllabus_year',p_rubric.syllabus_year,
      'plan',p_rubric.plan,'question_prompt',p_rubric.question_prompt,
-     'worked_solution',p_rubric.worked_solution,'max_marks',p_rubric.max_marks,
+     'worked_solution',p_rubric.worked_solution,
+     'syllabus_objective',p_rubric.syllabus_objective,
+     'source_declaration',p_rubric.source_declaration,
+     'calculator_rule',p_rubric.calculator_rule,
+     'max_marks',p_rubric.max_marks,
      'criteria',p_rubric.criteria,'authored_by',p_rubric.authored_by
    )::text,'UTF8')),'hex');
  $$;
@@ -151,6 +162,9 @@ CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
   IF jsonb_array_length(p_rubric.criteria)<>p_rubric.max_marks
      OR p_rubric.qualification='TMUA' OR length(btrim(p_rubric.worked_solution))<30
      OR length(btrim(p_rubric.question_prompt))<20
+     OR length(btrim(p_rubric.syllabus_objective))<15
+     OR length(btrim(p_rubric.source_declaration))<50
+     OR p_rubric.calculator_rule NOT IN('allowed','not_allowed','paper_specific')
   THEN RAISE EXCEPTION 'Invalid original multi-mark rubric';END IF;
   FOR i IN 0..p_rubric.max_marks-1 LOOP
    c:=p_rubric.criteria->i;code:=c->>'code';

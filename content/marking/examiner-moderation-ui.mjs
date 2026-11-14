@@ -56,6 +56,9 @@ export function mountQuestionModeration(root,{client,confirmSignoff}={}){
   detail.replaceChildren();if(!selected)return;
   const rubric=selected;
   detail.append(el('h3','Original question and full awarding guidance'),
+   el('p','Syllabus objective: '+rubric.syllabus_objective,'mg2-help'),
+   el('p','Originality declaration: '+rubric.source_declaration,'mg2-help'),
+   el('p','Calculator: '+rubric.calculator_rule,'mg2-help'),
    el('p',rubric.question,'mg2-question'));
   const worked=el('details',undefined,'mg2-solution');
   worked.append(el('summary','Show complete worked solution'),

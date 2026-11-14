@@ -10,6 +10,7 @@ ALTER TABLE private.mg2_attempts ADD CONSTRAINT mg2_attempts_status_check
  CHECK (status IN ('assigned','submitted','released'));
 ALTER TABLE private.mg2_attempts ALTER COLUMN status SET DEFAULT 'assigned';
 ALTER TABLE private.mg2_attempts ALTER COLUMN submitted_at DROP DEFAULT;
+ALTER TABLE private.mg2_attempts ADD COLUMN assigned_at timestamptz NOT NULL DEFAULT now();
 ALTER TABLE private.mg2_attempts ALTER COLUMN submitted_at DROP NOT NULL;
 ALTER TABLE private.mg2_attempts ADD CONSTRAINT mg2_attempts_submission_consistency
  CHECK (

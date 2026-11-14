@@ -56,7 +56,7 @@ SELECT
 
 INSERT INTO private.mg2_rubrics (
  id,org_id,question_key,version_no,qualification,academic_level,exam_board,
- syllabus_year,plan,question_prompt,worked_solution,max_marks,criteria,authored_by
+ syllabus_year,plan,question_prompt,worked_solution,max_marks,criteria,authored_by,syllabus_objective,source_declaration,calculator_rule
 )
 SELECT
  'abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
@@ -76,7 +76,10 @@ SELECT
    "description":"Check the combined total after sharing",
    "missingFeedback":"Confirm red and blue counts total 96.","dependsOn":[]}
  ]'::jsonb,
- u.id
+ u.id,
+ 'Use a part-whole ratio to calculate and verify both colour quantities.',
+ 'Original fictional ratio paper authored for isolated local maths and examiner QA; no copyrighted question source is reproduced.',
+ 'not_allowed'
 FROM auth.users u WHERE u.email='mg2-author@example.com';
 
 DO $$
