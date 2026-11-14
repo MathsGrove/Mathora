@@ -1,4 +1,5 @@
 import {mountExaminerReviewQueue} from './examiner-workbench-ui.mjs';
+import {mountQuestionModeration} from './examiner-moderation-ui.mjs';
 
 const UUID_A='abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const UUID_B='abcdabcd-cccc-4ccc-8ccc-cccccccccccc';
@@ -68,3 +69,31 @@ const client={
 window.__fictionalMarkingClient=client; // browser-test hook ONLY
 mountExaminerReviewQueue(document.getElementById('examiner-workbench'),{client,
  confirmRelease:()=>window.confirm('Release this fictional examiner report?')});
+
+
+// Independent author-check: one examiner can approve their own verified slice,
+// but cannot satisfy a two-person human moderation gate alone.
+let signedOff=false;
+const rubricId='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const fakeModeration={
+ async moderationQueue(){
+  return {total:signedOff?0:1,items:signedOff?[]:[{
+   rubric_id:rubricId,qualification:original.route.qualification,
+   academic_level:original.route.level,board:'AQA',syllabus_year:'2026',
+   question_key:original.id,question:original.question,
+   worked_solution:original.solution,criteria:original.criteria,
+   max_marks:original.maxMarks,plan:original.plan,
+   fingerprint:'a'.repeat(64),independent_reviews:0
+  }]};
+ },
+ async signoffRubric({rubricId:got,fingerprint,note,mathsChecked,syllabusChecked,markSchemeChecked}){
+  if(got!==rubricId||fingerprint!=='a'.repeat(64)||note.trim().length<25||
+    !mathsChecked||!syllabusChecked||!markSchemeChecked)
+   throw Error('Independent reviewer confirmation is incomplete.');
+  if(signedOff)throw Error('Reviewer already signed this unchanged rubric.');
+  signedOff=true;
+  return {approved:false,independent_reviewers:1};
+ }
+};
+mountQuestionModeration(document.getElementById('moderation-workbench'),
+ {client:fakeModeration,confirmSignoff:()=>window.confirm('Sign this fictional original question?')});
