@@ -2,7 +2,7 @@
 \set ON_ERROR_STOP on
 INSERT INTO private.mg2_rubrics(
  id,org_id,question_key,version_no,qualification,academic_level,exam_board,
- syllabus_year,plan,question_prompt,worked_solution,max_marks,criteria,authored_by
+ syllabus_year,plan,question_prompt,worked_solution,max_marks,criteria,authored_by,syllabus_objective,source_declaration,calculator_rule
 ) VALUES(
  'abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
@@ -15,7 +15,10 @@ INSERT INTO private.mg2_rubrics(
  {"id":"a-unit","code":"A1","skill":"Find one share","description":"Calculate the correct unit share","missingFeedback":"Divide 96 by all eight parts.","dependsOn":["m-parts"],"allowImpliedMethod":true},
  {"id":"b-check","code":"B1","skill":"Check the total","description":"Independent check of result","missingFeedback":"Verify that both groups total 96.","dependsOn":[]}
  ]'::jsonb,
- '33333333-3333-4333-8333-333333333333'
+ '33333333-3333-4333-8333-333333333333',
+ 'Calculate shares from a whole-number ratio and verify the total.',
+ 'Local synthetic ratios paper authored for testing reviewer controls; no external examination content has been copied or reused.',
+ 'not_allowed'
 );
 -- Legacy test fixture explicitly represents a previously submitted fictional answer.
 -- New learner assignments instead default to 'assigned' with no submission date.
