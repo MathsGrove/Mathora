@@ -107,7 +107,7 @@ document.querySelectorAll('[data-role]').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-exam]').forEach(b=>b.addEventListener('click',()=>{exam=b.dataset.exam;render();document.getElementById('mg3-exam-select').value=exam}));
 $('mg3-exam-select').addEventListener('change',e=>{exam=e.target.value;render()});
 document.querySelectorAll('[data-report]').forEach(b=>b.addEventListener('click',()=>{report=b.dataset.report;renderReport()}));
-document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-nav]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const section=$(b.dataset.nav);if(section)section.scrollIntoView({behavior:'smooth',block:'start'})}));
+document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-nav]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const section=$(b.dataset.nav);if(section){if(!window.MathsGroveMotion?.navigateHash?.('#'+b.dataset.nav,{replace:true}))section.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}}));
 $('mg3-reveal').addEventListener('click',()=>{const view=$('mg3-feedback-output');view.hidden=!view.hidden;$('mg3-reveal').setAttribute('aria-expanded',String(!view.hidden));byId('mg3-reveal',view.hidden?'Reveal specimen feedback ↓':'Hide specimen feedback ↑')});
 $('mg3-print').addEventListener('click',()=>window.print());
 const canvas=$('mg3-canvas'),ctx=canvas.getContext('2d');
