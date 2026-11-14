@@ -1,0 +1,80 @@
+/* MathsGrove / Mathematical Constellations v12
+   Decorative, intentionally finite, no canvas or streaming video. */
+:root{--mg12-ease:cubic-bezier(.19,.7,.22,1)}
+body.mg-site .mg12-passage{position:fixed;inset:0;z-index:9000;background:#0d1b32;color:#f5eee4;overflow:hidden;isolation:isolate;display:grid;place-items:center;pointer-events:auto;contain:layout paint;transform:translateZ(0)}
+body.mg-site .mg12-passage[hidden]{display:none!important}
+body.mg-site .mg12-passage::before{content:"";position:absolute;inset:0;opacity:.56;pointer-events:none;background:radial-gradient(ellipse at 54% 48%,#27354a 0%,#101e32 48%,#0d1b32 86%)}
+body.mg-site .mg12-passage::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#d8c4a511 1px,transparent 1px),linear-gradient(90deg,#d8c4a511 1px,transparent 1px);background-size:64px 64px;opacity:.65;mask-image:radial-gradient(ellipse at 50% 50%,#000 12%,transparent 88%)}
+body.mg-site .mg12-galaxy{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+body.mg-site .mg12-orbit{position:absolute;left:50%;top:50%;width:min(100vw,1040px);aspect-ratio:1;border:1px solid #d6c19d30;border-radius:50%;transform:translate(-50%,-50%) rotate(-24deg)}
+body.mg-site .mg12-orbit::before{content:"";position:absolute;inset:14%;border:1px solid #d8c5a522;border-radius:50%}
+body.mg-site .mg12-orbit::after{content:"";position:absolute;inset:33%;border:1px solid #d8c5a51e;border-radius:50%}
+body.mg-site .mg12-orbit-two{width:min(110vw,1330px);aspect-ratio:1.26;transform:translate(-50%,-50%) rotate(24deg);opacity:.6}
+body.mg-site .mg12-symbol{position:absolute;left:var(--x);top:var(--y);display:block;white-space:nowrap;color:#e4ccaa;opacity:0;font:italic 400 clamp(17px,2.1vw,30px)/1.2 "Instrument Serif",Georgia,serif;transform:translate3d(0,12px,0) scale(var(--scale));text-shadow:0 0 24px #dcc5a525;will-change:transform,opacity}
+body.mg-site .mg12-symbol[data-depth="near"]{color:#f8e8ce}
+body.mg-site .mg12-symbol[data-depth="far"]{opacity:0;color:#b8a489}
+body.mg-site .mg12-passage.mg12-active .mg12-symbol{animation:mg12-symbol-rise var(--duration,1150ms) ease-out var(--delay,0ms) both}
+body.mg-site .mg12-passage.mg12-active .mg12-orbit{animation:mg12-orbit-arrive 1450ms ease-out both}
+body.mg-site .mg12-galaxy-trace{position:absolute;inset:0;width:100%;height:100%;color:#ddc8a8;opacity:.42}
+body.mg-site .mg12-galaxy-trace path{stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+body.mg-site .mg12-passage.mg12-active .mg12-galaxy-trace path{animation:mg12-draw 1100ms cubic-bezier(.24,.74,.22,1) both}
+body.mg-site .mg12-galaxy-trace path:nth-child(2){animation-delay:150ms!important}
+body.mg-site .mg12-galaxy-trace path:nth-child(3){animation-delay:300ms!important}
+body.mg-site .mg12-scene{position:relative;z-index:2;width:min(92vw,840px);display:grid;justify-items:center;align-content:center;text-align:center;padding:clamp(18px,4vw,36px);pointer-events:none}
+body.mg-site .mg12-scene-kicker{font:800 10px/1.7 "DM Sans",Arial,sans-serif;letter-spacing:.2em;color:#d6c3a7;max-width:100%;margin:0 0:22px;text-transform:uppercase}
+body.mg-site .mg12-scene-formula{font:400 clamp(67px,10vw,139px)/.96 "Instrument Serif",Georgia,serif;letter-spacing:-.04em;color:#fff4e7;white-space:nowrap;max-width:100%;margin:6px 0 12px;text-shadow:0 8px 45px #0d1b3266}
+body.mg-site .mg12-scene-subtitle{font:700 clamp(11px,1.3vw,14px)/1.7 "DM Sans",Arial,sans-serif;color:#d2c3b0;letter-spacing:.095em;max-width:660px}
+body.mg-site .mg12-handwriting{margin:clamp(20px,3vw,28px) auto 0;width:min(100%,500px);min-height:120px;padding:16px 25px;text-align:left;background:#f8f3e90a;border:1px solid #d3c2a432;border-radius:9px;position:relative}
+body.mg-site .mg12-handwriting::before{content:"METHOD / WORKING";display:block;text-align:left;color:#d1bea2;letter-spacing:.2em;font:700 9px/1.5 "DM Sans",Arial,sans-serif;margin-bottom:10px}
+body.mg-site .mg12-hand-line{display:block;white-space:nowrap;overflow:hidden;width:100%;color:#faeee2;font:400 clamp(21px,3vw,31px)/1.35 "Caveat","Segoe Print","Bradley Hand",cursive;clip-path:inset(0 100% 0 0);transform:rotate(-.8deg);transform-origin:left center}
+body.mg-site .mg12-hand-line:nth-of-type(2){padding-left:15px;color:#f2daba;transform:rotate(.8deg)}
+body.mg-site .mg12-hand-line:nth-of-type(3){padding-left:30px;color:#f6e6d1;transform:rotate(-.5deg)}
+body.mg-site .mg12-passage.mg12-active .mg12-hand-line:nth-of-type(1){animation:mg12-write .58s steps(28,end) .38s both}
+body.mg-site .mg12-passage.mg12-active .mg12-hand-line:nth-of-type(2){animation:mg12-write .6s steps(28,end) .68s both}
+body.mg-site .mg12-passage.mg12-active .mg12-hand-line:nth-of-type(3){animation:mg12-write .55s steps(28,end) .98s both}
+body.mg-site .mg12-passage.mg12-active .mg12-scene-formula{animation:mg12-formula-rise .68s var(--mg12-ease) .11s both}
+body.mg-site .mg12-passage.mg12-active .mg12-scene-subtitle{animation:mg12-formula-rise .6s var(--mg12-ease) .27s both}
+body.mg-site .mg12-passage.mg12-active .mg12-scene-kicker{animation:mg12-formula-rise .55s var(--mg12-ease) .08s both}
+/* Programme, personal perspective, and marking scenes share a brand but not the same silhouette. */
+body.mg-site .mg12-passage[data-scene="programmes"] .mg12-orbit{border-radius:49% 51% 65% 35% / 45% 59% 41% 55%}
+body.mg-site .mg12-passage[data-scene="report"] .mg12-orbit{border-radius:50%;transform:translate(-50%,-50%) rotate(-10deg)}
+body.mg-site .mg12-passage[data-scene="report"] .mg12-scene-formula{font-size:clamp(58px,8vw,105px)}
+body.mg-site .mg12-passage[data-scene="student"] .mg12-scene-formula,body.mg-site .mg12-passage[data-scene="parent"] .mg12-scene-formula,body.mg-site .mg12-passage[data-scene="tutor"] .mg12-scene-formula{font-size:clamp(65px,8vw,119px)}
+body.mg-site .mg12-passage[data-scene="practice"] .mg12-scene-formula{font-size:clamp(59px,8vw,115px)}
+body.mg-site .mg12-passage[data-scene="report"] .mg12-handwriting,body.mg-site .mg12-passage[data-scene="practice"] .mg12-handwriting{border-color:#ead4ae69;box-shadow:0 16px 55px #010b1738}
+body.mg-site .mg11-destination{animation:mg12-destination-enter .62s var(--mg12-ease)}
+body.mg-report-reader .mgr-hero{animation:mg12-report-enter .95s var(--mg12-ease) both}
+body.rg .rg-hero{animation:mg12-report-enter .85s var(--mg12-ease) both}
+@keyframes mg12-symbol-rise{0%{opacity:0;transform:translate3d(0,18px,0) scale(calc(var(--scale)*.9))}35%{opacity:var(--opacity,.45)}80%{opacity:var(--opacity,.45)}100%{opacity:0;transform:translate3d(var(--drift),-34px,0) scale(var(--scale))}}
+@keyframes mg12-orbit-arrive{0%{opacity:0;transform:translate(-50%,-50%) rotate(-39deg) scale(.87)}30%{opacity:.85}90%{opacity:.8}100%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1.08)}}
+@keyframes mg12-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes mg12-formula-rise{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes mg12-write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes mg12-destination-enter{from{opacity:.82;filter:brightness(.98)}to{opacity:1;filter:brightness(1)}}
+@keyframes mg12-report-enter{from{opacity:.45;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){
+ body.mg-site .mg12-symbol:nth-child(n+17){display:none}
+ body.mg-site .mg12-galaxy-trace{opacity:.22}
+ body.mg-site .mg12-scene{padding:18px}
+ body.mg-site .mg12-scene-kicker{font-size:9px;margin-bottom:8px}
+ body.mg-site .mg12-scene-formula{font-size:clamp(50px,13vw,84px);white-space:normal;margin:4px 0 9px}
+ body.mg-site .mg12-handwriting{min-height:110px;padding:14px 18px;margin-top:19px;width:min(94vw,410px)}
+ body.mg-site .mg12-hand-line{font-size:clamp(20px,5vw,27px)}
+ body.mg-site .mg12-scene-subtitle{font-size:10px;letter-spacing:.05em}
+ body.mg-site .mg12-orbit{width:145vw}
+}
+@media(max-width:420px){
+ body.mg-site .mg12-scene-formula{font-size:clamp(44px,12vw,61px)}
+ body.mg-site .mg12-passage[data-scene="report"] .mg12-scene-formula{font-size:clamp(42px,11vw,56px)}
+ body.mg-site .mg12-handwriting{padding:12px 15px}
+ body.mg-site .mg12-hand-line:nth-of-type(2){padding-left:8px}
+ body.mg-site .mg12-hand-line:nth-of-type(3){padding-left:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ body.mg-site .mg12-passage{display:none!important}
+ body.mg-site .mg12-symbol,body.mg-site .mg12-orbit,body.mg-site .mg12-galaxy-trace path,body.mg-site .mg12-scene *,body.mg-site .mg11-destination,body.mg-report-reader .mgr-hero,body.rg .rg-hero{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
+}
+@media print{
+ body.mg-site .mg12-passage{display:none!important}
+ body.mg-report-reader .mgr-hero,body.rg .rg-hero{animation:none!important;transform:none!important}
+}
