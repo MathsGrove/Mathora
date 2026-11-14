@@ -9,6 +9,7 @@ on:
       - 'scripts/test-reviewer-lab-browser.mjs'
       - 'scripts/fixtures/*marking-v2*.sql'
       - 'docs/staging/marking-v2-disposable-postgres.sql'
+      - 'docs/staging/marking-v2-learner-workflow.sql'
       - '.github/workflows/assessment-marking-integration-ci.yml'
   workflow_dispatch:
 
@@ -94,4 +95,6 @@ jobs:
         run: |
           psql -v ON_ERROR_STOP=1 -f scripts/fixtures/marking-v2-postgres-fixture.sql
           psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-disposable-postgres.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-learner-workflow.sql
           psql -v ON_ERROR_STOP=1 -f scripts/fixtures/test-marking-v2-postgres.sql
+          psql -v ON_ERROR_STOP=1 -f scripts/fixtures/test-marking-v2-learner-workflow.sql
