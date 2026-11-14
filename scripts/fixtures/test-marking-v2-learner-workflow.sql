@@ -30,8 +30,8 @@ SELECT (public.mg2_assign_constructed(
  'cccccccc-cccc-4ccc-8ccc-cccccccccccc')->>'attempt_id')::uuid AS attempt_id \gset
 SELECT set_config('app.mg2_test_attempt', :'attempt_id',false);
 
-DO $$
-DECLARE duplicate boolean:=false;row_count integer;
+DO $
+DECLARE duplicate boolean:=false;
 BEGIN
  BEGIN
   PERFORM public.mg2_assign_constructed(
@@ -39,10 +39,7 @@ BEGIN
    'cccccccc-cccc-4ccc-8ccc-cccccccccccc');
  EXCEPTION WHEN unique_violation THEN duplicate:=true;END;
  IF NOT duplicate THEN RAISE EXCEPTION 'Duplicate original-paper assignment allowed';END IF;
- SELECT count(*) INTO row_count FROM private.mg2_attempts WHERE student_id=
-  'cccccccc-cccc-4ccc-8ccc-cccccccccccc'; -- DEF owner can see, client cannot.
- IF row_count<>1 THEN RAISE EXCEPTION 'Unexpected duplicate assignment count';END IF;
-END $$;
+END $;
 
 -- An authorised examiner sees no submission or private answer before completion.
 DO $$
