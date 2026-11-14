@@ -1,0 +1,617 @@
+{
+  "version": 1,
+  "status": "public_editorial_unmoderated",
+  "date": "2026-11-14",
+  "description": "Ten ORIGINAL fully worked holdout maths questions. The first six are fresh parameter variations for independent transfer checks, the remaining four extend under-covered academic levels/topics. Never publish as approved unseen tests.",
+  "humanModerationCompleted": false,
+  "studentAssignable": false,
+  "items": [
+    {
+      "id": "recheck-gcse-higher-quadratic",
+      "sourceId": "quadratic-roots-gcse-higher",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "GCSE",
+        "level": "Higher",
+        "board": "AQA",
+        "calculator": "not_allowed"
+      },
+      "topic": "Quadratics: independent factorisation",
+      "topicKey": "algebra",
+      "question": "Solve x² − x − 12 = 0. Show how you factor the expression, find every root, and check by substitution.",
+      "solution": "Two integers with product −12 and sum −1 are −4 and +3. Thus x²−x−12=(x−4)(x+3). By the zero-product rule x=4 or x=−3. Checking: 16−4−12=0, and 9+3−12=0.",
+      "maxMarks": 3,
+      "criteria": [
+        {
+          "id": "m-factor",
+          "code": "M1",
+          "skill": "Factor with a new integer pair",
+          "description": "Use (x−4)(x+3) or an equivalent valid solving method.",
+          "missingFeedback": "Find two integers whose sum is −1 and product is −12.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-zero",
+          "code": "M1",
+          "skill": "Apply the zero-product property",
+          "description": "Solve each linear factor from (x−4)(x+3)=0.",
+          "missingFeedback": "Set each factor separately equal to zero.",
+          "dependsOn": [
+            "m-factor"
+          ]
+        },
+        {
+          "id": "a-roots",
+          "code": "A1",
+          "skill": "Verify both independent roots",
+          "description": "State 4 and −3 and verify the signs.",
+          "missingFeedback": "Substitute both roots back into the unfactorised quadratic.",
+          "dependsOn": [
+            "m-zero"
+          ],
+          "allowImpliedMethod": true
+        }
+      ]
+    },
+    {
+      "id": "recheck-igcse-core-percentage",
+      "sourceId": "walking-percent-igcse-core",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "daily",
+      "route": {
+        "qualification": "IGCSE",
+        "level": "Core",
+        "board": "Cambridge International 0580",
+        "calculator": "not_allowed"
+      },
+      "topic": "Percentages: independent population calculation",
+      "topicKey": "number",
+      "question": "A fictional class survey has 200 responses. Exactly 24% chose the library. How many respondents chose the library? Explain a percentage method.",
+      "solution": "24% of 200 is (24/100)×200=48 respondents. Alternatively 20%=40 and 4%=8, so 24%=48. Check 48/200×100=24%.",
+      "maxMarks": 3,
+      "criteria": [
+        {
+          "id": "m-convert",
+          "code": "M1",
+          "skill": "Interpret 24 percent",
+          "description": "Write 24/100, 0.24 or 20% plus 4%.",
+          "missingFeedback": "Write the percentage as a correct fraction or partition.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-multiply",
+          "code": "M1",
+          "skill": "Apply percentage to the population",
+          "description": "Multiply 200 by 0.24 or a correct equivalent method.",
+          "missingFeedback": "Apply the proportion to all 200 responses.",
+          "dependsOn": [
+            "m-convert"
+          ]
+        },
+        {
+          "id": "a-count",
+          "code": "A1",
+          "skill": "Give the correct respondent count",
+          "description": "Obtain exactly 48 respondents.",
+          "missingFeedback": "Reverse-check 48 as a percentage of 200.",
+          "dependsOn": [
+            "m-multiply"
+          ],
+          "allowImpliedMethod": true
+        }
+      ]
+    },
+    {
+      "id": "recheck-as-integration",
+      "sourceId": "polynomial-integral-as",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "weekly",
+      "route": {
+        "qualification": "AS_A_LEVEL",
+        "level": "AS",
+        "board": "Pearson Edexcel",
+        "calculator": "not_allowed"
+      },
+      "topic": "Integration: independent polynomial primitive",
+      "topicKey": "integration",
+      "question": "Find the general indefinite integral of 9x² + 2x − 7 with respect to x. Show each term and include the constant of integration.",
+      "solution": "Integrating termwise gives ∫9x²dx=3x³, ∫2xdx=x², ∫−7dx=−7x. So F(x)=3x³+x²−7x+C. Differentiating F gives 9x²+2x−7.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-rule",
+          "code": "M1",
+          "skill": "Apply the integration power rule",
+          "description": "Increase the exponent and divide the coefficient by the new power.",
+          "missingFeedback": "Use x^(n+1)/(n+1) for nonconstant terms.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-cubic",
+          "code": "A1",
+          "skill": "Integrate the squared term",
+          "description": "Get 3x³ from 9x².",
+          "missingFeedback": "Check that differentiating 3x³ gives 9x².",
+          "dependsOn": [
+            "m-rule"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "a-linear",
+          "code": "A1",
+          "skill": "Integrate the linear term",
+          "description": "Get +x² from +2x.",
+          "missingFeedback": "Check coefficient and sign by differentiation.",
+          "dependsOn": [
+            "m-rule"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "b-constant",
+          "code": "B1",
+          "skill": "Complete the primitive",
+          "description": "Include both −7x and the arbitrary constant +C.",
+          "missingFeedback": "Integrate the constant term and include +C for an indefinite integral.",
+          "dependsOn": []
+        }
+      ]
+    },
+    {
+      "id": "recheck-further-complex",
+      "sourceId": "complex-roots-further",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "Further Mathematics",
+        "level": "A Level",
+        "board": "Pearson Edexcel",
+        "calculator": "paper_specific"
+      },
+      "topic": "Complex numbers: new conjugate roots",
+      "topicKey": "complex-numbers",
+      "question": "Solve z² + 2z + 5 = 0 over the complex numbers and show both roots in a + bi form. Verify by substitution.",
+      "solution": "The discriminant is 2²−4×1×5=−16, so √(−16)=4i. Thus z=(−2±4i)/2=−1±2i. For z=−1+2i, z²=−3−4i and 2z=−2+4i, giving zero after +5; conjugate root works likewise.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-discriminant",
+          "code": "M1",
+          "skill": "Find the negative discriminant",
+          "description": "Obtain 4−20=−16.",
+          "missingFeedback": "Compute b²−4ac before using the imaginary unit.",
+          "dependsOn": []
+        },
+        {
+          "id": "m-formula",
+          "code": "M1",
+          "skill": "Apply the complex quadratic formula",
+          "description": "Write (−2±4i)/2 after using √(−16)=4i.",
+          "missingFeedback": "Keep both signs of the square root in the formula.",
+          "dependsOn": [
+            "m-discriminant"
+          ]
+        },
+        {
+          "id": "a-real",
+          "code": "A1",
+          "skill": "Find both real components",
+          "description": "Obtain real part −1 for each root.",
+          "missingFeedback": "Divide the entire numerator by two.",
+          "dependsOn": [
+            "m-formula"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "a-imag",
+          "code": "A1",
+          "skill": "Give both conjugate solutions",
+          "description": "Write −1+2i and −1−2i and verify at least one.",
+          "missingFeedback": "Preserve both signs for the imaginary component.",
+          "dependsOn": [
+            "m-formula"
+          ],
+          "allowImpliedMethod": true
+        }
+      ]
+    },
+    {
+      "id": "recheck-ib-aa-hl-stationary",
+      "sourceId": "stationary-ib-aa-hl",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "IB",
+        "level": "AA HL",
+        "board": "International Baccalaureate",
+        "calculator": "not_allowed"
+      },
+      "topic": "Calculus: independent stationary-point reasoning",
+      "topicKey": "calculus",
+      "question": "For h(x)=x³−12x, find the two stationary points and justify which is a local maximum and which is a local minimum.",
+      "solution": "h′(x)=3x²−12=3(x²−4). Setting h′=0 gives x=−2 or x=2. The coordinates are (−2,16) and (2,−16). h′′(x)=6x, negative at −2 (local maximum) and positive at 2 (local minimum).",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-diff",
+          "code": "M1",
+          "skill": "Differentiate and set the gradient to zero",
+          "description": "Use h′(x)=3x²−12 and h′(x)=0.",
+          "missingFeedback": "Differentiate the cubic correctly before solving.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-values",
+          "code": "A1",
+          "skill": "Find both stationary x-values",
+          "description": "Obtain x=−2 and x=2.",
+          "missingFeedback": "Solve 3(x²−4)=0 and include both signs.",
+          "dependsOn": [
+            "m-diff"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-ordinates",
+          "code": "M1",
+          "skill": "Evaluate both point ordinates",
+          "description": "Substitute −2 and 2 into h(x), giving 16 and −16.",
+          "missingFeedback": "Use the original function rather than the derivative.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-points",
+          "code": "A1",
+          "skill": "State two correct coordinates",
+          "description": "Give (−2,16) and (2,−16).",
+          "missingFeedback": "Pair each x-value with its own y-value.",
+          "dependsOn": [
+            "m-ordinates"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "r-classify",
+          "code": "R1",
+          "skill": "Justify stationary-point nature",
+          "description": "Use h′′=6x, or derivative sign changes, to explain max at −2 and min at 2.",
+          "missingFeedback": "Show how second-derivative signs justify both conclusions.",
+          "dependsOn": [
+            "m-ordinates"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recheck-ib-ai-sl-statistics",
+      "sourceId": "data-centre-ib-ai-sl",
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "daily",
+      "route": {
+        "qualification": "IB",
+        "level": "AI SL",
+        "board": "International Baccalaureate",
+        "calculator": "allowed"
+      },
+      "topic": "Statistics: new mean-median interpretation",
+      "topicKey": "statistics",
+      "question": "The five fictional journey times in minutes are 2, 3, 6, 7 and 12. Calculate the mean and median, then explain how they compare.",
+      "solution": "The sum is 2+3+6+7+12=30, so the mean is 30÷5=6 minutes. The ordered middle value is 6, so the median is 6 minutes. They are equal; the difference is zero.",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-sum",
+          "code": "M1",
+          "skill": "Add all five observations",
+          "description": "Compute 30 minutes in total.",
+          "missingFeedback": "Count and add every listed journey time.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-mean",
+          "code": "A1",
+          "skill": "Calculate mean independently",
+          "description": "Obtain mean 6 minutes.",
+          "missingFeedback": "Divide the sum by exactly five observations.",
+          "dependsOn": [
+            "m-sum"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-order",
+          "code": "M1",
+          "skill": "Identify middle observation",
+          "description": "Explain why the third of five ordered values is the median.",
+          "missingFeedback": "Use the ordering, not the arithmetic mean.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-median",
+          "code": "A1",
+          "skill": "Report correct median",
+          "description": "Identify median 6 minutes.",
+          "missingFeedback": "Read the third value from the ordered list.",
+          "dependsOn": [
+            "m-order"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "r-compare",
+          "code": "R1",
+          "skill": "Interpret equal measures",
+          "description": "Explicitly explain mean and median both equal 6 and difference zero.",
+          "missingFeedback": "Compare the two numbers and their units rather than guessing from the range.",
+          "dependsOn": [
+            "a-mean",
+            "a-median"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "original-ib-aa-sl-functions",
+      "sourceId": null,
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "weekly",
+      "route": {
+        "qualification": "IB",
+        "level": "AA SL",
+        "board": "International Baccalaureate",
+        "calculator": "not_allowed"
+      },
+      "topic": "Functions: composition and order",
+      "topicKey": "functions",
+      "question": "Let f(x)=2x+3 and g(x)=x²−1. Find g(f(2)), solve f(x)=11, and explain using x=0 why g(f(x)) and f(g(x)) are not always equal.",
+      "solution": "f(2)=7, so g(f(2))=g(7)=7²−1=48. Solving 2x+3=11 gives x=4. At x=0, g(f(0))=g(3)=8, but f(g(0))=f(−1)=1. Therefore composition order can change the result.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-composite",
+          "code": "M1",
+          "skill": "Substitute through functions in order",
+          "description": "Find f(2)=7 before evaluating g(7).",
+          "missingFeedback": "Carry the output of f into g, not vice versa.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-composite",
+          "code": "A1",
+          "skill": "Calculate composite result",
+          "description": "Obtain 48 for g(f(2)).",
+          "missingFeedback": "Check that 7²−1 is 48.",
+          "dependsOn": [
+            "m-composite"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-inverse-step",
+          "code": "M1",
+          "skill": "Solve a simple linear function equation",
+          "description": "Solve 2x+3=11 to obtain x=4.",
+          "missingFeedback": "Subtract three and divide by two.",
+          "dependsOn": []
+        },
+        {
+          "id": "r-order",
+          "code": "R1",
+          "skill": "Demonstrate noncommuting compositions",
+          "description": "Compare values 8 and 1 at x=0 and explain why order matters.",
+          "missingFeedback": "Evaluate both compositions at the same input to justify the claim.",
+          "dependsOn": []
+        }
+      ]
+    },
+    {
+      "id": "original-ib-ai-hl-growth",
+      "sourceId": null,
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "exam",
+      "route": {
+        "qualification": "IB",
+        "level": "AI HL",
+        "board": "International Baccalaureate",
+        "calculator": "allowed"
+      },
+      "topic": "Exponential growth and integer-year interpretation",
+      "topicKey": "functions",
+      "question": "A fictional population is modelled by P(t)=800(1.05)^t, where t is a nonnegative integer number of years. Estimate P(3) to the nearest person and find the first whole year when P(t)>1000. Explain the use of a whole-number year.",
+      "solution": "P(3)=800(1.05)³=926.1, so 926 people. For P(t)>1000, (1.05)^t>1.25, so t>ln(1.25)/ln(1.05)≈4.573. The first integer year satisfying this is t=5, when P(5)≈1021.0.",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-eval",
+          "code": "M1",
+          "skill": "Evaluate the model at t=3",
+          "description": "Substitute t=3 into 800(1.05)^t.",
+          "missingFeedback": "Apply the power to 1.05 before multiplying by 800.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-rounded",
+          "code": "A1",
+          "skill": "Round the three-year forecast",
+          "description": "Obtain 926 people to the nearest whole person.",
+          "missingFeedback": "Check 800×1.157625=926.1, then round.",
+          "dependsOn": [
+            "m-eval"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-inequality",
+          "code": "M1",
+          "skill": "Set up and solve the exponential threshold",
+          "description": "Rearrange to 1.05^t>1.25 and use a logarithm or successive calculation.",
+          "missingFeedback": "Compare the growth factor to 1000/800.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-year",
+          "code": "A1",
+          "skill": "Identify first year over threshold",
+          "description": "Obtain t=5, not t=4.",
+          "missingFeedback": "Check both adjacent integer years around the threshold.",
+          "dependsOn": [
+            "m-inequality"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "r-discrete",
+          "code": "R1",
+          "skill": "Justify discrete-year choice",
+          "description": "Explain why t must be an integer in the question and why rounding up to year 5 is necessary.",
+          "missingFeedback": "Use the model's integer-year context rather than rounding to the nearest year.",
+          "dependsOn": [
+            "m-inequality"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "original-further-as-matrices",
+      "sourceId": null,
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "weekly",
+      "route": {
+        "qualification": "Further Mathematics",
+        "level": "AS",
+        "board": "Pearson Edexcel",
+        "calculator": "not_allowed"
+      },
+      "topic": "Matrices: multiplication order",
+      "topicKey": "matrices",
+      "question": "Let A=[[1,2],[0,1]] and B=[[2,0],[1,1]]. Calculate AB and BA and explain why matrix multiplication order matters here.",
+      "solution": "Using row-by-column products, AB=[[4,2],[1,1]]. Reversing the order gives BA=[[2,4],[1,3]]. Since these matrices differ, AB is not equal to BA; matrix multiplication is generally noncommutative.",
+      "maxMarks": 5,
+      "criteria": [
+        {
+          "id": "m-rowcol",
+          "code": "M1",
+          "skill": "Use row-by-column products for AB",
+          "description": "Use matching row and column entries for each AB position.",
+          "missingFeedback": "Multiply rows of A by columns of B.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-ab",
+          "code": "A1",
+          "skill": "Calculate AB accurately",
+          "description": "Obtain [[4,2],[1,1]].",
+          "missingFeedback": "Check the top-left entry 1×2+2×1=4.",
+          "dependsOn": [
+            "m-rowcol"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "m-reverse",
+          "code": "M1",
+          "skill": "Reverse the multiplication correctly",
+          "description": "Calculate BA using rows of B and columns of A.",
+          "missingFeedback": "Changing order changes which row and column meet.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-ba",
+          "code": "A1",
+          "skill": "Calculate BA accurately",
+          "description": "Obtain [[2,4],[1,3]].",
+          "missingFeedback": "Check bottom-right entry 1×2+1×1=3.",
+          "dependsOn": [
+            "m-reverse"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "b-compare",
+          "code": "B1",
+          "skill": "Compare matrix products independently",
+          "description": "State AB and BA differ and explain noncommutativity.",
+          "missingFeedback": "Compare the entries rather than assuming the matrices commute.",
+          "dependsOn": []
+        }
+      ]
+    },
+    {
+      "id": "original-igcse-ext-right-triangle",
+      "sourceId": null,
+      "status": "public_editorial_example",
+      "format": "constructed",
+      "reviewState": "unmoderated",
+      "plan": "daily",
+      "route": {
+        "qualification": "IGCSE",
+        "level": "Extended",
+        "board": "Cambridge International 0580",
+        "calculator": "not_allowed"
+      },
+      "topic": "Trigonometry: exact triangle ratios",
+      "topicKey": "trigonometry",
+      "question": "In a right-angled triangle an acute angle θ has opposite side 5 cm and hypotenuse 13 cm. Find the adjacent side, sin θ and tan θ, giving exact values.",
+      "solution": "By Pythagoras the adjacent length is √(13²−5²)=√144=12 cm. Therefore sin θ=opposite/hypotenuse=5/13, and tan θ=opposite/adjacent=5/12.",
+      "maxMarks": 4,
+      "criteria": [
+        {
+          "id": "m-pyth",
+          "code": "M1",
+          "skill": "Set up a Pythagorean calculation",
+          "description": "Use adjacent²=13²−5².",
+          "missingFeedback": "Subtract the square of the known leg from the hypotenuse square.",
+          "dependsOn": []
+        },
+        {
+          "id": "a-adjacent",
+          "code": "A1",
+          "skill": "Find the adjacent side",
+          "description": "Obtain 12 cm.",
+          "missingFeedback": "Evaluate √(169−25) correctly.",
+          "dependsOn": [
+            "m-pyth"
+          ],
+          "allowImpliedMethod": true
+        },
+        {
+          "id": "b-sin",
+          "code": "B1",
+          "skill": "Calculate sine exactly",
+          "description": "Obtain sin θ=5/13.",
+          "missingFeedback": "Choose opposite over hypotenuse and leave an exact fraction.",
+          "dependsOn": []
+        },
+        {
+          "id": "b-tan",
+          "code": "B1",
+          "skill": "Calculate tangent exactly",
+          "description": "Obtain tan θ=5/12.",
+          "missingFeedback": "Use the newly determined adjacent side, not the hypotenuse.",
+          "dependsOn": []
+        }
+      ]
+    }
+  ]
+}

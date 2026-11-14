@@ -1,0 +1,27 @@
+name: MathsGrove independent worked-recheck quality gate
+on:
+  pull_request:
+    paths:
+      - 'content/marking/independent-recheck-originals.json'
+      - 'scripts/test-independent-recheck-originals.mjs'
+      - '.github/workflows/independent-recheck-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  independent-maths:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify all independent worked solutions and mark allocations
+        run: |
+          node --check scripts/test-independent-recheck-originals.mjs
+          node scripts/test-criterion-engine.mjs
+          node scripts/test-exam-style-policy.mjs
+          node scripts/test-independent-recheck-originals.mjs
