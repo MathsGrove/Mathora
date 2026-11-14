@@ -144,7 +144,7 @@ BEGIN
  IF NOT blocked THEN RAISE EXCEPTION 'Incomplete criterion award array was accepted';END IF;
 END $$;
 -- A missing awarded boolean must NOT silently become zero.
-DO $
+DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
@@ -153,9 +153,9 @@ BEGIN
       {"id":"a-unit","awarded":false},{"id":"b-check","awarded":false}]'::jsonb,false);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%missing examiner mark%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Missing boolean silently marked as zero';END IF;
-END $;
+END $$;
 -- String "true" is not a typed examiner decision.
-DO $
+DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
@@ -164,9 +164,9 @@ BEGIN
       {"id":"a-unit","awarded":false},{"id":"b-check","awarded":false}]'::jsonb,false);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%missing examiner mark%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'String boolean was accepted';END IF;
-END $;
+END $$;
 -- Implied-method exceptions cannot be claimed when associated M1 was earned.
-DO $
+DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
@@ -177,7 +177,7 @@ BEGIN
       {"id":"b-check","awarded":true,"note":"The total was checked correctly."}]'::jsonb,false);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%exception not needed%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Unnecessary implied-method exception was accepted';END IF;
-END $;
+END $$;
 -- Full reviewed save: all marks come from these human decisions.
 SELECT public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
  '[{"id":"m-parts","awarded":true,"note":"Eight total ratio parts shown."},
@@ -255,13 +255,13 @@ BEGIN
 END $$;
 -- A parent account cannot request the tutor-only report, even with a valid parent link.
 SELECT set_config('request.jwt.claim.sub','66666666-6666-4666-8666-666666666666',false);
-DO $
+DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN PERFORM public.mg2_family_report('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb','tutor');
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%not found%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Parent could request tutor-only evidence';END IF;
-END $;
+END $$;
 -- No role link => no family access.
 SELECT set_config('request.jwt.claim.sub','88888888-8888-4888-8888-888888888888',false);
 DO $$
