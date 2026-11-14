@@ -242,7 +242,7 @@ export function planFamilyNextSteps(learner={}){
   sections:[
    {label:'BEFORE THE NEXT LESSON',heading:'Turn marks into a diagnosis',
     items:[
-     {title:'Inspect released evidence',body:focus?'Review the '+focus.questions+' released '+focus.topic+' question'+(focus.questions===1?'':'s')+' and identify which reasoning step needs explanation.':'Use an approved starting-point example; wait for released work before selecting a narrow misconception.'},
+     {title:'Inspect released evidence',body:focus?focus.questions>0?'Review the '+focus.questions+' released '+focus.topic+' question'+(focus.questions===1?'':'s')+' and identify which reasoning step needs explanation.':'Review the released '+focus.topic+' marks; check the actual methods once question-level evidence is available.':'Use an approved starting-point example; wait for released work before selecting a narrow misconception.'},
      {title:'Interpret with caution',body:'A lower topic percentage might reflect question difficulty or a small sample. Compare the actual reasoning, not just the bar height.'},
      {title:'Read permitted comments',body:authorised.length?authorised.length+' examiner comment item'+(authorised.length===1?' is':'s are')+' available in your assigned teaching view. Compare them with the marked steps.':'No released tutor-only examiner comments are available yet.'}
     ]},
