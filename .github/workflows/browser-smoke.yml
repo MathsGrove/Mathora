@@ -35,6 +35,8 @@ jobs:
         run: |
           node --check maths-gallery-v13.js
           node scripts/check-maths-gallery-v13.mjs
+          node --check maths-weekly-demo-v15.js
+          node scripts/check-maths-journey-v15.mjs
           node --check maths-private-motion-v14.js
           node --check maths-preview-insights-v14.js
           node scripts/check-maths-refinement-v14.mjs
