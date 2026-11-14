@@ -25,6 +25,7 @@ INSERT INTO private.mg2_attempts(id,rubric_id,org_id,student_id) VALUES(
 );
 SELECT private.mg2_fingerprint(r) AS fp FROM private.mg2_rubrics r
  WHERE id='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa' \gset
+SELECT set_config('app.mg2_expected_fp', :'fp',false);
 -- Unapproved attempts must not be markable, even by a valid examiner.
 SET ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',false);
@@ -65,9 +66,9 @@ DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
   PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-    (SELECT private.mg2_fingerprint(r) FROM private.mg2_rubrics r LIMIT 1),
+    current_setting('app.mg2_expected_fp'),
     'Repeated same examiner approval is not independent.');
- EXCEPTION WHEN OTHERS THEN blocked:=true;END;
+ EXCEPTION WHEN unique_violation THEN blocked:=true;END;
  IF NOT blocked THEN RAISE EXCEPTION 'Duplicate reviewer vote was accepted';END IF;
 END $$;
 SELECT set_config('request.jwt.claim.sub','22222222-2222-4222-8222-222222222222',false);
