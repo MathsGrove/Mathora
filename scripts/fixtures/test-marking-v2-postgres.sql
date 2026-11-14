@@ -17,12 +17,37 @@ INSERT INTO private.mg2_rubrics(
  ]'::jsonb,
  '33333333-3333-4333-8333-333333333333'
 );
-INSERT INTO private.mg2_attempts(id,rubric_id,org_id,student_id) VALUES(
+-- Legacy test fixture explicitly represents a previously submitted fictional answer.
+-- New learner assignments instead default to 'assigned' with no submission date.
+INSERT INTO private.mg2_attempts(id,rubric_id,org_id,student_id,status,submitted_at) VALUES(
  'abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
  'abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
- '44444444-4444-4444-8444-444444444444'
+ '44444444-4444-4444-8444-444444444444','submitted',now()
 );
+-- Security regression: delimiter-joined strings are ambiguous without a
+-- typed field boundary. The two prompts/solutions below produce identical
+-- "Alpha|Beta|Gamma" under the old concat_ws separator hash.
+DO $$
+DECLARE first private.mg2_rubrics%ROWTYPE;
+        second private.mg2_rubrics%ROWTYPE;
+BEGIN
+ SELECT * INTO first FROM private.mg2_rubrics
+  WHERE id='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+ first.question_prompt:='Alpha|Beta';
+ first.worked_solution:='Gamma';
+ second:=first;
+ second.question_prompt:='Alpha';
+ second.worked_solution:='Beta|Gamma';
+ IF private.mg2_fingerprint(first)=private.mg2_fingerprint(second)
+ THEN RAISE EXCEPTION 'Distinct question and solution fields share a rubric fingerprint';END IF;
+ second:=first;
+ second.authored_by:='22222222-2222-4222-8222-222222222222';
+ IF private.mg2_fingerprint(first)=private.mg2_fingerprint(second)
+ THEN RAISE EXCEPTION 'Author identity change did not invalidate examiner signoff hash';END IF;
+ IF private.mg2_fingerprint(first)<>private.mg2_fingerprint(first)
+ THEN RAISE EXCEPTION 'Rubric fingerprint is not stable';END IF;
+END $$;
 SELECT private.mg2_fingerprint(r) AS fp FROM private.mg2_rubrics r
  WHERE id='abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa' \gset
 SELECT set_config('app.mg2_expected_fp', :'fp',false);
