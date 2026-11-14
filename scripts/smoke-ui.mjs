@@ -340,7 +340,7 @@ try{
   }catch(error){failures.push('Family mock '+viewport.label+': '+String(error.message||error).slice(0,300))}
   finally{await page.close();await context.close()}
  }
- // Also verify the short cinematic passage with animations enabled.
+ // Also verify the multi-layered mathematics constellation with animations enabled.
  {
   const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
   const page=await context.newPage();
@@ -348,15 +348,20 @@ try{
   page.on('pageerror',error=>errors.push(error.message));
   try{
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
-   assert.equal(await page.locator('#mg11-passage').isVisible(),false,'Passage starts hidden');
+   assert.equal(await page.locator('#mg12-passage').isVisible(),false,'Passage starts hidden');
    assert.equal(await page.locator('.mg11-atmosphere').count(),5,'Math backgrounds should connect five sections');
+   assert.equal(await page.locator('.mg12-symbol').count(),28,'Mathematical galaxy must contain 28 formula motifs');
    assert.equal(await page.locator('.mg10-math-section').count(),0,'Disconnected curve section removed');
    await page.locator('.mg-hero a[href="#services"]').click();
-   await page.waitForFunction(()=>location.hash==='#services'&&document.getElementById('mg11-passage').hidden,null,{timeout:5000});
+   await page.waitForFunction(()=>!document.getElementById("mg12-passage").hidden,{timeout:3000});
+   assert.equal(await page.locator("#mg12-passage").getAttribute("data-scene"),"programmes","Programmes get their own constellation scene");
+   await page.waitForFunction(()=>location.hash==='#services'&&document.getElementById('mg12-passage').hidden,null,{timeout:5000});
    assert.equal(await page.locator('#services').isVisible(),true,'Programme transition reaches its section');
    await page.screenshot({path:resolve(screenshotDir,'maths-cinematic-programmes.png'),fullPage:false});
    await page.locator('[data-mg4-report="signature"]').click();
-   await page.waitForFunction(()=>location.hash==='#signature-sample'&&document.getElementById('mg11-passage').hidden,null,{timeout:5000});
+   await page.waitForFunction(()=>!document.getElementById("mg12-passage").hidden,{timeout:3000});
+   assert.equal(await page.locator(".mg12-hand-line").last().textContent(),"x = 2 or x = 3","Examiner scene writes correct algebra roots");
+   await page.waitForFunction(()=>location.hash==='#signature-sample'&&document.getElementById('mg12-passage').hidden,null,{timeout:5000});
    assert.equal(await page.locator('#signature-sample').isVisible(),true,'Examiner booklet transition works');
    await page.screenshot({path:resolve(screenshotDir,'maths-cinematic-report.png'),fullPage:false});
    await page.locator('a[href="./report.html"]').first().click();
@@ -364,10 +369,10 @@ try{
    assert.ok((await page.title()).includes('Signature'),'Full examiner booklet opens after animated link');
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
    await page.locator('[data-mg8-route="parent"]').click();
-   await page.waitForFunction(()=>location.hash==='#dashboards'&&document.getElementById('mg11-passage').hidden,null,{timeout:5000});
+   await page.waitForFunction(()=>location.hash==='#dashboards'&&document.getElementById('mg12-passage').hidden,null,{timeout:5000});
    assert.equal(await page.locator('[data-mg5-role="parent"]').getAttribute('aria-pressed'),'true','Role selection survives the cinematic passage');
    assert.equal(errors.length,0,'No JavaScript errors: '+errors.join(' | '));
-   console.log('Cinematic maths browser: programmes, examiner report, full reader and parent experience: OK');
+   console.log('Mathematical constellation browser: programmes, handwritten report working, full reader and parent experience: OK');
   }catch(error){failures.push('Cinematic maths browser: '+String(error.message||error).slice(0,380))}
   finally{await page.close();await context.close()}
  }

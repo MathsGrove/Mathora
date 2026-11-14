@@ -161,7 +161,7 @@ if(full)full.addEventListener('click',event=>{
  if(examTier)examTier.click();
  const roleButton=document.querySelector('[data-role="'+role+'"]');
  if(roleButton)roleButton.click();
- if(window.MathsGroveMotion?.navigateHash?.('#learning-journey',{replace:true}))return;
+ if(window.MathsGroveMotion?.navigateHash?.('#learning-journey',{replace:true,theme:role}))return;
  history.replaceState(null,'','#learning-journey');
  target.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
 });
