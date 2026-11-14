@@ -199,4 +199,72 @@ CREATE OR REPLACE FUNCTION public.mg2_family_report(p_attempt uuid,p_role text)
   RETURN v;
  END $$;
 
+-- Read-only guardian/tutor discovery of RELEASED original assessments for
+-- one specifically linked learner. Never return examiner notes or images.
+CREATE FUNCTION public.mg2_linked_original_reports(
+ p_student uuid,p_role text,p_limit integer DEFAULT 20
+) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
+DECLARE v_uid uuid:=auth.uid();v_email text;v_records jsonb;v_total integer;
+BEGIN
+ IF v_uid IS NULL THEN RAISE EXCEPTION 'Sign-in required';END IF;
+ IF p_role IS NULL OR p_role NOT IN('parent','tutor')
+  OR p_limit IS NULL OR p_limit<1 OR p_limit>50
+ THEN RAISE EXCEPTION 'Invalid linked viewer role or report page size';END IF;
+ SELECT lower(email) INTO v_email FROM auth.users
+  WHERE id=v_uid AND email_confirmed_at IS NOT NULL;
+ IF v_email IS NULL THEN RAISE EXCEPTION 'Verified linked email required';END IF;
+ IF NOT EXISTS(
+   SELECT 1 FROM public.learner_view_links l
+   JOIN public.learner_view_invitations i ON i.id=l.invitation_id
+    AND i.org_id=l.org_id AND i.revoked_at IS NULL
+    AND lower(i.viewer_email)=v_email
+    AND (i.expires_at IS NULL OR i.expires_at>now())
+   JOIN auth.users s ON s.id=l.student_id
+    AND lower(s.email)=lower(i.student_email)
+   JOIN public.memberships m ON m.user_id=l.student_id AND m.org_id=l.org_id
+    AND m.member_role='student'
+   WHERE l.student_id=p_student AND l.viewer_id=v_uid AND l.active
+    AND l.view_role=p_role AND i.view_role=p_role
+ ) THEN RAISE EXCEPTION 'This learner is not linked for the requested audience';END IF;
+ SELECT count(*) INTO v_total FROM private.mg2_attempts a
+  JOIN private.mg2_rubrics r ON r.id=a.rubric_id AND r.org_id=a.org_id
+  JOIN public.learner_view_links l ON l.student_id=a.student_id
+   AND l.org_id=a.org_id AND l.viewer_id=v_uid AND l.active AND l.view_role=p_role
+  JOIN public.learner_view_invitations i ON i.id=l.invitation_id
+   AND i.org_id=l.org_id AND i.view_role=l.view_role AND i.revoked_at IS NULL
+   AND lower(i.viewer_email)=v_email
+   AND (i.expires_at IS NULL OR i.expires_at>now())
+  WHERE a.student_id=p_student AND a.status='released'
+   AND private.mg2_has_active_student_plan(a.student_id,a.org_id,r.plan);
+ SELECT coalesce(jsonb_agg(jsonb_build_object(
+  'attempt_id',q.id,'qualification',q.qualification,
+  'academic_level',q.academic_level,'plan',q.plan,
+  'question_key',q.question_key,'earned',q.earned,'possible',q.possible,
+  'released_at',q.released_at
+ ) ORDER BY q.released_at DESC,q.id),'[]'::jsonb) INTO v_records
+ FROM (
+  SELECT DISTINCT a.id,r.qualification,r.academic_level,r.plan,
+   r.question_key,s.earned,s.possible,s.released_at
+  FROM private.mg2_attempts a
+  JOIN private.mg2_rubrics r ON r.id=a.rubric_id AND r.org_id=a.org_id
+  JOIN private.mg2_releases s ON s.attempt_id=a.id
+  JOIN public.learner_view_links l ON l.student_id=a.student_id
+   AND l.org_id=a.org_id AND l.viewer_id=v_uid AND l.active AND l.view_role=p_role
+  JOIN public.learner_view_invitations i ON i.id=l.invitation_id
+   AND i.org_id=l.org_id AND i.view_role=l.view_role AND i.revoked_at IS NULL
+   AND lower(i.viewer_email)=v_email
+   AND (i.expires_at IS NULL OR i.expires_at>now())
+  WHERE a.student_id=p_student AND a.status='released'
+   AND private.mg2_has_active_student_plan(a.student_id,a.org_id,r.plan)
+  ORDER BY s.released_at DESC,a.id
+  LIMIT p_limit
+ ) q;
+ RETURN jsonb_build_object('view_role',p_role,'student_id',p_student,
+  'total',v_total,'items',v_records);
+END $$;
+REVOKE ALL ON FUNCTION public.mg2_linked_original_reports(uuid,text,integer)
+ FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.mg2_linked_original_reports(uuid,text,integer)
+ TO authenticated;
+
 COMMIT;
