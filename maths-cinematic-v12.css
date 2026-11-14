@@ -1,6 +1,7 @@
 /* MathsGrove / Mathematical Constellations v12
    Decorative, intentionally finite, no canvas or streaming video. */
 :root{--mg12-ease:cubic-bezier(.19,.7,.22,1)}
+body.mg-site.mg12-transitioning .mg11-atmosphere.mg11-visible svg{animation-play-state:paused}
 body.mg-site .mg12-passage{position:fixed;inset:0;z-index:9000;background:#0d1b32;color:#f5eee4;overflow:hidden;isolation:isolate;display:grid;place-items:center;pointer-events:auto;contain:layout paint;transform:translateZ(0)}
 body.mg-site .mg12-passage[hidden]{display:none!important}
 body.mg-site .mg12-passage::before{content:"";position:absolute;inset:0;opacity:.56;pointer-events:none;background:radial-gradient(ellipse at 54% 48%,#27354a 0%,#101e32 48%,#0d1b32 86%)}
