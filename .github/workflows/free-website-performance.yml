@@ -1,0 +1,45 @@
+name: Free website performance baseline
+on:
+  pull_request:
+    paths:
+      - '*.html'
+      - '*.css'
+      - '*.js'
+      - '.lighthouserc.cjs'
+      - '.github/workflows/free-website-performance.yml'
+      - '.github/workflows/pages.yml'
+      - 'scripts/test-marking-v2-pages-assembly.mjs'
+      - 'scripts/check-marking-v2-public-bundle.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: free-performance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-homepage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - name: Check out this exact revision
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assemble curated public website and exclude private questions
+        run: node scripts/test-marking-v2-pages-assembly.mjs
+      - name: Run mobile-style Lighthouse on public homepage only
+        run: |
+          npx --yes --package=@lhci/cli@0.16.0 lhci autorun --config=.lighthouserc.cjs
+      - name: Archive public-only performance reports for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maths-grove-public-homepage-lighthouse
+          path: .lhci-public-reports/
+          retention-days: 7
+          if-no-files-found: ignore
