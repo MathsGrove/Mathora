@@ -29,6 +29,48 @@ function buildMarkingClient(db){
  }
  function id(x){check(typeof x==='string'&&uuid.test(x),'Valid fictional attempt or rubric UUID required.');return x}
  return Object.freeze({
+  async uploadEvidence({attemptId,file}={}){
+   id(attemptId);
+   check(db?.auth&&db?.storage,'Authenticated private Storage API is required.');
+   check(file&&typeof file.size==='number'&&file.size>0&&file.size<=1048576,
+     'Original evidence files must be under 1 MiB.');
+   const extension={
+    'image/png':'png','image/jpeg':'jpg','application/pdf':'pdf'
+   }[file.type];
+   check(Boolean(extension),'Only PNG, JPEG and PDF evidence is permitted.');
+   const {data:userInfo,error:userError}=await db.auth.getUser();
+   if(userError||!userInfo?.user?.id)throw Error('Verified student session required.');
+   const own=await rpc('mg2_my_constructed',{p_attempt:attemptId});
+   check(own.status==='assigned','Evidence can only be uploaded before final submission.');
+   const path=userInfo.user.id+'/'+attemptId+'/work.'+extension;
+   const {data,error}=await db.storage.from('mg2-original-evidence')
+    .upload(path,file,{contentType:file.type,upsert:false,cacheControl:'0'});
+   if(error)throw Error(error.message||'Private evidence upload failed.');
+   return {path:data?.path||path,stored:true};
+  },
+  async listEvidence({attemptId,studentId}={}){
+   id(attemptId);check(Boolean(db?.auth&&db?.storage),'Private Storage API required.');
+   const {data:userInfo,error:userError}=await db.auth.getUser();
+   if(userError||!userInfo?.user?.id)throw Error('Sign-in required for private evidence.');
+   const owner=studentId?id(studentId):id(userInfo.user.id);
+   const folder=owner+'/'+attemptId;
+   const {data,error}=await db.storage.from('mg2-original-evidence')
+    .list(folder,{limit:20,offset:0});
+   if(error)throw Error(error.message||'Private evidence files unavailable.');
+   return (data||[]).filter(f=>/^work[.](?:png|jpg|jpeg|pdf)$/.test(f.name))
+    .map(f=>({name:f.name,path:folder+'/'+f.name,
+      byteSize:f.metadata?.size??null}));
+  },
+  async signedEvidenceUrl(path){
+   check(typeof path==='string'&&
+    /^[0-9a-f-]{36}\/[0-9a-f-]{36}\/work[.](png|jpg|jpeg|pdf)$/i.test(path),
+     'A valid owned evidence reference is required.');
+   check(Boolean(db?.storage),'Private Storage API required.');
+   const {data,error}=await db.storage.from('mg2-original-evidence')
+    .createSignedUrl(path,60);
+   if(error||!data?.signedUrl)throw Error(error?.message||'Authorised evidence access unavailable.');
+   return data.signedUrl;
+  },
   async authorOriginalDraft({
    orgId,questionKey,qualification,academicLevel,examBoard,syllabusYear,
    plan,calculatorRule,syllabusObjective,sourceDeclaration,question,solution,criteria
