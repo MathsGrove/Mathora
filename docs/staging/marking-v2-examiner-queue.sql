@@ -16,6 +16,9 @@ CREATE FUNCTION public.mg2_examiner_queue(
 DECLARE v_uid uuid:=auth.uid();v_total integer;v_rows jsonb;
 BEGIN
  IF v_uid IS NULL THEN RAISE EXCEPTION 'Sign-in required';END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.memberships m WHERE m.user_id=v_uid
+   AND m.member_role IN('examiner','admin') AND private.is_staff(m.org_id))
+ THEN RAISE EXCEPTION 'Examiner permission required';END IF;
  IF p_limit IS NULL OR p_limit<1 OR p_limit>50
     OR p_offset IS NULL OR p_offset<0 OR p_offset>10000
  THEN RAISE EXCEPTION 'Queue limit or offset outside allowed range';END IF;
