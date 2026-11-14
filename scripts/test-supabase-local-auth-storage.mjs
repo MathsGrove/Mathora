@@ -139,6 +139,87 @@ const clearedReviewQueue=requireOk(await rpc('two','mg2_examiner_moderation_queu
 }),'independently approved rubric leaves the moderation queue');
 assert.equal(clearedReviewQueue.total,0);
 
+// New questions must flow through the real signed-in author + two reviewers.
+// No direct database insert from the browser and no fictional approval backfill.
+const authoredPayload={
+ p_org:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+ p_question_key:'original-daily-fractions-2026',
+ p_qualification:'GCSE',p_academic_level:'Foundation',
+ p_exam_board:'AQA',p_syllabus_year:'2026',p_plan:'daily',
+ p_calculator_rule:'not_allowed',
+ p_syllabus_objective:'Recognise and calculate a fraction of a whole number.',
+ p_source_declaration:'Original fictional fraction challenge authored expressly for this controlled MathsGrove local evaluation; no copyrighted examination material copied.',
+ p_question_prompt:'A fictional school purchases 240 pencils. Exactly two fifths are red. How many pencils are red? Show all mathematical steps and check the fraction.',
+ p_worked_solution:'Two fifths of 240 is 240 divided by five then multiplied by two, which is 48 × 2 = 96 pencils. Check: 96/240=0.4=2/5.',
+ p_criteria:[
+  {id:'m-unit',code:'M1',skill:'Identify one fifth',description:'Divide 240 by five equal parts.',
+   missingFeedback:'Divide the total by the denominator before multiplying.',
+   dependsOn:[]},
+  {id:'a-total',code:'A1',skill:'Calculate two fifths',description:'Multiply the fifth by two to get 96.',
+   missingFeedback:'Multiply the unit fifth by the numerator to find the required quantity.',
+   dependsOn:['m-unit'],allowImpliedMethod:true},
+  {id:'b-check',code:'B1',skill:'Check the original fraction',
+   description:'Check that ninety-six out of two hundred forty is two fifths.',
+   missingFeedback:'Divide the reported count by the total to verify the given fraction.',
+   dependsOn:[]}
+ ]
+};
+denied(await rpc('student','mg2_author_original_draft',authoredPayload),
+ 'student must not write a private question-bank draft');
+denied(await rpc('otherExaminer','mg2_author_original_draft',authoredPayload),
+ 'other organisation may not author into a foreign school');
+denied(await rpc('author','mg2_author_original_draft',{
+ ...authoredPayload,p_source_declaration:'Copied from exam'
+}),'short originality declaration must be refused');
+denied(await rpc('author','mg2_author_original_draft',{
+ ...authoredPayload,p_qualification:'IB',p_academic_level:'Foundation'
+}),'wrong qualification/level pairing must be refused');
+const originalCreated=requireOk(await rpc('author','mg2_author_original_draft',authoredPayload),
+ 'staff submits original question with syllabus and provenance');
+assert.equal(originalCreated.status,'draft');
+assert.equal(originalCreated.version_no,1);
+assert.match(originalCreated.fingerprint,/^[a-f0-9]{64}$/);
+assert.notEqual(originalCreated.rubric_id,paper);
+const createdId=originalCreated.rubric_id;
+const authorOriginalQueue=requireOk(await rpc('author','mg2_examiner_moderation_queue',
+ {p_limit:10,p_offset:0}),'author cannot review authored question');
+assert.equal(authorOriginalQueue.total,0);
+const reviewerOriginalQueue=requireOk(await rpc('one','mg2_examiner_moderation_queue',
+ {p_limit:10,p_offset:0}),'examiner sees original new question with audit details');
+assert.equal(reviewerOriginalQueue.total,1);
+assert.equal(reviewerOriginalQueue.items[0].rubric_id,createdId);
+assert.match(reviewerOriginalQueue.items[0].source_declaration,/Original fictional/);
+assert.match(reviewerOriginalQueue.items[0].syllabus_objective,/fraction of a whole/);
+assert.equal(reviewerOriginalQueue.items[0].calculator_rule,'not_allowed');
+const beforeApproval=requireOk(await rpc('one','mg2_assignable_originals',
+ {p_limit:10,p_offset:0}),'staff sees only independently approved original questions');
+assert.equal(beforeApproval.total,1,'Unapproved new original must never enter assignment stock');
+denied(await rpc('one','mg2_assign_constructed',{
+ p_rubric:createdId,p_student:identities.student.id
+}),'staff cannot assign a draft missing two examiners');
+const review2={...signed,p_rubric:createdId,p_hash:originalCreated.fingerprint,
+ p_note:'Independently verified all fraction calculations, wording, alternative correct methods and syllabus conditions.'};
+denied(await rpc('author','mg2_signoff_rubric',review2),
+ 'same original author cannot count as an independent reviewer');
+const signedFirst=requireOk(await rpc('one','mg2_signoff_rubric',review2),
+ 'first reviewer of newly authored question');
+assert.equal(signedFirst.approved,false);
+const stockMid=requireOk(await rpc('two','mg2_assignable_originals',
+ {p_limit:10,p_offset:0}),'single reviewer cannot make a question assignable');
+assert.equal(stockMid.total,1);
+const signedSecond=requireOk(await rpc('two','mg2_signoff_rubric',review2),
+ 'second reviewer approves the unchanged original');
+assert.equal(signedSecond.approved,true);
+const approvedStock=requireOk(await rpc('one','mg2_assignable_originals',
+ {p_limit:10,p_offset:0}),'examiner sees reviewed assignment inventory');
+assert.equal(approvedStock.total,2);
+assert.ok(approvedStock.items.some(i=>i.rubric_id===createdId));
+assert.ok(!JSON.stringify(approvedStock).includes('240 divided by five'),
+ 'Assignable inventory must not expose examiner solution or private awards');
+denied(await rpc('student','mg2_assignable_originals',{p_limit:10,p_offset:0}),
+ 'student cannot enumerate private approved question inventory');
+
+
 denied(await rpc('otherExaminer','mg2_assign_constructed',{
  p_rubric:paper,p_student:identities.student.id
 }),'other-organisation examiner assigning');
@@ -161,6 +242,18 @@ denied(await rpc('parent','mg2_examiner_queue',{p_limit:10,p_offset:0}),
 denied(await rpc('one','mg2_examiner_queue',{p_limit:100,p_offset:0}),
  'queue refuses excessive page size');
 
+const assignedFeed=requireOk(await rpc('student','mg2_my_original_assignments',{
+ p_limit:10,p_offset:0
+}),'learner sees own new constructed-response assignments');
+assert.equal(assignedFeed.total,1);
+assert.equal(assignedFeed.items[0].attempt_id,attempt);
+assert.ok(!JSON.stringify(assignedFeed).includes('worked_solution'));
+const otherLearnerFeed=requireOk(await rpc('otherStudent','mg2_my_original_assignments',{
+ p_limit:10,p_offset:0
+}),'other student receives an empty own assignment list');
+assert.equal(otherLearnerFeed.total,0);
+denied(await rpc('student','mg2_my_original_assignments',{p_limit:80,p_offset:0}),
+ 'student assignment listing refuses oversized pagination');
 const learner=requireOk(await rpc('student','mg2_my_constructed',{p_attempt:attempt}),'student question read');
 assert.equal(learner.status,'assigned');
 assert.match(learner.question,/96 kits/);
@@ -286,6 +379,19 @@ const parentReport=requireOk(await rpc('parent','mg2_family_report',{
  p_attempt:attempt,p_role:'parent'
 }),'parent gets linked report');
 assert.equal(parentReport.view_role,'parent');
+// Grade/feedback access must follow the actual weekly/daily paper entitlement,
+// rather than erroneously requiring Grove Exam for every family report.
+psql("UPDATE public.student_entitlements SET tier='weekly' WHERE student_id=(SELECT id FROM auth.users WHERE email='mg2-student@example.com')");
+const familyWeekly=requireOk(await rpc('parent','mg2_family_report',{
+ p_attempt:attempt,p_role:'parent'
+}),'linked guardian receives weekly assignment report on Grove Weekly');
+assert.equal(familyWeekly.view_role,'parent');
+psql("UPDATE public.student_entitlements SET tier='daily' WHERE student_id=(SELECT id FROM auth.users WHERE email='mg2-student@example.com')");
+const familyDaily=requireOk(await rpc('tutor','mg2_family_report',{
+ p_attempt:attempt,p_role:'tutor'
+}),'linked tutor receives weekly assignment report on Grove Daily');
+assert.equal(familyDaily.view_role,'tutor');
+
 assert.ok(!('criteria'in parentReport)&&!('teaching_plan'in parentReport));
 const tutorReport=requireOk(await rpc('tutor','mg2_family_report',{
  p_attempt:attempt,p_role:'tutor'
