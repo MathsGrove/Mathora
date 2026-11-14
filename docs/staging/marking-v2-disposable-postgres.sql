@@ -19,11 +19,12 @@ CREATE TABLE private.mg2_rubrics (
  plan text NOT NULL CHECK(plan IN('weekly','daily','exam')),
  question_prompt text NOT NULL,
  worked_solution text NOT NULL,
- -- Mandatory for new authoring RPCs; locally seeded legacy tests have explicit
- -- fictional defaults. These are signed as part of the immutable rubric.
- syllabus_objective text NOT NULL DEFAULT 'Fictional ratios curriculum objective for a local test',
- source_declaration text NOT NULL DEFAULT 'Fictional original authored material; no third-party examination content was copied.',
- calculator_rule text NOT NULL DEFAULT 'paper_specific'
+ -- No defaults: each original must have an actual recorded syllabus objective,
+ -- authored source declaration and paper-specific calculator rule.
+ -- The independently signed hash binds all three.
+ syllabus_objective text NOT NULL,
+ source_declaration text NOT NULL,
+ calculator_rule text NOT NULL
    CHECK(calculator_rule IN ('allowed','not_allowed','paper_specific')),
  max_marks smallint NOT NULL CHECK(max_marks BETWEEN 1 AND 30),
  criteria jsonb NOT NULL CHECK(jsonb_typeof(criteria)='array'),
