@@ -6,12 +6,7 @@
  if(!document.body)return;
  const canReduce=window.matchMedia?.("(prefers-reduced-motion: reduce)");
  const phone=window.matchMedia?.("(max-width: 720px)");
- const galleryTiles=[
-   ["01","START"],["π","NUMBER"],["x²","ALGEBRA"],["∑","SEQUENCE"],["√2","ROOTS"],["∆","CHANGE"],
-   ["f(x)","FUNCTION"],["∞","LIMIT"],["2x+3","PATTERN"],["∫","AREA"],["03","PROGRESS"],["θ","ANGLE"],
-   ["x = 4","SOLUTION"],["sin θ","WAVES"],["y = mx+c","LINEAR"],["f′(x)","RATE"],["05","METHOD"],["a²+b²","GEOMETRY"],
-   ["∴","REASONING"],["cos θ","TRIG"],["n²","SEQUENCE"],["Σm","MARKS"],["Δy/Δx","GRADIENT"],["07","RECHECK"]
- ];
+ const galleryTiles=["01","π","x²","∑","√2","∆","f(x)","∞","2x+3","∫","03","θ","x = 4","sin θ","y=mx+c","f′(x)","05","a²+b²","∴","cos θ","n²","Σm","Δy/Δx","07"];
  const scenes={
   services:{kind:"programmes",eyebrow:"A PATH IN MATHEMATICS",title:"Discover your rhythm",equation:"1 → 2 → 3"},
   "choose-your-view":{kind:"people",eyebrow:"ONE LEARNER, THREE PERSPECTIVES",title:"See what matters to you",equation:"x → y"},
@@ -31,29 +26,6 @@
   "studio-page":{kind:"report",eyebrow:"EXAMINER STUDIO",title:"A closer look at the method",equation:"∑ m"},
   "home-page":{kind:"home",eyebrow:"MATHSGROVE / THE HOME PAGE",title:"Return to mathematics",equation:"∞"},
   "chapter":{kind:"programmes",eyebrow:"EXPLORE MATHEMATICS",title:"Discover what's next",equation:"f(x)"}
- };
- const quotes={
-  services:"Every new pattern begins with a question.",
-  "choose-your-view":"One idea, many ways to understand it.",
-  dashboards:"Progress is built from small discoveries.",
-  "learning-journey":"Understanding grows through thoughtful practice.",
-  "signature-discovery":"A method tells more than the answer alone.",
-  "signature-sample":"Every mark has a reason worth exploring.",
-  signature:"Good feedback opens the next possibility.",
-  "report-page":"See the thinking behind the mark.",
-  "reasoning-page":"Every step reveals another idea.",
-  "interactive-sample":"The journey matters as much as the answer.",
-  "how-it-works":"Curiosity gives mathematics its direction.",
-  experience:"An explanation turns an answer into insight.",
-  top:"Where there is curiosity, there is mathematics.",
-  "portal-page":"Your next question is another beginning.",
-  "family-page":"Ask about the thinking, not only the score.",
-  "studio-page":"Look for the reasoning behind each line.",
-  "home-page":"Mathematics is a world of connections.",
-  chapter:"A new idea starts with a question.",
-  student:"Every step counts when you understand why.",
-  parent:"Confidence grows through curious conversations.",
-  tutor:"Teach the thinking, then test the understanding."
  };
  const roles={
   student:{kind:"people",eyebrow:"STUDENT / YOUR JOURNEY",title:"Learn by doing",equation:"x → progress"},
@@ -83,12 +55,10 @@
  const aura=node("div","mg13-aura");
  const wall=node("div","mg13-wall");
  wall.setAttribute("aria-hidden","true");
- galleryTiles.forEach(([math,label],i)=>{
+ galleryTiles.forEach((math,i)=>{
   const tile=node("div","mg13-tile");
   tile.style.setProperty("--i",String((i*7)%24));
-  const symbol=node("strong","mg13-tile-math",math);
-  const sub=node("small","mg13-tile-label",label);
-  tile.append(symbol,sub);
+  tile.append(node("strong","mg13-tile-math",math));
   wall.append(tile);
  });
  const orbit=node("div","mg13-orbit");
@@ -109,22 +79,19 @@
   trail.append(trace);
  });
  ambient.append(aura,wall,orbit,orbit2,trail);
- const content=node("div","mg13-content");
- const eyebrow=node("span","mg13-eyebrow","MATHSGROVE / THE NEXT CHAPTER");
- const formula=node("span","mg13-formula","f(x)");
- const title=node("span","mg13-title","The next idea is waiting");
- const quote=node("p","mg14-maths-quote","A new idea starts with a question.");
- const indicator=node("span","mg13-progress","MATHEMATICS / IN MOTION");
- indicator.setAttribute("aria-hidden","true");
- content.append(eyebrow,formula,title,quote,indicator);
+ const content=node("div","mg13-content mg15-constellation-center");
+ content.setAttribute("aria-hidden","true");
+ const core=node("span","mg15-galaxy-core","∞");
+ const coreRing=node("span","mg15-galaxy-core-ring");
+ content.append(coreRing,core);
  gallery.append(ambient,content);
  document.body.append(gallery);
 
  const reduced=()=>Boolean(canReduce?.matches||navigator.connection?.saveData||document.visibilityState==="hidden");
  const touch=()=>Boolean(phone?.matches);
  const timings=kind=>{
-  if(touch())return kind==="small"?{enter:155,hold:120,exit:225}:{enter:350,hold:330,exit:480};
-  return kind==="small"?{enter:210,hold:145,exit:275}:{enter:490,hold:420,exit:590};
+  if(touch())return kind==="small"?{enter:145,hold:75,exit:220}:{enter:350,hold:180,exit:480};
+  return kind==="small"?{enter:180,hold:90,exit:270}:{enter:500,hold:250,exit:600};
  };
  // Major destinations receive a full gallery; nearby chapter jumps receive a shorter passage.
  const isMajor=key=>/^(services|dashboards|learning-journey|choose-your-view|signature|signature-sample|signature-discovery|report-page|reasoning-page|portal-page|family-page|studio-page|home-page|interactive-sample)$/.test(key);
@@ -135,10 +102,7 @@
   const scene=choose(key,theme);
   gallery.dataset.scene=scene.kind;
   gallery.dataset.mode=mode|| (isMajor(key)?"major":"small");
-  eyebrow.textContent=scene.eyebrow;
-  formula.textContent=scene.equation;
-  title.textContent=scene.title;
-  quote.textContent=quotes[theme]||quotes[key]||quotes.chapter;
+  core.textContent=({programmes:"∞",people:"Δ",report:"∑",working:"x²",home:"π"})[scene.kind]||"∫";
   const t=timings(mode|| (isMajor(key)?"major":"small"));
   gallery.hidden=false;
   document.body.classList.add("mg13-transitioning");
@@ -149,10 +113,10 @@
   const commit=()=>{if(!committed){committed=true;run()}};
   (async()=>{
    try{
-    await phase([{opacity:0,transform:"translateY(18px) scale(.98)"},{opacity:1,transform:"translateY(0) scale(1)"}],t.enter,"cubic-bezier(.18,.75,.28,1)");
+    await phase([{opacity:0,transform:"scale(1.045)"},{opacity:1,transform:"scale(1)"}],t.enter,"cubic-bezier(.2,.73,.25,1)");
     await phase([{opacity:1},{opacity:1}],t.hold,"linear");
     commit();
-    await phase([{opacity:1,transform:"translateY(0) scale(1)"},{opacity:0,transform:"translateY(-13px) scale(1.045)"}],t.exit,"cubic-bezier(.24,.66,.24,1)");
+    await phase([{opacity:1,transform:"scale(1)"},{opacity:0,transform:"scale(1.075)"}],t.exit,"cubic-bezier(.19,.62,.3,1)");
    }catch(_error){commit()}
    finally{
     gallery.hidden=true;gallery.classList.remove("mg13-active");
