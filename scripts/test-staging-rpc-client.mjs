@@ -11,7 +11,7 @@ assert.throws(()=>createExperimentalMarkingClient(fake,{environment:'production'
 assert.throws(()=>createExperimentalMarkingClient(fake,{environment:'disposable_staging',enabled:false}),/disabled/);
 assert.throws(()=>createExperimentalMarkingClient(null,{environment:'disposable_staging',enabled:true}),/RPC client/);
 const api=createExperimentalMarkingClient(fake,{environment:'disposable_staging',enabled:true});
-assert.throws(()=>api.studentReport('not-a-uuid'),/UUID/);
+await assert.rejects(api.studentReport('not-a-uuid'),/UUID/);
 await api.signoffRubric({
  rubricId:UUID,fingerprint:'a'.repeat(64),
  note:'This is an independent fictional board and mathematics signoff.',
@@ -49,7 +49,7 @@ await api.linkedLearnerReport(UUID,'parent');
 assert.equal(calls.at(-1).args.p_role,'parent');
 await api.linkedLearnerReport(UUID,'tutor');
 assert.equal(calls.at(-1).args.p_role,'tutor');
-assert.throws(()=>api.linkedLearnerReport(UUID,'examiner'),/linked-audience/);
+await assert.rejects(api.linkedLearnerReport(UUID,'examiner'),/linked-audience/);
 assert.ok(!calls.some(c=>c.args.p_student_id||c.args.p_examiner_id||c.args.p_total));
 const errorApi=createExperimentalMarkingClient({
  rpc:async()=>({data:null,error:{message:'Permission denied by Supabase RLS'}})
