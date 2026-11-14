@@ -1,0 +1,101 @@
+/* MathsGrove v15 — clear four-chapter journey, wordless mathematics galaxy
+   and illustrative dashboard / examiner-reader improvements. */
+.mg15-wayfinder{position:relative;background:#f9f7f2;border-top:1px solid #e9e3da;border-bottom:1px solid #e2ddd3}
+.mg15-wayfinder-inner{display:flex;align-items:center;gap:0;justify-content:space-between;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.mg15-wayfinder-heading{flex:0 0 100%;color:#987a58;font:800 9px/1.5 "DM Sans",Arial,sans-serif;letter-spacing:.19em;margin:0 0 9px}
+.mg15-wayfinder a{display:flex;align-items:center;gap:10px;min-width:0;flex:1;text-decoration:none;color:#254059;border-right:1px solid #ddd9d2;justify-content:center;padding:10px 15px;transition:color .23s ease,background-color .23s ease}
+.mg15-wayfinder a:last-child{border:0}
+.mg15-wayfinder a:hover{background:#f0eae1;color:#6d4e2e}
+.mg15-wayfinder a:focus-visible{outline:2px solid #b4926b;outline-offset:-2px}
+.mg15-wayfinder b{font:400 clamp(23px,2.5vw,32px)/1 "Instrument Serif",Georgia,serif;color:#b29777}
+.mg15-wayfinder a span{font:700 11px/1.5 "DM Sans",Arial,sans-serif;white-space:nowrap}
+.mg15-tier-comparison{margin:18px 0 24px;border:1px solid #ded8ce;border-radius:12px;background:#fcfaf6;overflow:hidden}
+.mg15-tier-comparison summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 22px;color:#223d56;cursor:pointer;list-style:none;font:800 12px/1.5 "DM Sans",Arial,sans-serif}
+.mg15-tier-comparison summary::-webkit-details-marker{display:none}
+.mg15-tier-comparison summary span{font:400 28px/1 "Instrument Serif",Georgia,serif;color:#9b8064;transition:transform .28s ease}
+.mg15-tier-comparison[open] summary span{transform:rotate(45deg)}
+.mg15-tier-comparison summary:hover{background:#f2ede5}
+.mg15-tier-comparison summary:focus-visible{outline:3px solid #86a7b6;outline-offset:-3px}
+.mg15-tier-comparison .mg3-table-wrap{margin:0;padding:0 12px 12px}
+.mg15-tier-comparison .mg3-compare{margin-top:0}
+
+/* Wordless, maths-only transition: all visible characters are mathematical glyphs. */
+.mg13-passage .mg15-constellation-center{position:absolute;inset:0;width:100%;height:100%;max-width:none;display:grid;place-items:center;padding:0;transform:none}
+.mg13-passage .mg15-constellation-center::before{content:"";position:absolute;left:50%;top:50%;inset:auto;width:min(52vw,620px);height:min(52vw,620px);border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#102039b8 0%,#15284076 40%,transparent 73%);filter:blur(18px)}
+.mg15-galaxy-core{position:relative;z-index:2;font:400 clamp(95px,16vw,235px)/1 "Instrument Serif",Georgia,serif;color:#f2e1c4;text-shadow:0 0 22px #cbb08342,0 0 92px #d6bd9f43;opacity:0;transform:scale(.66)}
+.mg15-galaxy-core-ring{position:absolute;left:50%;top:50%;width:min(35vw,440px);aspect-ratio:1;border:1px solid #e3c7a351;border-radius:50%;box-shadow:0 0 95px #e3bb8c1f,inset 0 0 90px #bc98701c;transform:translate(-50%,-50%) scale(.7);opacity:0}
+.mg15-galaxy-core-ring::before,.mg15-galaxy-core-ring::after{content:"";position:absolute;border-radius:50%;border:1px solid #d9c29b3b;inset:15%}
+.mg15-galaxy-core-ring::after{inset:-22%;border-style:dashed;opacity:.32}
+.mg13-passage.mg13-active .mg15-galaxy-core{animation:mg15-core-float 1.45s cubic-bezier(.18,.73,.23,1) both}
+.mg13-passage.mg13-active .mg15-galaxy-core-ring{animation:mg15-core-orbit 1.46s cubic-bezier(.18,.73,.23,1) both}
+.mg13-passage.mg13-active .mg13-wall{animation-duration:1.38s;animation-timing-function:cubic-bezier(.18,.7,.22,1)}
+.mg13-passage.mg13-active .mg13-tile{animation-duration:1.18s;animation-delay:calc(var(--i)*13ms)}
+.mg13-passage.mg13-active .mg13-orbit{animation-duration:1.42s}
+.mg13-passage.mg13-active .mg13-trails path{animation-duration:1.16s}
+.mg13-passage .mg13-tile{justify-content:center;align-items:center;padding:clamp(8px,1.2vw,18px)}
+.mg13-passage .mg13-tile-math{font-size:clamp(25px,4vw,58px);text-align:center}
+.mg13-passage .mg13-wall{mask-image:radial-gradient(ellipse at 50% 50%,transparent 4%,#000 40%,#000 100%)}
+@keyframes mg15-core-float{0%{opacity:0;transform:scale(.65) rotate(-9deg);filter:blur(8px)}35%{opacity:.94}78%{opacity:1}100%{opacity:.72;transform:scale(1.13) rotate(6deg);filter:blur(0)}}
+@keyframes mg15-core-orbit{0%{opacity:0;transform:translate(-50%,-50%) scale(.7) rotate(-30deg)}35%{opacity:.95}100%{opacity:.48;transform:translate(-50%,-50%) scale(1.35) rotate(12deg)}}
+
+/* One compact fictional seven-day chart, responsive to the existing tier/role choices. */
+.mg15-week{margin:26px 0 30px;padding:clamp(20px,3vw,32px);background:linear-gradient(128deg,#132d46,#213d56 62%,#17364a);color:#f6efe3;border:1px solid #3b5163;border-radius:17px;box-shadow:0 16px 45px #0b203025}
+.mg15-week[hidden]{display:none!important}
+.mg15-week *{box-sizing:border-box}
+.mg15-week-head{display:flex;gap:20px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.mg15-week-kicker{display:block;color:#cfb996;letter-spacing:.16em;font:800 10px/1.45 "DM Sans",Arial,sans-serif}
+.mg15-week h3{font:400 clamp(30px,3vw,42px)/1.1 "Instrument Serif",Georgia,serif!important;margin:8px 0!important;color:#fff9ed!important}
+.mg15-week-head p{color:#c4d4dd;font:400 11px/1.7 "DM Sans",Arial,sans-serif;max-width:560px}
+.mg15-week-pill{border:1px solid #d8bf9655;border-radius:100px;padding:9px 12px;font:800 10px/1.5 "DM Sans",Arial,sans-serif;color:#e6cfaf;background:#f5e1bf10;white-space:nowrap}
+.mg15-week-body{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(200px,.8fr);gap:22px;margin:24px 0 0;align-items:stretch}
+.mg15-week-plot{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(5px,1.5vw,13px);align-items:end;min-height:202px;padding:16px 6px 1px;border-bottom:1px solid #c8b39460}
+.mg15-week-day{display:flex;align-items:center;flex-direction:column;justify-content:flex-end;gap:8px;height:100%;min-width:0}
+.mg15-week-value{font:700 13px/1 "DM Sans",Arial,sans-serif;color:#f6e8d0;font-variant-numeric:tabular-nums}
+.mg15-week-track{position:relative;width:100%;max-width:52px;height:145px;display:flex;align-items:flex-end;justify-content:center;background:#ffffff0c;border-radius:9px 9px 0 0;overflow:hidden}
+.mg15-week-fill{display:block;width:100%;min-height:0;background:linear-gradient(180deg,#e5c99e,#9ab5b8 93%);border-radius:8px 8px 0 0;height:calc(var(--v)*1%);transform:scaleY(.04);transform-origin:bottom;transition:transform .85s cubic-bezier(.2,.8,.23,1);transition-delay:calc(var(--day)*75ms)}
+.mg15-week.mg15-week-visible .mg15-week-fill{transform:scaleY(1)}
+.mg15-week-day-name{font:800 10px/1.4 "DM Sans",Arial,sans-serif;color:#d6c4ac}
+.mg15-week-insight{padding:20px;border:1px solid #f8e4c329;border-radius:12px;background:#f0e6db0c;display:flex;flex-direction:column;justify-content:space-between;gap:17px}
+.mg15-week-insight small{color:#d3b78e;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.12em}
+.mg15-week-insight strong{display:block;font:400 clamp(25px,2.6vw,35px)/1.15 "Instrument Serif",Georgia,serif;color:#fff5e8;margin:11px 0}
+.mg15-week-insight p{font:400 11px/1.7 "DM Sans",Arial,sans-serif;color:#d4e1e5;margin:0}
+.mg15-week-foot{margin:16px 0 0;color:#a8c1ce;font:400 10px/1.65 "DM Sans",Arial,sans-serif}
+.mg15-week .mg15-week-plot[aria-label]{outline-offset:3px}
+
+/* Seven-chapter specimen reader: low-friction navigation and visible progress. */
+.mgr-chapters{width:100%;padding:12px clamp(14px,4vw,52px);background:#172e46;overflow-x:auto;scrollbar-width:thin}
+.mgr-chapter-list{display:flex;gap:6px;align-items:center;justify-content:center;min-width:max-content;max-width:1200px;margin:0 auto}
+.mgr-chapter-button{appearance:none;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:1px solid #f4e6d82a;border-radius:7px;padding:10px 13px;min-height:43px;background:#ffffff09;color:#dbe1e9;font:700 10px/1.2 "DM Sans",Arial,sans-serif;transition:background .22s ease,color .22s ease,border-color .22s ease}
+.mgr-chapter-button b{font:400 20px/1 "Instrument Serif",Georgia,serif;color:#c8b18f}
+.mgr-chapter-button:hover,.mgr-chapter-button[aria-current="page"]{background:#eedcc91c;color:white;border-color:#d8ba9580}
+.mgr-chapter-button:focus-visible{outline:3px solid #d4c1a4;outline-offset:2px}
+.mgr-reader-progress{height:3px;background:#dfd7cc;position:relative;width:100%}
+.mgr-reader-progress span{display:block;width:calc(var(--progress,0)*1%);height:100%;background:linear-gradient(90deg,#c5a47f,#768ea1);transition:width .48s cubic-bezier(.18,.71,.2,1)}
+.mgr-controls{gap:10px}
+.mgr-controls label[for="mgr-select"]{font-size:10px}
+body.mg-report-reader .mg7-page{scroll-margin-top:90px}
+@media(max-width:850px){
+ .mg15-wayfinder-heading{display:none}
+ .mg15-wayfinder-inner{flex-wrap:nowrap;overflow-x:auto}
+ .mg15-wayfinder a{min-width:155px;padding:13px 10px}
+ .mg15-week-body{grid-template-columns:1fr}
+ .mg15-week-insight{gap:10px}
+ .mgr-chapter-list{justify-content:flex-start}
+}
+@media(max-width:530px){
+ .mg15-wayfinder a{min-width:122px;gap:7px;font-size:10px}
+ .mg15-wayfinder b{font-size:24px}
+ .mg15-week{padding:19px 14px}
+ .mg15-week-plot{min-height:182px}
+ .mg15-week-track{height:115px}
+ .mg15-week-body{margin-top:15px}
+ .mg15-galaxy-core-ring{width:70vw}
+ .mg15-galaxy-core{font-size:clamp(90px,29vw,150px)}
+ .mgr-chapter-button{padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mg15-week-fill{transition:none!important;transform:scaleY(1)!important}
+ .mg15-tier-comparison summary span,.mg15-wayfinder a,.mgr-reader-progress span,.mgr-chapter-button{transition:none!important}
+ .mg13-passage.mg13-active .mg15-galaxy-core,.mg13-passage.mg13-active .mg15-galaxy-core-ring{animation:none!important}
+}
+@media print{.mg15-wayfinder,.mgr-chapters,.mgr-reader-progress{display:none!important}.mg15-week-fill{transform:none!important}}
