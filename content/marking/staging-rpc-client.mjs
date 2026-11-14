@@ -193,6 +193,14 @@ function buildMarkingClient(db){
   async studentReport(attemptId){
    return rpc('mg2_student_report',{p_attempt:id(attemptId)});
   },
+  async linkedOriginalReports(studentId,role,{limit=20}={}){
+   id(studentId);
+   check(role==='parent'||role==='tutor','Explicit linked viewer role required.');
+   check(Number.isInteger(limit)&&limit>=1&&limit<=50,'Linked report count must be 1–50.');
+   return rpc('mg2_linked_original_reports',{
+    p_student:studentId,p_role:role,p_limit:limit
+   });
+  },
   async linkedLearnerReport(attemptId,role){
    check(role==='parent'||role==='tutor','Explicit linked-audience role required.');
    return rpc('mg2_family_report',{p_attempt:id(attemptId),p_role:role});
