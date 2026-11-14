@@ -234,6 +234,8 @@ BEGIN
    AND i.org_id=l.org_id AND i.view_role=l.view_role AND i.revoked_at IS NULL
    AND lower(i.viewer_email)=v_email
    AND (i.expires_at IS NULL OR i.expires_at>now())
+  JOIN auth.users su ON su.id=a.student_id
+   AND lower(i.student_email)=lower(su.email)
   WHERE a.student_id=p_student AND a.status='released'
    AND private.mg2_has_active_student_plan(a.student_id,a.org_id,r.plan);
  SELECT coalesce(jsonb_agg(jsonb_build_object(
@@ -254,6 +256,8 @@ BEGIN
    AND i.org_id=l.org_id AND i.view_role=l.view_role AND i.revoked_at IS NULL
    AND lower(i.viewer_email)=v_email
    AND (i.expires_at IS NULL OR i.expires_at>now())
+  JOIN auth.users su ON su.id=a.student_id
+   AND lower(i.student_email)=lower(su.email)
   WHERE a.student_id=p_student AND a.status='released'
    AND private.mg2_has_active_student_plan(a.student_id,a.org_id,r.plan)
   ORDER BY s.released_at DESC,a.id
