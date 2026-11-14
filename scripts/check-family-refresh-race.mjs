@@ -7,7 +7,7 @@ const source=readFileSync(new URL('../family-access.js',import.meta.url),'utf8')
 const start=source.indexOf('let accessGeneration=0;');
 const end=source.indexOf("$('fa-retry').addEventListener(",start);
 assert.ok(start>0&&end>start,'Family access response guards missing');
-const implementation=source.slice(start,end);
+const implementation='let mg2FamilyGeneration=0;\n'+source.slice(start,end);
 const deferred=()=>{
  let resolve;const promise=new Promise(res=>{resolve=res});return{promise,resolve};
 };
