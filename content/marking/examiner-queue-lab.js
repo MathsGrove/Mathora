@@ -83,6 +83,9 @@ const fakeModeration={
    question_key:original.id,question:original.question,
    worked_solution:original.solution,criteria:original.criteria,
    max_marks:original.maxMarks,plan:original.plan,
+   syllabus_objective:'Fictional ratio assessment objective for local QA.',
+   source_declaration:'Original fictional mathematical prompt and solution written exclusively for this sandbox.',
+   calculator_rule:'not_allowed',
    fingerprint:'a'.repeat(64),independent_reviews:0
   }]};
  },
