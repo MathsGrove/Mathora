@@ -61,7 +61,7 @@ SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111'
 SELECT public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',:'fp',
  'First fictional examiner independently reviewed the algebra and the mark dependencies.',true,true,true);
 -- Missing signoff confirmations must be rejected before a reviewer can approve.
-DO $
+DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
@@ -70,7 +70,7 @@ BEGIN
     'This review intentionally has no syllabus confirmation.',true,false,true);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Explicit mathematics%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Unconfirmed syllabus review was accepted';END IF;
-END $;
+END $$;
 -- Duplicate first reviewer is rejected; a second independent reviewer must be distinct.
 DO $$
 DECLARE blocked boolean:=false;
