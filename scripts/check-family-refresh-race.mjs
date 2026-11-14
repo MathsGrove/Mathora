@@ -14,7 +14,9 @@ const deferred=()=>{
 const pendingSessions=[];
 const nodes=new Map();
 const $=id=>{
- if(!nodes.has(id))nodes.set(id,{hidden:false,events:{},addEventListener(name,fn){this.events[name]=fn}});
+ if(!nodes.has(id))nodes.set(id,{hidden:false,events:{},
+  replaceChildren(){writes.push(['clear-node',id]);},
+  addEventListener(name,fn){this.events[name]=fn}});
  return nodes.get(id);
 };
 const writes=[],redirects=[],rpccalls=[];
@@ -53,6 +55,7 @@ assert.equal(signOutCalls,1);
 assert.deepEqual(Array.from(ctx.__snapshot().records),[]);
 assert.equal(ctx.__snapshot().user,null);
 assert.ok(writes.some(x=>x[0]==='clear-tier-role'&&x[1]==='family'),'New role summary must clear on sign-out');
+assert.ok(writes.some(x=>x[0]==='clear-node'&&x[1]==='mg2-family-pilot-root'),'Original multi-mark report must also clear on sign-out');
 pendingSessions[0].resolve({data:{session:{user:{id:'parent-one'}}},error:null});
 await original;await flush();
 assert.equal(rpccalls.length,0);
