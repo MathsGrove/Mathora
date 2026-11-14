@@ -4,6 +4,7 @@ on:
     paths:
       - 'content/marking/**'
       - 'scripts/test-exam-style-policy.mjs'
+      - 'scripts/test-curriculum-coverage.mjs'
       - 'scripts/test-reviewer-lab-browser.mjs'
       - 'scripts/fixtures/*marking-v2*.sql'
       - 'docs/staging/marking-v2-disposable-postgres.sql'
@@ -31,6 +32,7 @@ jobs:
           node scripts/test-moderation-workflow.mjs
           node scripts/test-criterion-feedback-bank.mjs
           node scripts/test-exam-style-policy.mjs
+          node scripts/test-curriculum-coverage.mjs
           node scripts/check-site.mjs
       - name: Assert draft lab is not published in Pages assets
         run: |
