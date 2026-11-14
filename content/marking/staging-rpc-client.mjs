@@ -9,7 +9,18 @@ const clean=text=>typeof text==='string'?text.trim():'';
 export function createExperimentalMarkingClient(db,{environment,enabled}={}){
  check(environment==='disposable_staging'&&enabled===true,
    'Constructed-response RPCs are disabled outside explicitly enabled disposable staging.');
- check(db&&typeof db.rpc==='function','A connected staging Supabase-style RPC client is required.');
+ return buildMarkingClient(db);
+}
+// This is a *client activation flag*, never an authorisation boundary.
+// Auth, membership, ownership, originality and release controls live in the RPCs.
+// The host should only enable this after the full production readiness gate.
+export function createControlledMarkingClient(db,{pilotApproved,enabled}={}){
+ check(pilotApproved===true&&enabled===true,
+   'Detailed marking requires a separately authorised controlled pilot.');
+ return buildMarkingClient(db);
+}
+function buildMarkingClient(db){
+ check(db&&typeof db.rpc==='function','A connected Supabase-style RPC client is required.');
  async function rpc(name,args){
   const {data,error}=await db.rpc(name,args);
   if(error)throw Error(error.message||'Staging marking RPC failed.');
@@ -18,6 +29,39 @@ export function createExperimentalMarkingClient(db,{environment,enabled}={}){
  }
  function id(x){check(typeof x==='string'&&uuid.test(x),'Valid fictional attempt or rubric UUID required.');return x}
  return Object.freeze({
+  async authorOriginalDraft({
+   orgId,questionKey,qualification,academicLevel,examBoard,syllabusYear,
+   plan,calculatorRule,syllabusObjective,sourceDeclaration,question,solution,criteria
+  }={}){
+   id(orgId);
+   check(typeof questionKey==='string'&&/^[a-z][a-z0-9-]{5,80}$/.test(questionKey),
+     'Original question key required.');
+   check(typeof syllabusYear==='string'&&/^20[0-9]{2}$/.test(syllabusYear),
+     'A specific syllabus year is required.');
+   check(Array.isArray(criteria)&&criteria.length>=1&&criteria.length<=30,
+     'An explicit M/A/B/R mark definition is required.');
+   check(clean(sourceDeclaration).length>=50&&clean(syllabusObjective).length>=15,
+     'Originality declaration and syllabus objective are required.');
+   check(clean(question).length>=40&&clean(solution).length>=50,
+     'A complete original question and independently worked solution are required.');
+   return rpc('mg2_author_original_draft',{
+    p_org:orgId,p_question_key:questionKey,p_qualification:qualification,
+    p_academic_level:academicLevel,p_exam_board:clean(examBoard),
+    p_syllabus_year:syllabusYear,p_plan:plan,p_calculator_rule:calculatorRule,
+    p_syllabus_objective:clean(syllabusObjective),p_source_declaration:clean(sourceDeclaration),
+    p_question_prompt:clean(question),p_worked_solution:clean(solution),p_criteria:criteria
+   });
+  },
+  async approvedOriginals({limit=30,offset=0}={}){
+   check(Number.isInteger(limit)&&limit>=1&&limit<=50,'Invalid approved question page size.');
+   check(Number.isInteger(offset)&&offset>=0&&offset<=10000,'Invalid approved question offset.');
+   return rpc('mg2_assignable_originals',{p_limit:limit,p_offset:offset});
+  },
+  async myOriginalAssignments({limit=30,offset=0}={}){
+   check(Number.isInteger(limit)&&limit>=1&&limit<=50,'Invalid student assignment page size.');
+   check(Number.isInteger(offset)&&offset>=0&&offset<=10000,'Invalid student assignment offset.');
+   return rpc('mg2_my_original_assignments',{p_limit:limit,p_offset:offset});
+  },
   async moderationQueue({limit=20,offset=0}={}){
    check(Number.isInteger(limit)&&limit>=1&&limit<=50,'Moderation limit must be 1–50.');
    check(Number.isInteger(offset)&&offset>=0&&offset<=10000,
