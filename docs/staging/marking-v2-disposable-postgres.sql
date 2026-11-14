@@ -311,15 +311,31 @@ CREATE FUNCTION public.mg2_family_report(p_attempt uuid)
    JOIN public.learner_view_invitations i ON i.id=l.invitation_id
      AND i.org_id=l.org_id AND i.revoked_at IS NULL
      AND i.view_role=l.view_role AND lower(i.viewer_email)=v_email
+     AND (i.expires_at IS NULL OR i.expires_at>now())
    JOIN public.student_entitlements e ON e.student_id=a.student_id AND
      e.org_id=a.org_id AND e.tier='exam' AND e.starts_at<=now() AND
       (e.ends_at IS NULL OR e.ends_at>now())
-   JOIN public.memberships m ON m.student_id IS NULL -- intentionally replaced below
-  WHERE a.id=p_attempt AND a.status='released'
+   JOIN public.memberships m ON m.user_id=a.student_id AND m.org_id=a.org_id
+     AND m.member_role='student'
+   JOIN auth.users su ON su.id=a.student_id AND lower(su.email)=lower(i.student_email)
+  WHERE a.id=p_attempt AND a.status='released' AND l.view_role IN('parent','tutor')
   LIMIT 1;
-  -- A separate verified membership check is required (the join above is a sentinel
-  -- to ensure this draft cannot be deployed without replacing the placeholder).
-  RAISE EXCEPTION 'Staging-only family role check not activated';
+  IF v_role IS NULL THEN RAISE EXCEPTION 'Released linked-learner report not found';END IF;
+  IF v_role='parent' THEN
+   SELECT jsonb_build_object('released',true,'view_role','parent',
+      'earned',s.earned,'possible',s.possible,'summary',s.parent_summary,
+      'released_at',s.released_at)
+   INTO v FROM private.mg2_releases s WHERE s.attempt_id=p_attempt
+   ORDER BY s.revision DESC LIMIT 1;
+  ELSE
+   SELECT jsonb_build_object('released',true,'view_role','tutor',
+      'earned',s.earned,'possible',s.possible,'teaching_plan',s.tutor_plan,
+      'criteria',s.tutor_criteria,'released_at',s.released_at)
+   INTO v FROM private.mg2_releases s WHERE s.attempt_id=p_attempt
+   ORDER BY s.revision DESC LIMIT 1;
+  END IF;
+  IF v IS NULL THEN RAISE EXCEPTION 'Released linked-learner report not found';END IF;
+  RETURN v;
  END $$;
 
 REVOKE ALL ON FUNCTION
