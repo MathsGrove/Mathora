@@ -35,7 +35,7 @@ assert.ok(galaxy.includes('event.metaKey||event.ctrlKey||event.shiftKey||event.a
 assert.ok(!/fetch\s*\(|createClient\s*\(|localStorage\.|sessionStorage\./.test(galaxy),'Motion must never fetch or persist student records');
 assert.ok(style.includes('@media(prefers-reduced-motion:reduce)')&&style.includes('mg15-galaxy-core')&&style.includes('mg15-week'),'Responsive reduced-motion-safe styles are present');
 
-for(const attr of ['id="mg15-week"','mg15-week-plot','mg15-week-value','mg15-week-visible'])assert.ok(weekly.includes(attr.replace('id="','').replace('"','')),'Missing weekly chart '+attr);
+for(const attr of ['week.id="mg15-week"','mg15-week-plot','mg15-week-value','mg15-week-visible'])assert.ok(weekly.includes(attr),'Missing weekly chart '+attr);
 for(const seven of ['weekly:{values:[0,0,0,6,0,0,0]','daily:{values:[5,4,6,4,5,7,0]','exam:{values:[4,5,4,6,5,7,0]'])assert.ok(weekly.includes(seven),'Week must have bounded fictional data and match totals: '+seven);
 assert.ok(weekly.includes('FICTIONAL EXAMPLE')&&weekly.includes('No private learner records')&&weekly.includes('Not verified progress'),'Week must not be mistaken for actual analytics');
 assert.ok(weekly.includes('tier!=="exam"&&role!=="student"'),'Family/tutor preview restricted to Exam');
