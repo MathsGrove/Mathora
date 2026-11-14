@@ -7,6 +7,7 @@ on:
       - 'scripts/test-supabase-local-auth-storage.mjs'
       - 'docs/staging/marking-v2-disposable-postgres.sql'
       - 'docs/staging/marking-v2-learner-workflow.sql'
+      - 'docs/staging/marking-v2-examiner-queue.sql'
       - '.github/workflows/marking-v2-supabase-local-ci.yml'
   workflow_dispatch:
 
@@ -69,6 +70,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f scripts/fixtures/marking-v2-supabase-local-schema.sql
           psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-disposable-postgres.sql
           psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-learner-workflow.sql
+          psql -v ON_ERROR_STOP=1 -f docs/staging/marking-v2-examiner-queue.sql
           psql -v ON_ERROR_STOP=1 -f scripts/fixtures/marking-v2-local-storage-policy.sql
           psql -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
           sleep 3
