@@ -133,7 +133,7 @@ function refresh({tier,role,exam}){
  setList('mg4-action-list',['Review the earlier misconception for two minutes.','Complete the next practice task independently.','Write one sentence describing what you would check next time.'])}
  if(role!=='student'&&tier!=='exam')$('mg4-analysis').hidden=true;else $('mg4-analysis').hidden=false;
 }
-document.querySelectorAll('[data-mg4-report="signature"]').forEach(el=>el.addEventListener('click',ev=>{ev.preventDefault();const tab=document.querySelector('[data-report="signature"]');if(tab)tab.click();$('signature-sample').scrollIntoView({behavior:'smooth',block:'start'})}));
+document.querySelectorAll('[data-mg4-report="signature"]').forEach(el=>el.addEventListener('click',ev=>{ev.preventDefault();const tab=document.querySelector('[data-report="signature"]');if(tab)tab.click();(window.MathsGroveMotion?.navigateHash?.('#signature-sample',{replace:true})||$('signature-sample').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}))}));
 window.MathsGroveExperienceV4={renderCalendar,refresh};
 renderCalendar();refresh(get());
 })();
