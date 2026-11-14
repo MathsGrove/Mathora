@@ -12,8 +12,10 @@ body.mg-site .mg12-orbit::before{content:"";position:absolute;inset:14%;border:1
 body.mg-site .mg12-orbit::after{content:"";position:absolute;inset:33%;border:1px solid #d8c5a51e;border-radius:50%}
 body.mg-site .mg12-orbit-two{width:min(110vw,1330px);aspect-ratio:1.26;transform:translate(-50%,-50%) rotate(24deg);opacity:.6}
 body.mg-site .mg12-symbol{position:absolute;left:var(--x);top:var(--y);display:block;white-space:nowrap;color:#e4ccaa;opacity:0;font:italic 400 clamp(17px,2.1vw,30px)/1.2 "Instrument Serif",Georgia,serif;transform:translate3d(0,12px,0) scale(var(--scale));text-shadow:0 0 24px #dcc5a525;will-change:transform,opacity}
-body.mg-site .mg12-symbol[data-depth="near"]{color:#f8e8ce}
-body.mg-site .mg12-symbol[data-depth="far"]{opacity:0;color:#b8a489}
+body.mg-site .mg12-symbol{--scale:1;--duration:1280ms;--drift:16px;--opacity:.42}
+body.mg-site .mg12-symbol:nth-of-type(3n){--scale:.83;--duration:1420ms;--drift:-18px;--opacity:.24;color:#b8a489}
+body.mg-site .mg12-symbol:nth-of-type(3n+1){--scale:1.16;--duration:1170ms;--drift:25px;--opacity:.64;color:#f8e8ce}
+body.mg-site .mg12-symbol:nth-of-type(3n+2){--scale:.96;--duration:1330ms;--drift:12px;--opacity:.42}
 body.mg-site .mg12-passage.mg12-active .mg12-symbol{animation:mg12-symbol-rise var(--duration,1150ms) ease-out var(--delay,0ms) both}
 body.mg-site .mg12-passage.mg12-active .mg12-orbit{animation:mg12-orbit-arrive 1450ms ease-out both}
 body.mg-site .mg12-galaxy-trace{position:absolute;inset:0;width:100%;height:100%;color:#ddc8a8;opacity:.42}
