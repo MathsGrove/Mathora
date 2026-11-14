@@ -142,6 +142,31 @@ export function mountExaminerReviewQueue(root,{client,confirmRelease}={}){
      impliedReason:previous?.impliedReason||''};
    });
    renderReview();
+   // Evidence files remain private: Storage lists only submitted work for
+   // authenticated same-organisation examiners. Signed links last 60 seconds.
+   if(typeof client.listEvidence==='function'&&typeof client.signedEvidenceUrl==='function'){
+    try{
+     const files=await client.listEvidence({attemptId:id,studentId:record.student_id});
+     if(selection!==state.sequence)return;
+     const paper=review.querySelector('.mg2-paper');
+     if(paper&&files.length){
+      const attachments=el('section',undefined,'mg2-private-evidence');
+      attachments.append(el('h4','Submitted handwritten evidence'));
+      for(const item of files){
+       const link=el('button','Open '+item.name+' · secure temporary link','mg2-secondary');
+       link.type='button';
+       link.addEventListener('click',async()=>{
+        try{
+         const url=await client.signedEvidenceUrl(item.path);
+         window.open(url,'_blank','noopener,noreferrer');
+        }catch(error){announce('Private attachment unavailable: '+error.message,true)}
+       });
+       attachments.append(link);
+      }
+      paper.append(attachments);
+     }
+    }catch(error){announce('Submitted written response loaded; photo evidence unavailable: '+error.message,true)}
+   }
    renderQueue();
    announce('Submitted working loaded. Review the evidence before awarding any mark.');
   }catch(error){
