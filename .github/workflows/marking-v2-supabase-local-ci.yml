@@ -59,7 +59,9 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           node scripts/generate-marking-v2-migration.mjs "$migration_file"
           node scripts/generate-marking-v2-migration.mjs --verify "$migration_file"
-          echo "MG2_MIGRATION_FILE=$migration_file" >> "$GITHUB_ENV"
+          node scripts/generate-marking-v2-migration.mjs --verify supabase/migrations/20261114165829_marking_v2_constructed.sql
+          cmp --silent "$migration_file" "supabase/migrations/20261114165829_marking_v2_constructed.sql"
+          echo "MG2_MIGRATION_FILE=$GITHUB_WORKSPACE/supabase/migrations/20261114165829_marking_v2_constructed.sql" >> "$GITHUB_ENV"
           echo "CLI-generated schema candidate: ${migration_file##*/}"
       - name: Start an isolated local Supabase Docker stack (no paid project)
         shell: bash
