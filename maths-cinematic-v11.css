@@ -1,0 +1,74 @@
+/* MathsGrove / Connected Mathematical Cinematics v11.
+   Scenic math lives behind useful content, not as a separate page section.
+   Static, readable fallback; only opacity / transform / SVG stroke animation. */
+body.mg-site .mg11-atmosphere{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.82}
+body.mg-site .mg11-atmosphere svg{width:100%;height:100%;display:block;min-height:340px;max-width:none;transform:scale(1.06);transform-origin:50% 50%}
+body.mg-site .mg11-grid{stroke:currentColor;stroke-opacity:.11;stroke-width:1}
+body.mg-site .mg11-line{stroke:currentColor;stroke-width:2.2;stroke-opacity:.38;fill:none;stroke-linecap:round;stroke-dasharray:1050;stroke-dashoffset:0}
+body.mg-site .mg11-line-soft{stroke-width:1.1;stroke-opacity:.19}
+body.mg-site .mg11-ring{stroke:currentColor;stroke-opacity:.19;stroke-width:1.1;fill:none}
+body.mg-site .mg11-label{fill:currentColor;fill-opacity:.26;font:italic 37px "Instrument Serif",Georgia,serif}
+body.mg-site .mg11-dot{fill:currentColor;fill-opacity:.6}
+body.mg-site .mg11-hero-atmosphere{color:#d9c3a6;opacity:.47;mask-image:linear-gradient(90deg,transparent 6%,#000 54%,#000 100%)}
+body.mg-site .mg11-role-atmosphere{color:#ae9676;opacity:.35;mask-image:linear-gradient(90deg,transparent 15%,#000 100%)}
+body.mg-site .mg11-sig-atmosphere{color:#deccb4;opacity:.31;mask-image:linear-gradient(90deg,transparent 8%,#000 100%)}
+body.mg-site .mg11-programme-atmosphere{color:#887252;opacity:.22;mask-image:linear-gradient(90deg,transparent 12%,#000 92%)}
+body.mg-site .mg11-report-atmosphere{color:#a38b70;opacity:.20}
+body.mg-site .mg8-welcome-hero,body.mg-site .mg8-entry,body.mg-site .mg9-signature-feature,body.mg-site #services,body.mg-site #signature-sample{position:relative;isolation:isolate}
+body.mg-site .mg8-welcome-hero>.wrap,body.mg-site .mg8-entry>.wrap,body.mg-site .mg9-signature-feature>.wrap,body.mg-site #services>.wrap,body.mg-site #signature-sample>.wrap{position:relative;z-index:1}
+body.mg-site .mg8-welcome-hero .mg10-hero-notation{display:none}
+body.mg-site .mg11-atmosphere.mg11-visible svg{animation:mg11-ambient-float 17s ease-in-out infinite alternate}
+body.mg-site .mg11-atmosphere.mg11-visible .mg11-line{animation:mg11-trace 2.5s cubic-bezier(.22,.68,.2,1) both}
+body.mg-site .mg11-atmosphere.mg11-visible .mg11-line-soft{animation-delay:.22s}
+@keyframes mg11-ambient-float{0%{transform:scale(1.04) translate3d(-.8%,0,0)}100%{transform:scale(1.09) translate3d(1%,1%,0)}}
+@keyframes mg11-trace{from{stroke-dashoffset:1050}to{stroke-dashoffset:0}}
+
+/* Quiet, useful micro-motion unifies cards, report pages and interactive controls. */
+body.mg-site .mg8-entry-card,body.mg-site .mg3-tier,body.mg-site .mg9-sig-paper,body.mg-site #signature-sample .mg7-page{backface-visibility:hidden}
+body.mg-site .mg3-tier{transition:transform .3s cubic-bezier(.22,.7,.23,1),box-shadow .3s ease,border-color .25s ease}
+body.mg-site .mg3-tier:hover{transform:translateY(-5px)}
+body.mg-site .mg8-entry-card:hover .mg8-card-art strong{transform:translateX(3px);transition:transform .26s ease}
+body.mg-site .mg9-sig-paper{transition:transform .45s cubic-bezier(.21,.73,.22,1),box-shadow .45s ease}
+body.mg-site a[href="#services"],body.mg-site a[href="#signature-sample"],body.mg-site a[href="./report.html"]{scroll-margin-top:80px}
+
+/* A brief mathematical passage between destinations. Not a modal, loader or wait screen.
+   The JS animation has one 210ms entrance and one 240ms exit; no periodic tasks. */
+body.mg-site .mg11-passage{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;overflow:hidden;background:#0d1b32;color:#f4ede2;pointer-events:none;isolation:isolate;will-change:transform}
+body.mg-site .mg11-passage[hidden]{display:none!important}
+body.mg-site .mg11-passage:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#cdbba014 1px,transparent 1px),linear-gradient(90deg,#cdbba014 1px,transparent 1px);background-size:50px 50px;transform:rotate(-11deg) scale(1.5);pointer-events:none}
+body.mg-site .mg11-passage:after{content:"";position:absolute;inset:-25% -8%;border:1px solid #cdbba02b;border-radius:50%;transform:rotate(12deg) scale(.8);pointer-events:none}
+body.mg-site .mg11-passage-trace{position:absolute;inset:-15% -5%;width:110%;height:130%;color:#ddc4a3;opacity:.55}
+body.mg-site .mg11-passage-trace path{stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-dasharray:1800;stroke-dashoffset:0}
+body.mg-site .mg11-passage.mg11-active .mg11-passage-trace path{animation:mg11-passage-draw .45s cubic-bezier(.16,.66,.2,1) both}
+body.mg-site .mg11-passage-content{position:relative;z-index:1;width:min(88vw,820px);padding:32px;text-align:center}
+body.mg-site .mg11-passage-index{display:block;font:800 10px/1.8 "DM Sans",Arial,sans-serif;letter-spacing:.24em;color:#d4bfa4;margin:0 0 18px}
+body.mg-site .mg11-passage-equation{display:block;font:400 clamp(59px,11vw,145px)/.98 "Instrument Serif",Georgia,serif;letter-spacing:-.045em;color:#f3e9db;white-space:nowrap}
+body.mg-site .mg11-passage-caption{display:block;margin:18px 0 0;font:700 clamp(11px,1.2vw,14px)/1.7 "DM Sans",Arial,sans-serif;letter-spacing:.14em;color:#d4c7b6;text-transform:uppercase}
+body.mg-site .mg11-passage.mg11-active .mg11-passage-equation{animation:mg11-equation-reveal .34s cubic-bezier(.2,.7,.2,1) both}
+body.mg-site .mg11-passage[data-scene="report"] .mg11-passage-equation{font-size:clamp(55px,9vw,124px)}
+@keyframes mg11-passage-draw{from{stroke-dashoffset:1800}to{stroke-dashoffset:0}}
+@keyframes mg11-equation-reveal{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+/* A destination should emerge naturally after a scene rather than snap as a hard cut. */
+body.mg-site .mg11-destination{animation:mg11-destination-arrive .48s cubic-bezier(.15,.65,.22,1)}
+@keyframes mg11-destination-arrive{from{filter:brightness(.97)}to{filter:brightness(1)}}
+body.mg-report-reader .mgr-hero{animation:mg11-report-arrive .62s cubic-bezier(.2,.7,.2,1) both}
+@keyframes mg11-report-arrive{from{opacity:.5;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:820px){
+ body.mg-site .mg11-atmosphere{opacity:.26}
+ body.mg-site .mg11-hero-atmosphere{opacity:.18;mask-image:linear-gradient(180deg,#000,transparent 90%)}
+ body.mg-site .mg11-passage-content{padding:15px}
+ body.mg-site .mg11-passage-trace{opacity:.3}
+ body.mg-site .mg3-tier:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ body.mg-site .mg11-atmosphere svg,body.mg-site .mg11-atmosphere .mg11-line,body.mg-site .mg11-passage *,body.mg-site .mg11-destination,body.mg-report-reader .mgr-hero{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
+ body.mg-site .mg11-passage{display:none!important}
+ body.mg-site .mg3-tier:hover{transform:none}
+}
+@media print{
+ body.mg-site .mg11-passage,body.mg-site .mg11-atmosphere{display:none!important}
+ body.mg-site .mg3-tier,body.mg-site .mg9-sig-paper{transform:none!important;box-shadow:none}
+ body.mg-report-reader .mgr-hero{animation:none!important;transform:none}
+}
