@@ -139,7 +139,7 @@
    if(!target)return false;
    return show(hash.slice(1),()=>{
     if(replace)window.history.replaceState(null,"",hash);else window.history.pushState(null,"",hash);
-    target.scrollIntoView({behavior:"auto",block:"start"});
+    target.scrollIntoView({behavior:"instant",block:"start"});
     if(target!==document.body){
      if(!target.hasAttribute("tabindex"))target.setAttribute("tabindex","-1");
      target.focus?.({preventScroll:true});
