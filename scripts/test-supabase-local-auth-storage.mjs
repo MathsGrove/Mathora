@@ -379,6 +379,26 @@ const parentReport=requireOk(await rpc('parent','mg2_family_report',{
  p_attempt:attempt,p_role:'parent'
 }),'parent gets linked report');
 assert.equal(parentReport.view_role,'parent');
+const parentOriginals=requireOk(await rpc('parent','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'parent',p_limit:20
+}),'legitimately linked parent discovers a released original report');
+assert.equal(parentOriginals.total,1);
+assert.equal(parentOriginals.items[0].attempt_id,attempt);
+assert.ok(!JSON.stringify(parentOriginals).includes('examinerEvidence'));
+const tutorOriginals=requireOk(await rpc('tutor','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'tutor',p_limit:20
+}),'linked tutor discovers the released original for teaching');
+assert.equal(tutorOriginals.total,1);
+denied(await rpc('parent','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'tutor',p_limit:20
+}),'parent cannot enumerate tutor-only reports');
+denied(await rpc('otherStudent','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'parent',p_limit:20
+}),'unlinked account cannot enumerate guardian reports');
+denied(await rpc('parent','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'parent',p_limit:100
+}),'unbounded private family report list refused');
+
 // Grade/feedback access must follow the actual weekly/daily paper entitlement,
 // rather than erroneously requiring Grove Exam for every family report.
 psql("UPDATE public.student_entitlements SET tier='weekly' WHERE student_id=(SELECT id FROM auth.users WHERE email='mg2-student@example.com')");
@@ -406,6 +426,9 @@ denied(await rpc('otherStudent','mg2_student_report',{p_attempt:attempt}),
 psql("UPDATE public.learner_view_invitations SET revoked_at=now() WHERE viewer_email='mg2-parent@example.com'");
 denied(await rpc('parent','mg2_family_report',{p_attempt:attempt,p_role:'parent'}),
  'revoked parent report');
+denied(await rpc('parent','mg2_linked_original_reports',{
+ p_student:identities.student.id,p_role:'parent',p_limit:20
+}),'revoked parent cannot discover even existing released reports');
 psql("DELETE FROM public.memberships WHERE user_id=(SELECT id FROM auth.users WHERE email='mg2-examiner-one@example.com')");
 denied(await storage('GET',object,'one'),'revoked examiner image read');
 denied(await rpc('one','mg2_examiner_constructed',{p_attempt:attempt}),
