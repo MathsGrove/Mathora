@@ -1,5 +1,6 @@
 import {reviewPublicPracticeExample,validateExamStyle} from './exam-style-policy.mjs';
 import {buildFictionalRoleReport} from './criterion-engine.mjs';
+import {validateFeedbackBank,buildFictionalFeedbackPlan} from './feedback-bank-model.mjs';
 
 const $=id=>document.getElementById(id);
 const node=(tag,value,css)=>{
@@ -9,7 +10,7 @@ const node=(tag,value,css)=>{
  return n;
 };
 const preview=$('preview'),message=$('notice'),listing=$('question');
-let examples=[],current=null,role='student',result=null;
+let examples=[],feedbackBank=null,current=null,role='student',result=null;
 const choices=['Not assessed','Credit earned','Credit not earned'];
 
 function setStatus(messageText,error=false){
@@ -131,11 +132,13 @@ function renderReport(){
   if(role==='tutor')reportLine(root,'Teaching focus','Inspect the fictional learner’s reasoning. An option choice alone does not identify a misconception.');
  }else{
   const target=buildFictionalRoleReport({...current,status:'public_editorial_example'},result,role);
+  const detailed=buildFictionalFeedbackPlan({...current,status:'public_editorial_example'},result,feedbackBank,role);
   if(target.strength)reportLine(root,'Credit shown',target.strength);
   if(target.focus)reportLine(root,'First next focus',target.focus);
   if(target.nextPractice)reportLine(root,'Next independent practice',target.nextPractice);
   if(role==='parent'){
    reportLine(root,'Conversation prompt',target.coachingPrompt);
+   for(const step of detailed.support)reportLine(root,'How to support '+step.skill,step.question);
    reportLine(root,'Evidence boundary','Guardians receive a supportive summary, not examiner-only working notes or private teaching annotations.');
   }else if(role==='student'){
    const sections=node('ul',undefined,'checkpoint-list');
@@ -143,6 +146,11 @@ function renderReport(){
     const li=node('li');li.append(node('strong',c.label+' · '+c.credit+' / '+c.max),node('p',c.note));sections.append(li);
    }
    root.append(sections);
+   for(const step of detailed.nextSteps){
+    reportLine(root,'Correction · '+step.skill,step.whatToTry);
+    reportLine(root,'Check your answer',step.checkYourWork);
+    reportLine(root,'Try independently next',step.futureRecheck);
+   }
   }else{
    const sections=node('ul',undefined,'checkpoint-list');
    for(const c of target.checkpoints){
@@ -152,19 +160,26 @@ function renderReport(){
    }
    root.append(sections);
    reportLine(root,'Next lesson',target.intervention);
+   for(const step of detailed.teaching){
+    reportLine(root,step.markCode+' · Diagnose '+step.skill,step.questionToInvestigate);
+    reportLine(root,'Teaching intervention',step.intervention);
+    reportLine(root,'Independent recheck',step.recheck);
+   }
   }
  }
  root.append(node('p','Release disabled. There is no learner record, database write, account login or publishing endpoint.','privacy-note'));
 }
 async function start(){
  try{
-  const paths=['./route-exam-style-examples.json'];
+  const paths=['./route-exam-style-examples.json','./route-feedback-bank.json'];
   const response=await Promise.all(paths.map(path=>fetch(path,{cache:'no-store'})));
   if(response.some(x=>!x.ok))throw Error('Local editorial examples could not be loaded. Open this page through a local HTTP server.');
   const payload=await response[0].json();
+  feedbackBank=await response[1].json();
   examples=payload.items||[];
   for(const example of examples){
    validateExamStyle(example);
+   if(example.format==='constructed')validateFeedbackBank({...example,status:'public_editorial_example'},feedbackBank);
    listing.append(new Option(example.route.qualification+' · '+example.route.level+' · '+example.topic,example.id));
   }
   if(!examples.length)throw Error('No public examples available.');
