@@ -360,7 +360,7 @@ try{
    assert.equal(await page.locator('#signature-sample').isVisible(),true,'Examiner booklet transition works');
    await page.screenshot({path:resolve(screenshotDir,'maths-cinematic-report.png'),fullPage:false});
    await page.locator('a[href="./report.html"]').first().click();
-   await page.waitForURL(/\\/report\\.html$/,{timeout:7000});
+   await page.waitForURL(url=>url.pathname.endsWith('/report.html'),{timeout:7000});
    assert.ok((await page.title()).includes('Signature'),'Full examiner booklet opens after animated link');
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
    await page.locator('[data-mg8-route="parent"]').click();
