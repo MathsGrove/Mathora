@@ -33,6 +33,9 @@ CREATE TABLE private.mg2_signoffs (
  reviewer_id uuid NOT NULL REFERENCES auth.users(id),
  fingerprint text NOT NULL CHECK(fingerprint ~ '^[a-f0-9]{64}$'),
  reviewer_note text NOT NULL CHECK(length(btrim(reviewer_note))>=25),
+ maths_checked boolean NOT NULL CHECK(maths_checked),
+ syllabus_checked boolean NOT NULL CHECK(syllabus_checked),
+ mark_scheme_checked boolean NOT NULL CHECK(mark_scheme_checked),
  signed_at timestamptz NOT NULL DEFAULT now(),
  PRIMARY KEY(rubric_id,reviewer_id),
  FOREIGN KEY(rubric_id,org_id) REFERENCES private.mg2_rubrics(id,org_id)
@@ -170,7 +173,8 @@ CREATE FUNCTION private.mg2_validate_criteria(p_rubric private.mg2_rubrics)
 
 -- Only active organisation examiners/admins can sign off, never the author.
 -- Identity comes from auth.uid(), not client-supplied reviewer IDs.
-CREATE FUNCTION public.mg2_signoff_rubric(p_rubric uuid,p_hash text,p_note text)
+CREATE FUNCTION public.mg2_signoff_rubric(p_rubric uuid,p_hash text,p_note text,
+ p_maths_checked boolean,p_syllabus_checked boolean,p_mark_scheme_checked boolean)
  RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
  DECLARE r private.mg2_rubrics%ROWTYPE; v_uid uuid:=auth.uid();v_hash text;v_count integer;
  BEGIN
@@ -182,10 +186,14 @@ CREATE FUNCTION public.mg2_signoff_rubric(p_rubric uuid,p_hash text,p_note text)
   THEN RAISE EXCEPTION 'Independent examiner permission required';END IF;
   PERFORM private.mg2_validate_criteria(r);
   v_hash:=private.mg2_fingerprint(r);
+  IF p_maths_checked IS DISTINCT FROM true OR p_syllabus_checked IS DISTINCT FROM true
+   OR p_mark_scheme_checked IS DISTINCT FROM true
+  THEN RAISE EXCEPTION 'Explicit mathematics, syllabus and mark-scheme checks required';END IF;
   IF p_hash IS DISTINCT FROM v_hash OR length(btrim(coalesce(p_note,'')))<25
   THEN RAISE EXCEPTION 'Exact rubric hash and substantive examiner note required';END IF;
-  INSERT INTO private.mg2_signoffs(rubric_id,org_id,reviewer_id,fingerprint,reviewer_note)
-  VALUES(r.id,r.org_id,v_uid,v_hash,p_note);
+  INSERT INTO private.mg2_signoffs(rubric_id,org_id,reviewer_id,fingerprint,reviewer_note,
+    maths_checked,syllabus_checked,mark_scheme_checked)
+  VALUES(r.id,r.org_id,v_uid,v_hash,p_note,true,true,true);
   SELECT count(*) INTO v_count FROM private.mg2_signoffs WHERE rubric_id=r.id AND fingerprint=v_hash;
   IF v_count>=2 THEN UPDATE private.mg2_rubrics SET status='approved' WHERE id=r.id;END IF;
   RETURN jsonb_build_object('approved',v_count>=2,'independent_reviewers',v_count);
@@ -354,13 +362,13 @@ REVOKE ALL ON FUNCTION private.mg2_fingerprint(private.mg2_rubrics),
  FROM PUBLIC,anon,authenticated;
 
 REVOKE ALL ON FUNCTION
- public.mg2_signoff_rubric(uuid,text,text),
+ public.mg2_signoff_rubric(uuid,text,text,boolean,boolean,boolean),
  public.mg2_staff_mark(uuid,jsonb,boolean,text,text,text),
  public.mg2_student_report(uuid),
  public.mg2_family_report(uuid,text)
  FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION
- public.mg2_signoff_rubric(uuid,text,text),
+ public.mg2_signoff_rubric(uuid,text,text,boolean,boolean,boolean),
  public.mg2_staff_mark(uuid,jsonb,boolean,text,text,text),
  public.mg2_student_report(uuid),
  public.mg2_family_report(uuid,text)
