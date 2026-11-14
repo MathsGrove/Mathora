@@ -24,7 +24,7 @@
     document.querySelector('[data-mg5-case="'+scenario.caseKey+'"]')?.click();
     document.querySelector('[data-mg5-role="'+scenario.viewRole+'"]')?.click();
    }
-   if(window.MathsGroveMotion?.navigateHash?.("#dashboards",{replace:true}))return;
+   if(window.MathsGroveMotion?.navigateHash?.("#dashboards",{replace:true,theme:role}))return;
    if(window.history?.replaceState)window.history.replaceState(null,"","#dashboards");
    destination.focus?.({preventScroll:true});
    destination.scrollIntoView({behavior:reduce()?"auto":"smooth",block:"start"});
