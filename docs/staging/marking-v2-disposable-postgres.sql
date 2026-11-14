@@ -265,7 +265,11 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
       WHERE c->>'id'=x->>'id'))
   THEN RAISE EXCEPTION 'Unknown criterion identifier';END IF;
   IF p_release THEN
-   IF length(btrim(coalesce(p_student_summary,'')))<15 OR
+   IF p_release IS DISTINCT FROM true OR
+     length(coalesce(p_student_summary,''))>3000 OR
+     length(coalesce(p_parent_summary,''))>3000 OR
+     length(coalesce(p_tutor_plan,''))>3000 OR
+     length(btrim(coalesce(p_student_summary,'')))<15 OR
      length(btrim(coalesce(p_parent_summary,'')))<15 OR
      length(btrim(coalesce(p_tutor_plan,'')))<15
    THEN RAISE EXCEPTION 'Human-reviewed student, family and teaching summaries required';END IF;
@@ -337,6 +341,10 @@ CREATE FUNCTION public.mg2_family_report(p_attempt uuid)
   IF v IS NULL THEN RAISE EXCEPTION 'Released linked-learner report not found';END IF;
   RETURN v;
  END $$;
+
+REVOKE ALL ON FUNCTION private.mg2_fingerprint(private.mg2_rubrics),
+ private.mg2_validate_criteria(private.mg2_rubrics),private.mg2_no_immutable_edits()
+ FROM PUBLIC,anon,authenticated;
 
 REVOKE ALL ON FUNCTION
  public.mg2_signoff_rubric(uuid,text,text),
