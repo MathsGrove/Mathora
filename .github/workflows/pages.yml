@@ -128,6 +128,10 @@ jobs:
           cp family.html family-access.css family-access.js family-timing.css family-timing.js tier-role-experience.js tier-role-experience.css site/
           mkdir -p site/content
           cp content/boards.json content/paper-blueprints.json site/content/
+          # Only client-safe assessment runtime modules. Never package reviewer labs,
+          # worked-solution fixtures, rubric answer keys, or staging SQL.
+          mkdir -p site/content/marking
+          cp content/marking/staging-rpc-client.mjs content/marking/original-authoring-ui.mjs content/marking/examiner-moderation-ui.mjs content/marking/examiner-workbench-ui.mjs content/marking/examiner-assist.mjs content/marking/constructed-practice-ui.mjs content/marking/student-assignment-feed.mjs content/marking/linked-original-reports.mjs content/marking/pilot-integration.css content/marking/examiner-workbench.css site/content/marking/
           mkdir -p site/content/programmes
           cp content/programmes/service-tiers.json content/programmes/draft-questions.json content/programmes/practice-gcse-v2.json content/programmes/practice-igcse-v2.json content/programmes/practice-foundation-core-v2.json site/content/programmes/
           cp content/programmes/extra-practice-120.json content/programmes/exam-reasoning-drafts-12.json site/content/programmes/
@@ -138,6 +142,8 @@ jobs:
           cp sample.html sample.css sample-extras.css sample.js sample-extras.js insights-upgrade.css insights-upgrade.js private-polish-v6.css site/
           cp journey.html journey.css journey.js embed-bridge.js unified-site.js site/
           touch site/.nojekyll
+      - name: Verify private marking keys never enter Pages artifact
+        run: node scripts/check-marking-v2-public-bundle.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
