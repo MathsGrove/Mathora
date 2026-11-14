@@ -246,6 +246,10 @@ const savedMarks=requireOk(await rpc('one','mg2_staff_mark',{
 }),'examiner saves all three human-awarded criteria without release');
 assert.equal(savedMarks.earned,2);
 assert.equal(savedMarks.released,false);
+denied(await rpc('two','mg2_staff_mark',{
+ p_attempt:attempt,p_awards:awards,p_release:false
+}),'second staff member cannot overwrite a colleague’s signed draft evidence');
+
 const resumed=requireOk(await rpc('one','mg2_examiner_saved_marks',{p_attempt:attempt}),
  'examiner resumes recorded marking decisions');
 assert.equal(resumed.recorded,3);
