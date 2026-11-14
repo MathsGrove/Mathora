@@ -1,0 +1,53 @@
+name: MathsGrove complete marking lab verification
+on:
+  pull_request:
+    paths:
+      - 'content/marking/**'
+      - 'scripts/test-exam-style-policy.mjs'
+      - 'scripts/test-reviewer-lab-browser.mjs'
+      - '.github/workflows/assessment-marking-integration-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  marking-and-feedback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate original M/A/B, IB reasoning, TMUA MCQ, moderation and feedback
+        run: |
+          node --check content/marking/criterion-engine.mjs
+          node --check content/marking/moderation-workflow.mjs
+          node --check content/marking/exam-style-policy.mjs
+          node --check content/marking/reviewer-lab.js
+          node scripts/test-criterion-engine.mjs
+          node scripts/test-moderation-workflow.mjs
+          node scripts/test-criterion-feedback-bank.mjs
+          node scripts/test-exam-style-policy.mjs
+          node scripts/check-site.mjs
+      - name: Assert draft lab is not published in Pages assets
+        run: |
+          if grep -E 'cp .*reviewer-lab|cp .*route-exam-style-examples' .github/workflows/pages.yml; then
+            echo 'Editorial lab and answer keys must not appear in the public Pages deployment'; exit 1
+          fi
+          echo 'PASS: no public-site packaging of editorial examiner lab.'
+
+  examiner-lab-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned test-only Chromium automation
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Chromium fictional examiner flow (desktop and mobile)
+        run: node scripts/test-reviewer-lab-browser.mjs
