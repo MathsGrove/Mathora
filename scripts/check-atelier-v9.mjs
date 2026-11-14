@@ -23,7 +23,9 @@ assert.ok(home.includes('id="signature"'),'Full Signature packages must remain i
 assert.ok(home.includes('href="#signature-discovery"'),'Hero and navigation must prominently link to Signature');
 assert.ok(home.includes('href="#signature-sample"'),'Signature must link to the seven-page report');
 assert.ok(home.indexOf('id="choose-your-view"')<home.indexOf('id="signature-discovery"'),'Signature follows role selection');
-assert.ok(home.indexOf('id="signature-discovery"')<home.indexOf('id="dashboards"'),'Signature flagship precedes comprehensive dashboard showcase');
+assert.ok(home.indexOf('id="services"')<home.indexOf('id="choose-your-view"'),'Three programmes now appear before the role previews');
+assert.ok(home.indexOf('id="dashboards"')<home.indexOf('id="signature-discovery"'),'The deliberate dashboard-before-Signature flow must match the v15 journey');
+assert.ok(home.indexOf('id="signature-discovery"')<home.indexOf('id="signature-sample"'),'The Signature explanation precedes the sample report');
 for(const role of ['student','parent','tutor'])assert.ok(home.includes('data-mg8-route="'+role+'"'),'Role journey '+role+' must survive');
 for(const text of ['Signature is separately commissioned','The report shown is fictional','43/60','72%','MathsGrove / Signature']){
  if(text==='MathsGrove / Signature')continue;
