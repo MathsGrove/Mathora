@@ -321,6 +321,13 @@ try{
    assert.equal(await page.locator('#mgtr-family-cards .mgtr-card').count(),3);
    assert.match(await page.locator('#mgtr-family-title').textContent(),/Support the learner/);
    assert.doesNotMatch(await page.locator('#mg-family-role-experience').textContent(),/TUTOR PRIVATE NOTES|Examiner comment items/);
+   assert.equal(await page.locator('#mgtr-family-inquiry .mg14-guide').count(),3,'Parent has distinct home, tutor and weekly follow-up panels');
+   assert.match(await page.locator('#mgtr-family-inquiry').textContent(),/ASK YOUR CHILD/);
+   assert.match(await page.locator('#mgtr-family-inquiry').textContent(),/ASK THEIR TUTOR/);
+   assert.equal(await page.locator('#mgtr-family-inquiry .mg14-evidence-row').count(),2,'Parent sees topic sample sizes');
+   assert.doesNotMatch(await page.locator('#mgtr-family-inquiry').textContent(),/TUTOR PRIVATE NOTES/,'No tutor-only notes in parent prompts');
+   await page.evaluate(()=>document.getElementById('fa-learner-select').dispatchEvent(new Event('change',{bubbles:true})));
+   assert.ok(await page.locator('.mg14-private-trail').count(),'Private controls show a small, non-blocking maths flourish');
    await page.locator('#mg-family-role-experience').scrollIntoViewIfNeeded();
    await page.screenshot({path:resolve(screenshotDir,'parent-tailored-'+viewport.label+'.png'),fullPage:false});
    await page.evaluate(payload=>import('./tier-role-experience.js').then(m=>
@@ -328,6 +335,9 @@ try{
    assert.equal(await page.locator('#mg-family-role-experience').getAttribute('data-role'),'tutor');
    assert.match(await page.locator('#mgtr-family-title').textContent(),/Plan the intervention/);
    assert.match(await page.locator('#mg-family-role-experience').textContent(),/Examiner comment items/);
+   assert.match(await page.locator('#mgtr-family-inquiry').textContent(),/BEFORE THE NEXT LESSON/);
+   assert.match(await page.locator('#mgtr-family-inquiry').textContent(),/TEACH AND CONTRAST/);
+   assert.match(await page.locator('#mgtr-family-inquiry').textContent(),/FOLLOW UP WITH EVIDENCE/);
    await page.screenshot({path:resolve(screenshotDir,'tutor-tailored-'+viewport.label+'.png'),fullPage:false});
 
    const over=await page.evaluate(()=>Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)-
@@ -350,7 +360,8 @@ try{
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
    assert.equal(await page.locator('#mg13-passage').isVisible(),false,'Gallery starts hidden');
    assert.equal(await page.locator('.mg13-tile').count(),24,'Gallery contains 24 mathematical panels');
-   assert.equal(await page.locator('.mg13-hand-line').count(),3,'Every major scene has three lines of working');
+   assert.equal(await page.locator('.mg14-maths-quote').count(),1,'Every major scene has one concise mathematics quote');
+   assert.equal(await page.locator('.mg13-hand-line').count(),0,'No handwritten notes in navigation');
    assert.equal(await page.locator('.mg11-atmosphere').count(),5,'Existing mathematical backgrounds remain');
    assert.equal(await page.locator('.mg10-math-section').count(),0,'Disconnected quadratic section remains removed');
    await page.locator('.mg6-proof-tab').nth(1).click();
@@ -366,7 +377,7 @@ try{
    await page.locator('[data-mg4-report="signature"]').click();
    await page.waitForFunction(()=>!document.getElementById('mg13-passage').hidden,{timeout:3500});
    assert.equal(await page.locator('#mg13-passage').getAttribute('data-scene'),'report','Examiner report has its own scene');
-   assert.equal(await page.locator('.mg13-hand-line').last().textContent(),'x = 2 or x = 3','Examiner working is mathematically correct');
+   assert.equal(await page.locator('.mg14-maths-quote').textContent(),'Every mark has a reason worth exploring.','Examiner scene uses an original quote, not handwriting');
    await page.waitForFunction(()=>location.hash==='#signature-sample'&&document.getElementById('mg13-passage').hidden,null,{timeout:6000});
    await page.screenshot({path:resolve(screenshotDir,'maths-gallery-report.png'),fullPage:false});
    await page.locator('a[href="./report.html"]').first().click();
@@ -377,6 +388,7 @@ try{
    await page.locator('[data-mg8-route="parent"]').click();
    await page.waitForFunction(()=>location.hash==='#dashboards'&&document.getElementById('mg13-passage').hidden,null,{timeout:6000});
    assert.equal(await page.locator('#mg13-passage').getAttribute('data-scene'),'people','Parent view has a family-focused mathematical gallery');
+   assert.equal(await page.locator('.mg14-maths-quote').textContent(),'Confidence grows through curious conversations.','Parent entrance has a calm dedicated quote');
    assert.equal(await page.locator('[data-mg5-role="parent"]').getAttribute('aria-pressed'),'true','Role selection remains correct');
    await page.evaluate(()=>window.MathsGroveMotion.navigateHash('#pathways'));
    await page.waitForFunction(()=>location.hash==='#pathways'&&document.getElementById('mg13-passage').hidden,null,{timeout:4500});
@@ -388,6 +400,13 @@ try{
    await page.locator('.rg-end a[href="./index.html"]').click();
    await page.waitForURL(url=>url.pathname.endsWith('/index.html'),{timeout:8000});
    assert.ok(await page.locator('#mg13-passage').count(),'Homepage gallery also works on return navigation');
+   await page.locator('#learning-journey [data-role="parent"]').click();
+   assert.equal(await page.locator('#mg14-showcase').isVisible(),true,'Grove Exam parent tour has tailored questions');
+   assert.match(await page.locator('#mg14-showcase').textContent(),/ASK THEIR TUTOR/,'Public parent questions include tutor follow-ups');
+   await page.locator('#learning-journey [data-role="tutor"]').click();
+   assert.match(await page.locator('#mg14-showcase').textContent(),/BEFORE THE LESSON/,'Tutor tour provides a diagnostic pathway');
+   await page.locator('#learning-journey [data-tier="weekly"]').click();
+   assert.equal(await page.locator('#mg14-showcase').isVisible(),false,'Parent/tutor preview respects Weekly-only student permissions');
    assert.equal(errors.length,0,'Mathematical gallery must not produce page errors: '+errors.join(' | '));
    const reducedContext=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
    const reducedPage=await reducedContext.newPage();
