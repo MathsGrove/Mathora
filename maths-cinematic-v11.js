@@ -42,10 +42,11 @@
      passage.classList.add("mg11-active");
      const into=passage.animate([{transform:"translateY(101%)"},{transform:"translateY(0)"}],{duration:215,easing:"cubic-bezier(.18,.75,.24,1)",fill:"forwards"});
      into.finished.then(()=>{
+       into.cancel();
        const move=requested;requested=null;
        move?.action();
        const out=passage.animate([{transform:"translateY(0)"},{transform:"translateY(-101%)"}],{duration:250,easing:"cubic-bezier(.72,.09,.75,.18)",fill:"forwards"});
-       return out.finished;
+       return out.finished.then(()=>out.cancel());
      }).catch(()=>{const move=requested;requested=null;move?.action();}).finally(()=>{
        passage.classList.remove("mg11-active");
        passage.hidden=true;
