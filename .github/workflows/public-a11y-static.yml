@@ -1,0 +1,21 @@
+name: MathsGrove public HTML accessibility static guard
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'portal.html'
+      - 'family.html'
+      - 'scripts/check-public-a11y.mjs'
+      - '.github/workflows/public-a11y-static.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check syntax and public-page accessibility regression rules
+        run: |
+          node --check scripts/check-public-a11y.mjs
+          node scripts/check-public-a11y.mjs
