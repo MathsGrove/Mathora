@@ -81,6 +81,47 @@ export function mountStudentOriginalAssignments(root,{client}={}){
    client,attemptId:item.attempt_id,
    confirmSubmit:()=>window.confirm('Submit your final mathematical working for examiner marking? You will not be able to edit it afterwards.')
   });
+  if(typeof client.uploadEvidence==='function'){
+   const box=el('section',undefined,'mg2-evidence-upload');
+   box.append(el('h4','Add one secure image or PDF of your working'),
+    el('p','Optional: provide a photo of handwritten steps before final submission. PNG, JPEG or PDF, up to 1 MiB. This is private to you and the authorised examiner.','mg2-help'));
+   const file=document.createElement('input');file.type='file';
+   file.accept='image/png,image/jpeg,application/pdf';
+   const upload=el('button','Upload private working evidence','mg2-secondary');upload.type='button';
+   const attachments=el('div',undefined,'mg2-evidence-list');
+   const feedback=el('p','', 'mg2-help');feedback.setAttribute('role','status');
+   box.append(file,upload,attachments,feedback);detail.append(box);
+   async function listFiles(){
+    if(typeof client.listEvidence!=='function')return;
+    try{
+     const records=await client.listEvidence({attemptId:item.attempt_id});
+     attachments.replaceChildren();
+     for(const f of records){
+      const label=el('button','View '+f.name+' (temporary private link)','mg2-tertiary');
+      label.type='button';
+      label.addEventListener('click',async()=>{
+       try{
+        const url=await client.signedEvidenceUrl(f.path);
+        window.open(url,'_blank','noopener,noreferrer');
+       }catch(error){feedback.textContent='Evidence could not be opened: '+error.message}
+      });
+      attachments.append(label);
+     }
+    }catch(error){feedback.textContent='Private evidence list unavailable: '+error.message}
+   }
+   upload.addEventListener('click',async()=>{
+    if(!file.files?.length){feedback.textContent='Choose a photo or PDF first.';return;}
+    upload.disabled=true;
+    try{
+     const result=await client.uploadEvidence({attemptId:item.attempt_id,file:file.files[0]});
+     if(!result?.stored)throw Error('Storage did not confirm the upload.');
+     feedback.textContent='Your working photo was saved privately. You can now submit the full written answer.';
+     file.value='';await listFiles();
+    }catch(error){feedback.textContent='Evidence not saved: '+error.message}
+    finally{upload.disabled=false}
+   });
+   void listFiles();
+  }
  }
  function render(){
   list.replaceChildren();
