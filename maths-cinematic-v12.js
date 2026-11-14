@@ -58,6 +58,7 @@
   busy=true;
   render(key,theme);
   passage.hidden=false;
+  document.body?.classList.add("mg12-transitioning");
   passage.classList.remove("mg12-active");
   void passage.offsetWidth;
   passage.classList.add("mg12-active");
@@ -74,6 +75,7 @@
     finally{
       passage.hidden=true;
       passage.classList.remove("mg12-active");
+      document.body?.classList.remove("mg12-transitioning");
       busy=false;
       if(pending){const next=pending;pending=null;start(next.key,next.action,next.theme)}
     }
@@ -113,5 +115,18 @@
   if(href==="./report.html"||href==="./reasoning-demo.html"){
     event.preventDefault();navigatePage(link.href,href==="./report.html"?"report-page":"reasoning-page");
   }
+ });
+ const backgrounds=[...document.querySelectorAll(".mg11-atmosphere")];
+ if(!shouldSkip()&&"IntersectionObserver" in window){
+   const observer=new IntersectionObserver(entries=>{
+     for(const entry of entries)entry.target.classList.toggle("mg11-visible",entry.isIntersecting);
+   },{threshold:0.01,rootMargin:"90px 0px 90px 0px"});
+   backgrounds.forEach(node=>observer.observe(node));
+ }
+ preference?.addEventListener?.("change",event=>{
+   if(event.matches)backgrounds.forEach(node=>node.classList.remove("mg11-visible"));
+ });
+ document.addEventListener("visibilitychange",()=>{
+   if(document.visibilityState==="hidden")backgrounds.forEach(node=>node.classList.remove("mg11-visible"));
  });
 })();
