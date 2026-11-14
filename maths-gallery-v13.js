@@ -104,8 +104,8 @@
  const reduced=()=>Boolean(canReduce?.matches||navigator.connection?.saveData||document.visibilityState==="hidden");
  const touch=()=>Boolean(phone?.matches);
  const timings=kind=>{
-  if(touch())return kind==="small"?{enter:175,hold:110,exit:210}:{enter:285,hold:380,exit:380};
-  return kind==="small"?{enter:210,hold:145,exit:250}:{enter:365,hold:545,exit:455};
+  if(touch())return kind==="small"?{enter:175,hold:110,exit:210}:{enter:340,hold:465,exit:440};
+  return kind==="small"?{enter:210,hold:145,exit:250}:{enter:450,hold:650,exit:520};
  };
  // Major destinations receive a full gallery; nearby chapter jumps receive a shorter passage.
  const isMajor=key=>/^(services|dashboards|learning-journey|choose-your-view|signature|signature-sample|signature-discovery|report-page|reasoning-page|portal-page|family-page|studio-page|home-page|interactive-sample)$/.test(key);
