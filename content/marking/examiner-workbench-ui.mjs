@@ -101,7 +101,7 @@ export function mountExaminerReviewQueue(root,{client,confirmRelease}={}){
   }
   updateBusy(state.busy);
  }
- async function loadQueue(){
+ async function loadQueue({silent=false}={}){
   if(state.busy)return;
   updateBusy(true);
   try{
@@ -114,7 +114,7 @@ export function mountExaminerReviewQueue(root,{client,confirmRelease}={}){
    if(state.selected&&!state.queue.some(x=>x.attempt_id===state.selected)){
     state.selected=null;state.record=null;review.replaceChildren(el('p','Selected submission is no longer in the pending queue.'));
    }
-   announce('Examiner queue updated.');
+   if(!silent)announce('Examiner queue updated.');
   }catch(error){announce('Could not load the queue: '+(error?.message||'Try again.'),true)}
   finally{updateBusy(false)}
  }
@@ -308,7 +308,7 @@ export function mountExaminerReviewQueue(root,{client,confirmRelease}={}){
     review.replaceChildren(el('p','Report released after your explicit examiner confirmation.','mg2-done'));
     announce('Examiner-confirmed report released and its score recalculated server-side.');
     updateBusy(false);
-    await loadQueue();
+    await loadQueue({silent:true});
    }else announce('Mark decisions saved. You can return later; no learner report was released.');
   }catch(error){announce('The marking was not confirmed: '+(error?.message||'Try again.'),true)}
   finally{updateBusy(false)}
