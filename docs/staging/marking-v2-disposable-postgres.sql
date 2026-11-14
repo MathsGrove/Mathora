@@ -19,6 +19,12 @@ CREATE TABLE private.mg2_rubrics (
  plan text NOT NULL CHECK(plan IN('weekly','daily','exam')),
  question_prompt text NOT NULL,
  worked_solution text NOT NULL,
+ -- Mandatory for new authoring RPCs; locally seeded legacy tests have explicit
+ -- fictional defaults. These are signed as part of the immutable rubric.
+ syllabus_objective text NOT NULL DEFAULT 'Fictional ratios curriculum objective for a local test',
+ source_declaration text NOT NULL DEFAULT 'Fictional original authored material; no third-party examination content was copied.',
+ calculator_rule text NOT NULL DEFAULT 'paper_specific'
+   CHECK(calculator_rule IN ('allowed','not_allowed','paper_specific')),
  max_marks smallint NOT NULL CHECK(max_marks BETWEEN 1 AND 30),
  criteria jsonb NOT NULL CHECK(jsonb_typeof(criteria)='array'),
  authored_by uuid NOT NULL REFERENCES auth.users(id),
@@ -138,7 +144,11 @@ CREATE FUNCTION private.mg2_fingerprint(p_rubric private.mg2_rubrics)
      'qualification',p_rubric.qualification,'academic_level',p_rubric.academic_level,
      'exam_board',p_rubric.exam_board,'syllabus_year',p_rubric.syllabus_year,
      'plan',p_rubric.plan,'question_prompt',p_rubric.question_prompt,
-     'worked_solution',p_rubric.worked_solution,'max_marks',p_rubric.max_marks,
+     'worked_solution',p_rubric.worked_solution,
+     'syllabus_objective',p_rubric.syllabus_objective,
+     'source_declaration',p_rubric.source_declaration,
+     'calculator_rule',p_rubric.calculator_rule,
+     'max_marks',p_rubric.max_marks,
      'criteria',p_rubric.criteria,'authored_by',p_rubric.authored_by
    )::text,'UTF8')),'hex');
  $$;
