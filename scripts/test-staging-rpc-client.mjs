@@ -55,4 +55,38 @@ const errorApi=createExperimentalMarkingClient({
  rpc:async()=>({data:null,error:{message:'Permission denied by Supabase RLS'}})
 },{environment:'disposable_staging',enabled:true});
 await assert.rejects(errorApi.studentReport(UUID),/Permission denied/);
-console.log('PASS — disabled-in-production staging client, explicit consented mark payloads, no client score/identity, signed rubric review, separate parent/tutor reads and RPC errors.');
+const secondId='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
+const prior=calls.length;
+await api.assignConstructed({rubricId:UUID,studentId:secondId});
+assert.equal(calls.at(-1).name,'mg2_assign_constructed');
+assert.deepEqual(Object.keys(calls.at(-1).args).sort(),['p_rubric','p_student'].sort());
+await api.assignedWork(UUID);
+assert.equal(calls.at(-1).name,'mg2_my_constructed');
+assert.deepEqual(Object.keys(calls.at(-1).args),['p_attempt']);
+await api.saveConstructed({
+ attemptId:UUID,writtenWork:'5+3=8 equal shares; 96 / 8 = 12 per share.',
+ expectedRevision:null,submit:false
+});
+assert.equal(calls.at(-1).name,'mg2_save_constructed');
+assert.deepEqual(Object.keys(calls.at(-1).args).sort(),[
+ 'p_attempt','p_expected_revision','p_submit','p_work'].sort());
+assert.equal(calls.at(-1).args.p_expected_revision,null);
+assert.equal(calls.at(-1).args.p_submit,false);
+await api.saveConstructed({
+ attemptId:UUID,writtenWork:'Five plus three makes eight parts, and 96 divided by eight gives twelve.',
+ expectedRevision:1,submit:true
+});
+assert.equal(calls.at(-1).args.p_submit,true);
+assert.equal(calls.at(-1).args.p_expected_revision,1);
+await api.examinerSubmission(UUID);
+assert.equal(calls.at(-1).name,'mg2_examiner_constructed');
+const count=calls.length;
+await assert.rejects(api.saveConstructed({attemptId:UUID,writtenWork:'  ',submit:true}),/meaningful written working/);
+await assert.rejects(api.saveConstructed({attemptId:UUID,writtenWork:'A valid attempt',expectedRevision:0}),/Expected revision/);
+await assert.rejects(api.saveConstructed({attemptId:UUID,writtenWork:'x'.repeat(12001)}),/12,000-character/);
+await assert.rejects(api.saveConstructed({attemptId:UUID,writtenWork:'work',submit:null}),/explicit draft or submit/);
+await assert.rejects(api.assignConstructed({rubricId:'not-an-id',studentId:secondId}),/UUID/);
+assert.equal(calls.length,count,'Invalid learner work or assignment must not reach the database');
+assert.equal(count-prior,5,'All five valid assignment, student and examiner calls were invoked');
+assert.ok(!calls.some(c=>c.args.p_org||c.args.p_examiner_id||c.args.p_total||c.args.p_score));
+console.log('PASS — protected staging student assignment, optimistic draft revisions, final-submit validation and examiner-only read adapters, plus prior role/report guards.');
