@@ -5,6 +5,7 @@ const read=path=>readFileSync(path,'utf8');
 const cfg=read('mathsgrove-config.js');
 const student=read('portal.js'),studio=read('studio.js');
 const studentHtml=read('portal.html'),staffHtml=read('studio.html');
+const family=read('family-access.js'),familyHtml=read('family.html');
 const client=read('content/marking/staging-rpc-client.mjs');
 const author=read('content/marking/original-authoring-ui.mjs');
 const feed=read('content/marking/student-assignment-feed.mjs');
@@ -15,6 +16,10 @@ const workflow=read('.github/workflows/assessment-marking-integration-ci.yml');
 assert.match(cfg,/markingV2Enabled:\s*false/,'Original marking must remain off until independently released.');
 assert.match(studentHtml,/<section id="mg2-student-pilot"[^>]*hidden/);
 assert.match(staffHtml,/<section id="mg2-staff-pilot"[^>]*hidden/);
+assert.match(familyHtml,/<section id="mg2-family-pilot"[^>]*hidden/);
+assert.match(family,/conf\.markingV2Enabled!==true/);
+assert.match(family,/\+\+mg2FamilyGeneration/);
+assert.match(family,/mountLinkedOriginalReports/);
 assert.match(student,/config\.markingV2Enabled!==true/);
 assert.match(studio,/config\.markingV2Enabled!==true/);
 assert.match(student,/state\.member\?\.member_role!=='student'/);
@@ -49,11 +54,12 @@ for(const f of [
  'content/marking/student-assignment-feed.mjs',
  'content/marking/staging-rpc-client.mjs',
  'content/marking/examiner-workbench-ui.mjs',
- 'content/marking/examiner-moderation-ui.mjs'
+ 'content/marking/examiner-moderation-ui.mjs',
+ 'content/marking/linked-original-reports.mjs'
 ]){
  execFileSync('node',['--check',f],{stdio:'pipe',timeout:8000});
 }
-for(const f of ['portal.js','studio.js']){
+for(const f of ['portal.js','studio.js','family-access.js']){
  const result=execFileSync('node',['--input-type=module','--check'],{
   input:read(f),encoding:'utf8',stdio:['pipe','pipe','pipe'],timeout:8000
  });
