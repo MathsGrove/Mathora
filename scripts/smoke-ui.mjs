@@ -327,7 +327,7 @@ try{
    assert.equal(await page.locator('#mgtr-family-inquiry .mg14-evidence-row').count(),2,'Parent sees topic sample sizes');
    assert.doesNotMatch(await page.locator('#mgtr-family-inquiry').textContent(),/TUTOR PRIVATE NOTES/,'No tutor-only notes in parent prompts');
    await page.evaluate(()=>document.getElementById('fa-learner-select').dispatchEvent(new Event('change',{bubbles:true})));
-   assert.ok(await page.locator('.mg14-private-trail').count(),'Private controls show a small, non-blocking maths flourish');
+   assert.equal(await page.locator('.mg14-private-trail').count(),0,'Reduced motion must suppress private decorative trails');
    await page.locator('#mg-family-role-experience').scrollIntoViewIfNeeded();
    await page.screenshot({path:resolve(screenshotDir,'parent-tailored-'+viewport.label+'.png'),fullPage:false});
    await page.evaluate(payload=>import('./tier-role-experience.js').then(m=>
@@ -407,6 +407,17 @@ try{
    assert.match(await page.locator('#mg14-showcase').textContent(),/BEFORE THE LESSON/,'Tutor tour provides a diagnostic pathway');
    await page.locator('#learning-journey [data-tier="weekly"]').click();
    assert.equal(await page.locator('#mg14-showcase').isVisible(),false,'Parent/tutor preview respects Weekly-only student permissions');
+   const privatePage=await context.newPage();
+   try{
+    await privatePage.route('**/family-access.js',route=>route.fulfill({status:200,contentType:'text/javascript',body:''}));
+    await privatePage.goto(base+'/family.html',{waitUntil:'domcontentloaded'});
+    await privatePage.evaluate(()=>{
+     document.getElementById('fa-loading').hidden=true;
+     document.getElementById('fa-dashboard').hidden=false;
+     document.getElementById('fa-learner-select').dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    assert.ok(await privatePage.locator('.mg14-private-trail').count(),'Private dashboard controls show a decorative mathematical trail without changing values');
+   }finally{await privatePage.close()}
    assert.equal(errors.length,0,'Mathematical gallery must not produce page errors: '+errors.join(' | '));
    const reducedContext=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
    const reducedPage=await reducedContext.newPage();
