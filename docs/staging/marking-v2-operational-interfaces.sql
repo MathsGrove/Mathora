@@ -125,20 +125,20 @@ BEGIN
    'attempt_id',q.id,'status',q.status,'question_key',q.question_key,
    'qualification',q.qualification,'academic_level',q.academic_level,
    'plan',q.plan,'max_marks',q.max_marks,
-   'submitted_at',q.submitted_at,'released_at',q.released_at,
+   'assigned_at',q.assigned_at,'submitted_at',q.submitted_at,'released_at',q.released_at,
    'earned',CASE WHEN q.status='released' THEN q.score ELSE NULL END
   ) ORDER BY q.created_time DESC,q.id),'[]'::jsonb) INTO v_rows
  FROM (
-  SELECT a.id,a.status,a.submitted_at,a.released_at,a.score,
+  SELECT a.id,a.status,a.assigned_at,a.submitted_at,a.released_at,a.score,
    r.question_key,r.qualification,r.academic_level,r.plan,r.max_marks,
-   coalesce(a.submitted_at,r.created_at) AS created_time
+   coalesce(a.submitted_at,a.assigned_at) AS created_time
   FROM private.mg2_attempts a JOIN private.mg2_rubrics r
     ON r.id=a.rubric_id AND r.org_id=a.org_id
   JOIN public.memberships m ON m.org_id=a.org_id
    AND m.user_id=v_uid AND m.member_role='student'
   WHERE a.student_id=v_uid AND
     (a.status='released' OR private.mg2_has_active_student_plan(v_uid,a.org_id,r.plan))
-  ORDER BY coalesce(a.submitted_at,r.created_at) DESC,a.id
+  ORDER BY coalesce(a.submitted_at,a.assigned_at) DESC,a.id
   LIMIT p_limit OFFSET p_offset
  ) q;
  RETURN jsonb_build_object('items',v_rows,'total',v_total,
