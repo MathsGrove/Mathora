@@ -197,7 +197,7 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
  p_student_summary text DEFAULT '',p_parent_summary text DEFAULT '',p_tutor_plan text DEFAULT '')
  RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
  DECLARE a private.mg2_attempts%ROWTYPE;r private.mg2_rubrics%ROWTYPE;
- v_uid uuid:=auth.uid();v_fp text;v_index integer;v_rule jsonb;v_award jsonb;
+ v_uid uuid:=auth.uid();v_fp text;v_index integer;v_rule jsonb;v_award jsonb;v_matches jsonb;
  v_id text;v_code text;v_points integer:=0;v_count integer;
  v_notes text;v_reason text;v_implied boolean;v_yes boolean;v_dep text;
  v_prev jsonb;v_student jsonb:='[]'::jsonb;v_tutor jsonb:='[]'::jsonb;
@@ -217,8 +217,9 @@ CREATE FUNCTION public.mg2_staff_mark(p_attempt uuid,p_awards jsonb,p_release bo
   PERFORM private.mg2_validate_criteria(r);
   FOR v_index IN 0..r.max_marks-1 LOOP
    v_rule:=r.criteria->v_index;v_id:=v_rule->>'id';v_code:=v_rule->>'code';
-   SELECT count(*),max(value) INTO v_count,v_award
+   SELECT count(*),jsonb_agg(value) INTO v_count,v_matches
     FROM jsonb_array_elements(p_awards) value WHERE value->>'id'=v_id;
+   v_award:=v_matches->0;
    IF v_count<>1 OR jsonb_typeof(v_award->'awarded')<>'boolean'
    THEN RAISE EXCEPTION 'Unknown, duplicate or missing examiner mark';END IF;
    v_yes:=(v_award->>'awarded')::boolean;
