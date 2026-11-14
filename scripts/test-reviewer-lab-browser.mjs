@@ -29,7 +29,7 @@ try{
   page.on('pageerror',error=>errors.push(error.message));
   page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:'+port))external.push(request.url())});
   await page.goto(url,{waitUntil:'networkidle'});
-  await page.locator('#question option').first().waitFor();
+  await page.locator('#question option').first().waitFor({state:'attached'});
   assert.equal(await page.locator('#question option').count(),8,'Eight original public examples in browser lab');
   assert.equal(await page.locator('.criterion').count(),3,'GCSE example has three mark criteria');
   await page.locator('#preview').click();
