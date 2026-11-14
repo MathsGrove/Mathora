@@ -84,7 +84,7 @@ const values=[4,6,6,8,11];
 assert.equal(values.reduce((a,b)=>a+b,0)/5,7);
 assert.equal(values[2],6);
 const roots=[2,3];
-assert.equal(roots.reduce((a,b)=>a+1/b,0),5/6);
+assert.ok(Math.abs(roots.reduce((a,b)=>a+1/b,0)-5/6)<1e-12);
 for(const x of [-3,-2.5,-2,-1,0,2,2.1,4]){
  assert.equal(x*x>4,Math.abs(x)>2);
 }
