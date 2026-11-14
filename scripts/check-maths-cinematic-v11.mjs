@@ -79,12 +79,12 @@ assert.equal(cancellations,2,'Web Animations should be released after each scene
 assert.equal(passage.hidden,true,'Overlay should disappear after navigation');
 assert.match(overlays['.mg11-passage-caption'].textContent,/programmes/i);
 const event={defaultPrevented:false,button:0,metaKey:false,ctrlKey:false,shiftKey:false,altKey:false,
- target:{closest:()=>({getAttribute:()=>"#signature-sample",hasAttribute:()=>false,target:''})},preventDefault(){this.defaultPrevented=true}};
+ target:{closest:()=>({getAttribute:()=>"#signature-sample",hasAttribute:()=>false,target:'',closest:()=>null})},preventDefault(){this.defaultPrevented=true}};
 handler(event);
 assert.equal(event.defaultPrevented,true,'Ordinary report hash clicks trigger cinematic navigation');
 await Promise.resolve();await Promise.resolve();await Promise.resolve();await Promise.resolve();await Promise.resolve();
 assert.ok(historyPaths.includes('#signature-sample'),'Examiner booklet must reach the intended anchor');
-const skip={...event,defaultPrevented:false,target:{closest:()=>({getAttribute:()=>"#main-content",hasAttribute:()=>false,target:''})},preventDefault(){this.defaultPrevented=true}};
+const skip={...event,defaultPrevented:false,target:{closest:()=>({getAttribute:()=>"#main-content",hasAttribute:()=>false,target:'',closest:()=>null})},preventDefault(){this.defaultPrevented=true}};
 handler(skip);
 assert.equal(skip.defaultPrevented,false,'Skip link must not be intercepted');
 preference.matches=true;
