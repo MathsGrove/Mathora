@@ -85,12 +85,47 @@ try{
   await page.getByRole('button',{name:'Sign off this exact question'}).click();
   await page.locator('.mg2-moderation .mg2-status').getByText(/Another independent reviewer must approve/).waitFor();
   assert.equal(await page.locator('.mg2-moderation-list button').count(),0);
+  // A staff user can author an original complete, unmoderated M/A/B scheme.
+  await page.getByLabel('Original question key').fill('original-fraction-2026-test');
+  await page.getByLabel('Awarding body').fill('AQA');
+  await page.getByLabel('Specific curriculum objective').fill(
+   'Recognise and calculate a fraction of a whole number.');
+  await page.getByLabel('Originality and content-rights declaration').fill(
+   'This is a wholly original fictional mathematics question and solution, authored for local independent reviewer testing.');
+  await page.getByLabel('Question text').fill(
+   'A fictional school has 240 pencils. Exactly two fifths are red. Calculate how many are red and explain every mathematical step.');
+  await page.getByLabel('Independently checkable worked solution').fill(
+   '240 divided by five is 48, so two fifths are two groups of 48, giving 96 pencils. Check 96 / 240 = 2/5.');
+  const fillCriterion=async(index,code,skill,award,missed)=>{
+   const row=page.locator('.mg2-author-mark').nth(index);
+   await row.locator('select').selectOption(code);
+   await row.locator('input[type=text]').last().fill(skill);
+   await row.locator('textarea').nth(0).fill(award);
+   await row.locator('textarea').nth(1).fill(missed);
+  };
+  await fillCriterion(0,'M1','Divide to find one fifth',
+   'Compute exactly 240 divided by five to get 48.',
+   'Divide the full number by the denominator first.');
+  await page.getByRole('button',{name:'Add 1-mark criterion'}).click();
+  await fillCriterion(1,'A1','Multiply numerator to find answer',
+   'Multiply 48 by two and state 96 pencils.',
+   'Multiply the unit fraction by two to find the count.');
+  await page.getByRole('button',{name:'Add 1-mark criterion'}).click();
+  await fillCriterion(2,'B1','Check the final answer',
+   'Verify that 96 divided by 240 equals two fifths.',
+   'Check the part over the total against the given fraction.');
+  await page.getByRole('button',{name:'Save private draft for independent review'}).click();
+  await page.locator('.mg2-authoring-form .mg2-status').getByText(/Saved version 1 as a private original/).waitFor();
+  assert.equal(await page.evaluate(()=>window.__fictionalAuthoring.created.criteria.length),3);
+  assert.equal(await page.evaluate(()=>window.__fictionalAuthoring.created.criteria[1].dependsOn[0]),'m-step-1');
+  await page.getByRole('button',{name:'Assign approved original'}).click();
+  await page.locator('.mg2-inventory .mg2-status').getByText(/Original assigned to the selected learner/).waitFor();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
    'No horizontal overflow at '+viewport.width);
   assert.deepEqual(errors,[],'No JavaScript runtime errors');
   assert.deepEqual(external,[],'Preview must not use any hosted Supabase network');
-  passed+=24;
+  passed+=32;
   await page.close();
  }
- console.log('PASS — '+passed+' responsive examiner/reviewer checks, saved M/A/B evidence, editable reports, human release, independent moderation checks and no external requests.');
+ console.log('PASS — '+passed+' responsive examiner/reviewer checks, saved M/A/B evidence, editable reports, human release, independent moderation, original authoring, approved assignment and no external requests.');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
