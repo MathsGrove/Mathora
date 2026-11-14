@@ -49,7 +49,8 @@
           ],
           "allowImpliedMethod": true
         }
-      ]
+      ],
+      "curriculumTopicKey": "algebra"
     },
     {
       "id": "walking-percent-igcse-core",
@@ -97,7 +98,8 @@
           ],
           "allowImpliedMethod": true
         }
-      ]
+      ],
+      "curriculumTopicKey": "number"
     },
     {
       "id": "polynomial-integral-as",
@@ -154,7 +156,8 @@
           "missingFeedback": "Remember the constant integrates to 3x, and indefinite integrals need +C.",
           "dependsOn": []
         }
-      ]
+      ],
+      "curriculumTopicKey": "integration"
     },
     {
       "id": "complex-roots-further",
@@ -213,7 +216,8 @@
           ],
           "allowImpliedMethod": true
         }
-      ]
+      ],
+      "curriculumTopicKey": "complex-numbers"
     },
     {
       "id": "stationary-ib-aa-hl",
@@ -280,7 +284,8 @@
             "m-value"
           ]
         }
-      ]
+      ],
+      "curriculumTopicKey": "calculus"
     },
     {
       "id": "data-centre-ib-ai-sl",
@@ -348,7 +353,8 @@
             "a-median"
           ]
         }
-      ]
+      ],
+      "curriculumTopicKey": "statistics"
     },
     {
       "id": "tmua-p1-reciprocal-roots",
@@ -388,7 +394,8 @@
           "text": "5/2"
         }
       ],
-      "correctOption": "C"
+      "correctOption": "C",
+      "curriculumTopicKey": "algebra"
     },
     {
       "id": "tmua-p2-logic-equivalence",
@@ -428,7 +435,8 @@
           "text": "They are equivalent only for x>0"
         }
       ],
-      "correctOption": "C"
+      "correctOption": "C",
+      "curriculumTopicKey": "reasoning"
     }
   ]
 }
