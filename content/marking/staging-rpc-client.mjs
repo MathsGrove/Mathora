@@ -18,6 +18,16 @@ export function createExperimentalMarkingClient(db,{environment,enabled}={}){
  }
  function id(x){check(typeof x==='string'&&uuid.test(x),'Valid fictional attempt or rubric UUID required.');return x}
  return Object.freeze({
+  async examinerQueue({limit=20,offset=0}={}){
+   check(Number.isInteger(limit)&&limit>=1&&limit<=50,
+     'Examiner queue limit must be between 1 and 50.');
+   check(Number.isInteger(offset)&&offset>=0&&offset<=10000,
+     'Examiner queue offset is invalid.');
+   return rpc('mg2_examiner_queue',{p_limit:limit,p_offset:offset});
+  },
+  async savedExaminerMarks(attemptId){
+   return rpc('mg2_examiner_saved_marks',{p_attempt:id(attemptId)});
+  },
   async assignConstructed({rubricId,studentId}={}){
    // The server resolves the organisation from the approved rubric and verifies
    // the learner's active programme; no caller-supplied org or staff identity.
