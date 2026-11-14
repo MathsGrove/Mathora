@@ -6,7 +6,6 @@
  if(!document.body)return;
  const canReduce=window.matchMedia?.("(prefers-reduced-motion: reduce)");
  const phone=window.matchMedia?.("(max-width: 720px)");
- const reduce=()=>Boolean(canReduce?.matches||navigator.connection?.saveData||document.visibilityState==="hidden");
  const galleryTiles=[
    ["01","START"],["π","NUMBER"],["x²","ALGEBRA"],["∑","SEQUENCE"],["√2","ROOTS"],["∆","CHANGE"],
    ["f(x)","FUNCTION"],["∞","LIMIT"],["2x+3","PATTERN"],["∫","AREA"],["03","PROGRESS"],["θ","ANGLE"],
@@ -116,6 +115,7 @@
   active=true;
   const scene=choose(key,theme);
   gallery.dataset.scene=scene.kind;
+  gallery.dataset.mode=mode|| (isMajor(key)?"major":"small");
   eyebrow.textContent=scene.eyebrow;
   formula.textContent=scene.equation;
   title.textContent=scene.title;
@@ -184,8 +184,6 @@
   if(file.endsWith(".html"))return "chapter";
   return null;
  };
- const spotlightTarget=selector=>
-   selector==="a"?"":selector;
  document.addEventListener("click",event=>{
    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
    const link=event.target.closest?.("a[href]");
