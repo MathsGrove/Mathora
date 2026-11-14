@@ -11,6 +11,9 @@ on:
       - 'scripts/test-examiner-queue-browser.mjs'
       - 'scripts/test-examiner-assist.mjs'
       - 'scripts/check-marking-v2-portal.mjs'
+      - 'scripts/check-marking-v2-public-bundle.mjs'
+      - 'scripts/test-marking-v2-pages-assembly.mjs'
+      - '.github/workflows/pages.yml'
       - 'portal.js'
       - 'studio.js'
       - 'portal.html'
@@ -54,6 +57,8 @@ jobs:
           node scripts/check-marking-v2-portal.mjs
           node scripts/test-route-feedback-bank.mjs
           node scripts/check-site.mjs
+      - name: Verify exact curated Pages artifact in a PR runner (NO deployment)
+        run: node scripts/test-marking-v2-pages-assembly.mjs
       - name: Assert draft lab is not published in Pages assets
         run: |
           if grep -E 'cp .*reviewer-lab|cp .*route-exam-style-examples' .github/workflows/pages.yml; then
