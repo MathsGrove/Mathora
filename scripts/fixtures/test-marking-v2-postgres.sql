@@ -118,7 +118,9 @@ BEGIN
  BEGIN
   PERFORM public.mg2_staff_mark('abcdabcd-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
     '[{"id":"m-parts","awarded":false},{"id":"a-unit","awarded":true,"note":"Fictional accurate unit share recorded."},{"id":"b-check","awarded":true,"note":"Fictional valid independent check."}]'::jsonb,false);
- EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Dependent criterion%';END;
+ EXCEPTION WHEN OTHERS THEN
+  RAISE NOTICE 'A1 dependency negative test caught SQLSTATE %, reason: %',SQLSTATE,SQLERRM;
+  blocked:=SQLERRM LIKE '%Dependent criterion%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'A1 without its required M1 was accepted';END IF;
 END $$;
 DO $$
