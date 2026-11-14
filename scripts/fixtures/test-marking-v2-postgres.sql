@@ -43,7 +43,7 @@ DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
-  PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa','none','This is a fictional review with sufficient words.');
+  PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa','none','This is a fictional review with sufficient words.',true,true,true);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Independent examiner%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Author self-approval was not rejected';END IF;
 END $$;
@@ -53,13 +53,24 @@ DO $$
 DECLARE blocked boolean:=false;
 BEGIN
  BEGIN
-  PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa','none','Fictional other organisation cannot approve this.');
+  PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa','none','Fictional other organisation cannot approve this.',true,true,true);
  EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Independent examiner%';END;
  IF NOT blocked THEN RAISE EXCEPTION 'Cross-organisation reviewer was not rejected';END IF;
 END $$;
 SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',false);
 SELECT public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',:'fp',
- 'First fictional examiner independently reviewed the algebra and the mark dependencies.');
+ 'First fictional examiner independently reviewed the algebra and the mark dependencies.',true,true,true);
+-- Missing signoff confirmations must be rejected before a reviewer can approve.
+DO $
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    current_setting('app.mg2_expected_fp'),
+    'This review intentionally has no syllabus confirmation.',true,false,true);
+ EXCEPTION WHEN OTHERS THEN blocked:=SQLERRM LIKE '%Explicit mathematics%';END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Unconfirmed syllabus review was accepted';END IF;
+END $;
 -- Duplicate first reviewer is rejected; a second independent reviewer must be distinct.
 DO $$
 DECLARE blocked boolean:=false;
@@ -67,13 +78,13 @@ BEGIN
  BEGIN
   PERFORM public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
     current_setting('app.mg2_expected_fp'),
-    'Repeated same examiner approval is not independent.');
+    'Repeated same examiner approval is not independent.',true,true,true);
  EXCEPTION WHEN unique_violation THEN blocked:=true;END;
  IF NOT blocked THEN RAISE EXCEPTION 'Duplicate reviewer vote was accepted';END IF;
 END $$;
 SELECT set_config('request.jwt.claim.sub','22222222-2222-4222-8222-222222222222',false);
 SELECT public.mg2_signoff_rubric('abcdabcd-aaaa-4aaa-8aaa-aaaaaaaaaaaa',:'fp',
- 'Second fictional examiner independently checked the original full mathematical solution.');
+ 'Second fictional examiner independently checked the original full mathematical solution.',true,true,true);
 -- Wrong organisation staff cannot award marks even after approval.
 SELECT set_config('request.jwt.claim.sub','99999999-9999-4999-8999-999999999999',false);
 DO $$
