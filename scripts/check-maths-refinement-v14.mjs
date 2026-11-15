@@ -64,7 +64,8 @@ for(const [file,body,id] of [['portal.html',portal,'mgtr-student-inquiry'],['fam
  assert.ok(body.includes('maths-private-motion-v14.js'),file+' missing lightweight interactions');
 }
 assert.ok(home.includes('maths-preview-insights-v14.js'),'Public tour must show distinct family/tutor questions');
-for(const page of [home,report,reason])assert.ok(page.includes('maths-refinement-v14.css'),'Page missing smoother quote styling');
+for(const page of [home,reason])assert.ok(page.includes('maths-refinement-v14.css'),'Main site and reasoning demo retain role/marketing styles');
+assert.ok(report.includes('report-editorial-v17.css')&&!report.includes('maths-refinement-v14.css'),'The standalone report must use its dedicated editorial layout, not unrelated role stylesheet overrides');
 assert.ok(gallery.includes('mg15-galaxy-core')&&!gallery.includes('mg14-maths-quote'),'Gallery must show maths only, with no written quote');
 assert.ok(!gallery.includes('mg13-hand-line')&&!gallery.includes('mg13-paper'),'No handwritten notes or writing animation');
 assert.ok(css.includes('mg14-coverage')&&css.includes('mg14-showcase')&&css.includes('prefers-reduced-motion:reduce'),'Responsive inquiry and reduced-motion styles required');
