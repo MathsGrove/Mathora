@@ -54,6 +54,16 @@ try{
      assert.equal(await page.locator('#mgr-pages .mg7-page').count(),7,'Seven full report pages must render');
      assert.equal(await page.locator('#mgr-pages .mg7-page[hidden]').count(),0,'All report pages must scroll');
      assert.equal(await page.locator('#mgr-select option').count(),7,'Page navigator must include all seven');
+     await page.locator('#mgr16-insights').scrollIntoViewIfNeeded();
+     await page.waitForFunction(()=>document.querySelector('#mgr16-score-percent')?.textContent==='72%',null,{timeout:4500});
+     assert.equal(await page.locator('#mgr16-score-total').textContent(),'43 / 60','Only canonical question marks drive report totals');
+     assert.equal(await page.locator('#mgr16-count-questions').textContent(),'10 / 10','All ten questions were reviewed in this specimen');
+     assert.equal(await page.locator('#mgr16-count-full').textContent(),'2 / 10','Two full-mark questions in the sample');
+     assert.equal(await page.locator('#mgr16-question-bars .mgr16-q').count(),10,'Question visual has ten data-derived bars');
+     assert.match(await page.locator('#mgr16-question-bars').getAttribute('aria-label'),/question 5, 2 out of 6 marks/,'Chart includes exact accessible sample evidence');
+     const reportBounds=await page.locator('#mgr-pages .mg7-page').first().boundingBox();
+     assert.ok(reportBounds&&reportBounds.x>=-2&&reportBounds.width<=viewport.width+2,'Original report page fits the viewport');
+     await page.screenshot({path:resolve(screenshotDir,'report-overview-'+viewport.label+'.png'),fullPage:false});
      await page.selectOption('#mgr-select','3');
      assert.equal((await page.locator('#mgr-select').inputValue()),'3');
     }
@@ -389,12 +399,31 @@ try{
    await page.locator('a[href="./report.html"]').first().click();
    await page.waitForURL(url=>url.pathname.endsWith('/report.html'),{timeout:8000});
    assert.ok((await page.title()).includes('Signature'),'The full examiner reader opens');
+   await page.locator('#mgr16-insights').scrollIntoViewIfNeeded();
+   await page.waitForFunction(()=>document.querySelector('#mgr16-score-percent')?.textContent==='72%',null,{timeout:4500});
+   assert.equal(await page.locator('#mgr16-score-total').textContent(),'43 / 60','The animated ring is derived from canonical marks');
+   assert.equal(await page.locator('#mgr16-question-bars .mgr16-q').count(),10,'Ten original question bars animate exactly once');
+   assert.equal(await page.locator('#mgr16-insights').getAttribute('hidden'),null,'Summary is displayed after report data loads');
+   await page.screenshot({path:resolve(screenshotDir,'report-studio-v16.png'),fullPage:false});
    assert.equal(await page.locator('.mgr-chapter-button').count(),7,'Seven examiner chapters can be opened directly');
    await page.locator('[data-mgr-page="4"]').click();
    await page.waitForFunction(()=>document.querySelector('#mgr-status')?.textContent?.includes('Page 4 of 7'),null,{timeout:3500});
    assert.equal(await page.locator('#mgr-select').inputValue(),'4','Chapter navigation synchronises existing page selector');
    assert.equal(await page.locator('[data-mgr-page="4"]').getAttribute('aria-current'),'page','The selected chapter is announced accessibly');
    assert.equal(await page.locator('#mgr-progress-fill').getAttribute('style'), 'width: 57%;','Reading progress reflects page four');
+   await page.emulateMedia({media:'print'});
+   const printState=await page.evaluate(()=>({
+    pages:[...document.querySelectorAll('#mgr-pages .mg7-page')].map(x=>getComputedStyle(x).display),
+    layout:getComputedStyle(document.querySelector('.mgr16-reading-layout')).display,
+    summary:getComputedStyle(document.querySelector('#mgr16-insights')).display,
+    nav:getComputedStyle(document.querySelector('.mgr-chapters')).display
+   }));
+   assert.equal(printState.pages.length,7,'Print still contains seven original pages');
+   assert.ok(printState.pages.every(x=>x==='flex'),'All original pages remain printable in full');
+   assert.notEqual(printState.layout,'none','The reader wrapper remains printable');
+   assert.equal(printState.summary,'none','Animations and extra stats must not duplicate the printable report');
+   assert.equal(printState.nav,'none','The navigation rail must not print');
+   await page.emulateMedia({media:'screen'});
    assert.ok(await page.locator('#mg13-passage').count(),'Examiner reader also has the connected gallery');
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
    await page.locator('[data-mg8-route="parent"]').click();
