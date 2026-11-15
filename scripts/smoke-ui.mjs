@@ -54,6 +54,29 @@ try{
      assert.equal(await page.locator('#mgr-pages .mg7-page').count(),7,'Seven full report pages must render');
      assert.equal(await page.locator('#mgr-pages .mg7-page[hidden]').count(),0,'All report pages must scroll');
      assert.equal(await page.locator('#mgr-select option').count(),7,'Page navigator must include all seven');
+     const mathematicalScenes=await page.locator('#mgr-pages .mg7-page').evaluateAll(nodes=>nodes.map(node=>node.dataset.mgr17Scene));
+     assert.deepEqual(mathematicalScenes,['orbits','proportions','curves','reasoning','geometry','four-steps','connections'],'Seven chapters must have distinct mathematical motion designs');
+     assert.equal(await page.locator('#mgr-pages .mgr17-ribbon').count(),7,'Every chapter receives one decoration outside its content area');
+     assert.equal(await page.locator('#mgr-pages .mgr17-ribbon path').count(),21,'Mathematics is made of real decorative paths, not prose overlays');
+     const readerFit=await page.evaluate(()=>{
+      const pages=[...document.querySelectorAll('#mgr-pages .mg7-page')];
+      const layout=document.querySelector('.mgr16-reading-layout').getBoundingClientRect();
+      const chrome=document.querySelector('.mgr-controls').getBoundingClientRect();
+      const results=pages.map(p=>{
+       const rect=p.getBoundingClientRect();
+       const title=p.querySelector('.mg7-report-heading,.mg7-cover-title');
+       return {left:rect.left,right:rect.right,width:rect.width,
+        headingOverflow:title?title.scrollWidth-title.clientWidth:0};
+      });
+      return {viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+       chromeLeft:chrome.left,chromeRight:chrome.right,layoutLeft:layout.left,layoutRight:layout.right,pages:results};
+     });
+     assert.ok(readerFit.scrollWidth<=viewport.width+3,'Report should not create horizontal document overflow: '+JSON.stringify(readerFit));
+     assert.ok(readerFit.chromeLeft>=-3&&readerFit.chromeRight<=viewport.width+3,'Navigation controls must stay within viewport');
+     assert.ok(readerFit.pages.every(p=>p.left>=-3&&p.right<=viewport.width+3&&p.headingOverflow<=3),'All seven page titles and pages fit without collision');
+     assert.equal(await page.locator('#mgr17-insights').count(),0,'No duplicative second report analytics widget');
+     const reducedPathAnimation=await page.locator('.mgr17-ribbon path').first().evaluate(el=>getComputedStyle(el).animationName);
+     assert.equal(reducedPathAnimation,'none','Reduced-motion report decoration does not animate');
      await page.locator('#mgr16-insights').scrollIntoViewIfNeeded();
      await page.waitForFunction(()=>document.querySelector('#mgr16-score-percent')?.textContent==='72%',null,{timeout:4500});
      assert.equal(await page.locator('#mgr16-score-total').textContent(),'43 / 60','Only canonical question marks drive report totals');
@@ -399,6 +422,12 @@ try{
    await page.locator('a[href="./report.html"]').first().click();
    await page.waitForURL(url=>url.pathname.endsWith('/report.html'),{timeout:8000});
    assert.ok((await page.title()).includes('Signature'),'The full examiner reader opens');
+   assert.equal(await page.locator('.mgr17-ribbon').count(),7,'All report chapters have integrated mathematics');
+   assert.equal(await page.locator('.mgr17-outro-links a').count(),2,'The new report ending offers meaningful next steps');
+   await page.locator('[data-mgr-page="5"]').click();
+   await page.waitForFunction(()=>document.querySelector('#page-5')?.classList.contains('mgr17-seen'),null,{timeout:3000});
+   assert.equal(await page.locator('#page-5').getAttribute('data-mgr17-scene'),'geometry','Examiner annotations carry geometry-specific motion');
+   await page.screenshot({path:resolve(screenshotDir,'signature-report-editorial-v17.png'),fullPage:false});
    await page.locator('#mgr16-insights').scrollIntoViewIfNeeded();
    await page.waitForFunction(()=>document.querySelector('#mgr16-score-percent')?.textContent==='72%',null,{timeout:4500});
    assert.equal(await page.locator('#mgr16-score-total').textContent(),'43 / 60','The animated ring is derived from canonical marks');
@@ -423,6 +452,12 @@ try{
    assert.notEqual(printState.layout,'none','The reader wrapper remains printable');
    assert.equal(printState.summary,'none','Animations and extra stats must not duplicate the printable report');
    assert.equal(printState.nav,'none','The navigation rail must not print');
+   const printDecoration=await page.evaluate(()=>({
+    ornaments:[...document.querySelectorAll('#mgr-pages .mgr17-ribbon')].map(x=>getComputedStyle(x).display),
+    outro:getComputedStyle(document.querySelector('.mgr17-outro')).display
+   }));
+   assert.ok(printDecoration.ornaments.every(x=>x==='none'),'Mathematical ornaments must not print onto the seven original A4 pages');
+   assert.equal(printDecoration.outro,'none','End-of-report marketing must not create an extra printed page');
    await page.emulateMedia({media:'screen'});
    assert.ok(await page.locator('#mg13-passage').count(),'Examiner reader also has the connected gallery');
    await page.goto(base+'/',{waitUntil:'domcontentloaded'});
