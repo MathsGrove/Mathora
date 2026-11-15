@@ -1,0 +1,23 @@
+name: Homepage navigation contract
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'scripts/check-navigation-contract.mjs'
+      - 'scripts/test-navigation-contract.mjs'
+      - '.github/workflows/navigation-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  navigation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run navigation fixture tests
+        run: node scripts/test-navigation-contract.mjs
+      - name: Check live homepage source contract
+        run: node scripts/check-navigation-contract.mjs
