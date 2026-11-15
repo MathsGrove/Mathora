@@ -114,7 +114,17 @@ function roleDetails(d){
 }
 function render(){
  const d=cases[activeCase],r=roleDetails(d);
- q('mg5-preview').classList.remove('mg5-focus-pulse');void q('mg5-preview').offsetWidth;q('mg5-preview').classList.add('mg5-focus-pulse');
+ // Avoid forcing a synchronous layout read every time a visitor switches role.
+ // Use a short compositor-only transition only where the browser supports it;
+ // the existing View Transition handles updates in capable browsers.
+ const preview=q('mg5-preview');
+ if(preview && typeof preview.animate==='function' &&
+    typeof document.startViewTransition!=='function' &&
+    !window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches){
+  preview.getAnimations?.().forEach(animation=>animation.cancel());
+  preview.animate([{opacity:.92,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],
+   {duration:160,easing:'ease-out'});
+ }
  document.querySelectorAll('[data-mg5-case]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mg5Case===activeCase)));
  document.querySelectorAll('[data-mg5-role]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mg5Role===role)));
  text('mg5-case-story',d.heading);text('mg5-case-summary',d.subtitle);

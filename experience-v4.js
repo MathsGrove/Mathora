@@ -40,9 +40,10 @@ function renderCalendar(){
   // This is a fictional calendar, not the learner's current date.
   if(monthOffset===0&&n===29)b.dataset.featuredExample='true';
   b.dataset.day=String(n);b.textContent=String(n);
-  b.setAttribute('aria-label',new Date(y,m,n).toLocaleDateString('en-GB',{day:'numeric',month:'long'})+' · '+(ev.type==='mock'?'Monthly timed mock':!ev.scheduled?'Unscheduled day':ev.completed?'Example completed session':'Scheduled practice')+' · click for details');
+  b.setAttribute('aria-label',new Date(y,m,n).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' · '+(ev.type==='mock'?'Fictional monthly timed mock':!ev.scheduled?'No required session':ev.completed?'Example completed session':'Illustrative practice slot')+' · open details');
+  b.setAttribute('aria-pressed','false');
   if(ev.scheduled){const mark=document.createElement('span');mark.className='mg3-day-dot';mark.setAttribute('aria-hidden','true');b.append(mark)}
-  b.addEventListener('click',()=>{calendar.querySelectorAll('.is-selected').forEach(x=>x.classList.remove('is-selected'));b.classList.add('is-selected');lastOpenedFrom=b;restoreCalendarFocus=true;showActivity(ev)});
+  b.addEventListener('click',()=>{calendar.querySelectorAll('.is-selected').forEach(x=>{x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');lastOpenedFrom=b;restoreCalendarFocus=true;showActivity(ev)});
   calendar.append(b)
  }
  put('mg3-calendar-description',monthName(d)+' · '+(tier==='weekly'?'Four dedicated weekly sets. Click a marked day to see its topic and next action.':tier==='daily'?'A purposeful seven-day rhythm. Choose any date to see the practice focus.':'Daily learning with a separate monthly timed mock. Choose the blue mock date to try a sample session.'));
