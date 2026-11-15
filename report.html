@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="./maths-gallery-v13.css">
 <link rel="stylesheet" href="./maths-refinement-v14.css">
 <link rel="stylesheet" href="./maths-journey-v15.css">
+ <link rel="stylesheet" href="./report-experience-v16.css">
  <script defer src="./report-reader.js"></script>
  <script defer src="./maths-gallery-v13.js"></script>
 </head>
@@ -30,9 +31,23 @@
  </header>
  <section class="mgr-hero" aria-labelledby="mgr-heading">
   <p>MATHEMATICS, WITH MEANING · AN ILLUSTRATIVE EXAMINER REPORT</p>
-  <h1 id="mgr-heading">Read the complete <em>examiner story.</em></h1>
-  <p>Seven chapters connect the overall mark, examiner reasoning and a practical follow-up plan. Choose a chapter or scroll through the fictional report at your own pace.</p>
+  <h1 id="mgr-heading">The examiner report, <em>reimagined.</em></h1>
+  <p>Follow the evidence from the mark to the next step. Seven original specimen pages, with clear navigation and a closer look at the numbers.</p>
  </section>
+ <section class="mgr16-insights" id="mgr16-insights" aria-label="Overview of the fictional report statistics" hidden>
+  <div class="mgr16-insights-heading"><div><p class="mgr16-kicker">THE ASSESSMENT / IN NUMBERS</p><h2>A clearer picture <em>of the evidence.</em></h2></div><span class="mgr16-fiction">ILLUSTRATIVE SPECIMEN · NOT A PREDICTED GRADE</span></div>
+  <div class="mgr16-insights-grid">
+   <div class="mgr16-ring-panel"><div class="mgr16-ring-wrap">
+    <svg class="mgr16-ring" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><circle class="mgr16-ring-bg" cx="60" cy="60" r="48"></circle><circle class="mgr16-ring-fg" id="mgr16-ring-fg" cx="60" cy="60" r="48" pathLength="100"></circle></svg>
+    <div class="mgr16-ring-value"><strong id="mgr16-score-percent">0%</strong><span>of available marks</span></div>
+   </div><div class="mgr16-ring-copy"><span>MARKS AWARDED</span><strong id="mgr16-score-total">—</strong><p>One reviewed diagnostic. A useful starting point, not a measure of overall mastery.</p></div></div>
+   <div class="mgr16-detail-panel"><div class="mgr16-mini-stats"><div><small>QUESTIONS REVIEWED</small><strong id="mgr16-count-questions">—</strong><span>Original marked items</span></div><div><small>FULL-MARK QUESTIONS</small><strong id="mgr16-count-full">—</strong><span>In this single sample</span></div></div>
+    <div class="mgr16-question-caption"><strong>How each question went</strong><span>Marks awarded ÷ marks available</span></div>
+    <div class="mgr16-question-bars" id="mgr16-question-bars" role="img" aria-label="Question-by-question mark shares in the fictional specimen"></div>
+   </div>
+  </div>
+ </section>
+ <div class="mgr16-reading-layout">
  <nav class="mgr-chapters" aria-label="Seven chapters in this fictional examiner report">
   <div class="mgr-chapter-list">
    <button type="button" class="mgr-chapter-button" data-mgr-page="1" aria-current="page"><b>01</b> Cover</button>
@@ -44,6 +59,7 @@
    <button type="button" class="mgr-chapter-button" data-mgr-page="7"><b>07</b> Guidance</button>
   </div>
  </nav>
+ <div class="mgr16-reader">
  <nav class="mgr-controls" aria-label="Specimen report page navigation">
   <button id="mgr-prev" type="button">← Previous page</button>
   <label for="mgr-select">Go to page <select id="mgr-select" aria-label="Select report page">
@@ -61,6 +77,8 @@
  <div class="wrap"><div class="mg7-book" id="mg7-book">
   <div class="mg7-pages" id="mgr-pages"><p id="mgr-loading">Opening the seven-page examiner specimen…</p></div>
  </div></div></section></div></main>
+ </div>
+ </div>
  <footer class="mgr-footer">MathsGrove · Fictional learner / specimen report · Not an official exam-board assessment, result or predicted grade.</footer>
 </body>
 </html>
