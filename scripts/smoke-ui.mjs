@@ -515,6 +515,51 @@ try{
   finally{await page.close();await context.close()}
  }
 
+ // Report-specific collision audit across narrow phones, tablets and a laptop.
+ // Inspect source-backed pages rather than relying on a single viewport screenshot.
+ for(const width of [320,360,768,1024,1280]){
+  const context=await browser.newContext({viewport:{width,height:850},reducedMotion:'reduce'});
+  const page=await context.newPage();
+  try{
+   await page.goto(base+'/report.html',{waitUntil:'domcontentloaded'});
+   await page.waitForSelector('#mgr-pages .mg7-page:nth-child(7)',{timeout:6500});
+   const fit=await page.evaluate(()=>{
+    const rect=el=>el?.getBoundingClientRect();
+    const main=document.querySelector('.mgr16-reading-layout main');
+    const heading=document.querySelector('#mgr-heading');
+    const brand=rect(document.querySelector('.mgr-brand'));
+    const backlink=rect(document.querySelector('.mgr-header-right a'));
+    const controls=['mgr-prev','mgr-next','mgr-print'].map(id=>rect(document.getElementById(id)));
+    const pages=[...document.querySelectorAll('#mgr-pages .mg7-page')].map(p=>{
+     const h=p.querySelector('.mg7-report-heading,.mg7-cover-title');
+     const r=rect(p),body=p.querySelector('.mg7-page-body');
+     return {left:r.left,right:r.right,width:r.width,
+      headingOverflow:h?h.scrollWidth-h.clientWidth:0,
+      bodyOverflow:body?body.scrollWidth-body.clientWidth:0};
+    });
+    return {
+     viewport:innerWidth,mainOverflow:main.scrollWidth-main.clientWidth,
+     headingOverflow:heading.scrollWidth-heading.clientWidth,
+     headerOverlap:brand&&backlink?brand.right-backlink.left:0,
+     controlsOverlap:controls[0]&&controls[1]&&Math.abs(controls[0].top-controls[1].top)<3?
+      controls[0].right-controls[1].left:0,
+     pages
+    };
+   });
+   assert.ok(fit.mainOverflow<=3,'Report reader main must not overflow at '+width+'px: '+JSON.stringify(fit));
+   assert.ok(fit.headingOverflow<=3,'Hero headline must fit at '+width+'px: '+JSON.stringify(fit));
+   assert.ok(fit.headerOverlap<=3,'Header brand and return link collide at '+width+'px: '+JSON.stringify(fit));
+   assert.ok(fit.controlsOverlap<=3,'Previous/next controls collide at '+width+'px: '+JSON.stringify(fit));
+   assert.ok(fit.pages.every(p=>p.left>=-3&&p.right<=width+3&&p.headingOverflow<=3&&p.bodyOverflow<=4),
+    'One or more report pages or headings clip at '+width+'px: '+JSON.stringify(fit));
+   if(width===320||width===768){
+    await page.locator('#page-3').scrollIntoViewIfNeeded();
+    await page.screenshot({path:resolve(screenshotDir,'signature-fit-'+width+'px.png'),fullPage:false});
+   }
+  }catch(error){failures.push('Signature layout audit '+width+'px: '+String(error.message||error).slice(0,500))}
+  finally{await page.close();await context.close()}
+ }
+
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
 for(const r of reports)console.log(JSON.stringify(r));
 if(failures.length){console.error('MathsGrove browser smoke findings:\n'+failures.join('\n'));process.exitCode=1}
