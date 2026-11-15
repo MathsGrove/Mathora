@@ -79,6 +79,56 @@
    observer.observe(overview);
   }else play();
  };
+
+ // Seven mathematical line compositions: quiet, original geometry, not a
+ // score forecast or a second copy of the learner's exam responses.
+ const motionScenes=[
+  {name:'orbits',paths:['M0 59 C117 3 178 13 303 49 S506 76 660 8','M0 70 Q155 -28 322 56 T660 20','M110 73 C233 9 385 5 539 71'],dots:[[94,32],[360,30],[555,57]]},
+  {name:'proportions',paths:['M0 61 H660','M30 64 C152 13 285 12 366 55 S548 72 643 14','M109 72 L216 18 L318 72 L428 18 L535 72'],dots:[[216,18],[428,18],[535,72]]},
+  {name:'curves',paths:['M3 49 C87 11 144 11 204 49 S325 86 391 49 S523 12 654 49','M0 74 H660','M92 79 V7 M316 79 V7 M536 79 V7'],dots:[[204,49],[391,49],[536,26]]},
+  {name:'reasoning',paths:['M5 58 H91 V46 H176 V34 H260 V22 H344 V10 H657','M0 75 H658','M73 14 L178 38 L293 18 L413 48 L537 12 L655 39'],dots:[[91,46],[260,22],[537,12]]},
+  {name:'geometry',paths:['M203 9 A32 32 0 1 1 202.9 9','M203 41 L171 41 M203 41 L230 24 M203 41 L215 72','M0 68 C112 11 291 10 405 68 S565 13 660 51'],dots:[[203,41],[230,24],[215,72]]},
+  {name:'four-steps',paths:['M0 69 H94 V54 H227 V39 H360 V24 H493 V9 H660','M21 76 C125 72 190 50 290 46 S487 13 643 7','M0 80 H660'],dots:[[94,54],[227,39],[360,24],[493,9]]},
+  {name:'connections',paths:['M0 61 C126 13 189 13 300 61 S519 87 659 7','M93 55 L274 17 L470 56 L588 18','M6 77 H656'],dots:[[93,55],[274,17],[470,56],[588,18]]}
+ ];
+ const decorateMathematics=reportPages=>{
+  const ns='http://www.w3.org/2000/svg';
+  reportPages.forEach((page,i)=>{
+   const scene=motionScenes[i],body=page.querySelector('.mg7-page-body');
+   if(!scene||!body)return;
+   const ribbon=document.createElement('div');
+   ribbon.className='mgr17-ribbon';ribbon.setAttribute('aria-hidden','true');
+   const svg=document.createElementNS(ns,'svg');
+   svg.setAttribute('viewBox','0 0 660 84');
+   svg.setAttribute('preserveAspectRatio','none');
+   svg.setAttribute('focusable','false');
+   scene.paths.forEach(d=>{
+    const path=document.createElementNS(ns,'path');
+    path.setAttribute('d',d);svg.append(path);
+   });
+   scene.dots.forEach(([cx,cy])=>{
+    const circle=document.createElementNS(ns,'circle');
+    circle.setAttribute('cx',String(cx));circle.setAttribute('cy',String(cy));
+    circle.setAttribute('r','3');svg.append(circle);
+   });
+   ribbon.append(svg);
+   page.insertBefore(ribbon,body);
+   page.dataset.mgr17Scene=scene.name;
+  });
+  if(!reduce()&&!navigator.connection?.saveData)
+   document.body.classList.add('mgr17-motion-ready');
+  const outro=document.querySelector('.mgr17-outro');
+  if(outro){
+   if('IntersectionObserver' in window){
+    const outroObserver=new IntersectionObserver(entries=>{
+     if(entries.some(entry=>entry.isIntersecting)){
+      outro.classList.add('mgr17-seen');outroObserver.disconnect();
+     }
+    },{threshold:.06});
+    outroObserver.observe(outro);
+   }else outro.classList.add('mgr17-seen');
+  }
+ };
  const labels=['Cover','Executive summary','Topic analysis','Question review','Examiner annotations','Four-week action plan','Family and tutor guidance'];
  let pages=[],current=0,observer=null;
  const reduce=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -100,7 +150,7 @@
   const n=Math.max(0,Math.min(pages.length-1,index));
   const adjacent=Math.abs(n-current)===1;
   setActive(n);
-  pages[n].classList.add('mgr16-page-seen');
+  pages[n].classList.add('mgr16-page-seen','mgr17-seen');
   pages[n].scrollIntoView({behavior:reduce()||!adjacent?'instant':'smooth',block:'start'});
   pages[n].focus({preventScroll:true});
   history.replaceState(null,'','#page-'+(n+1));
@@ -125,6 +175,7 @@
   root.replaceChildren(fragment);
   try{prepareOverview(documentCopy)}catch(_error){if(overview)overview.hidden=true}
   pages=[...root.querySelectorAll('.mg7-page')];
+  try{decorateMathematics(pages)}catch(_error){/* Report remains fully readable without decoration. */}
   setActive(0);
   prev.addEventListener('click',()=>go(current-1));
   next.addEventListener('click',()=>go(current+1));
@@ -134,11 +185,11 @@
   if('IntersectionObserver' in window){
    observer=new IntersectionObserver(entries=>{
     const visible=entries.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio);
-    visible.forEach(entry=>entry.target.classList.add('mgr16-page-seen'));
+    visible.forEach(entry=>entry.target.classList.add('mgr16-page-seen','mgr17-seen'));
     if(visible.length){const i=pages.indexOf(visible[0].target);if(i>=0)setActive(i)}
    },{rootMargin:'-13% 0px -32% 0px',threshold:[0,.1,.25,.5,.75]});
    pages.forEach(page=>observer.observe(page));
-  }
+  }else pages.forEach(page=>page.classList.add('mgr16-page-seen','mgr17-seen'));
   const direct=/^#page-([1-7])$/.exec(location.hash);
   if(direct){requestAnimationFrame(()=>go(Number(direct[1])-1))}
   document.addEventListener('keydown',event=>{

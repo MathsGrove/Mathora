@@ -65,6 +65,7 @@ jobs:
           node --input-type=module --check < family-timing.js
           node --check report-reader.js
           node scripts/check-report-studio-v16.mjs
+          node scripts/check-report-editorial-v17.mjs
           node scripts/check-family-timing-report.mjs
           node --input-type=module --check < reasoning-demo.js
           node scripts/check-reasoning-demo.mjs
@@ -117,7 +118,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p site
-          cp maths-refinement-v14.css maths-private-motion-v14.js maths-preview-insights-v14.js maths-journey-v15.css maths-weekly-demo-v15.js report-experience-v16.css site/
+          cp maths-refinement-v14.css maths-private-motion-v14.js maths-preview-insights-v14.js maths-journey-v15.css maths-weekly-demo-v15.js report-experience-v16.css report-editorial-v17.css site/
           cp index.html report.html report-pages.html reasoning-demo.html reasoning-demo.css reasoning-demo.js reasoning-model.mjs robots.txt sitemap.xml report-reader.css report-reader.js report-preview.css mathsgrove.css brand-refresh.css marketing-services.css marketing.js mathsgrove-icon.svg showcase-v3.css showcase-v3.js experience-v4.css experience-v4.js marketing-experience-v5.css marketing-experience-v5.js marketing-polish-v6.css marketing-polish-v6.js examiner-report-book.css examiner-report-book.js welcome-experience-v8.css welcome-experience-v8.js atelier-v9.css atelier-v9.js calendar-dialog-polish.css maths-cinematic-v11.css maths-gallery-v13.css maths-gallery-v13.js site/
           cp portal.html portal.css private-refresh.css student-features.css evidence-theme.css timed-mock.css maths-notation.css portal.js maths-render.js mathsgrove-config.js whiteboard.js student-release-feed.js student-release-feed.css site/
           cp auth-password.js auth-password.css site/

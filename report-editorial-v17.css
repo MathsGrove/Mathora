@@ -1,0 +1,296 @@
+/* MathsGrove Signature — Editorial Mathematics v17.
+   Last in cascade on the standalone reader: resolves inherited spacing/control
+   clashes while leaving the canonical seven A4 print pages untouched. */
+body.mg-report-reader{
+ --mg17-ink:#172c42;--mg17-brass:#a88d69;--mg17-paper:#fffefa;
+ --mg17-muted:#667789;--mg17-line:#e3ded6;
+ background:#f5f4f1;color:var(--mg17-ink);overflow-x:clip;
+}
+body.mg-report-reader .mgr-header{background:#142a3e;padding-block:15px;min-height:72px}
+body.mg-report-reader .mgr-brand{font-size:27px;line-height:1;white-space:nowrap}
+body.mg-report-reader .mgr-header-right{font-size:10px;letter-spacing:.05em}
+body.mg-report-reader .mgr17-hero{width:100%;max-width:1420px;min-height:285px;margin:0 auto;padding:clamp(32px,4vw,58px) clamp(19px,4.5vw,66px) clamp(23px,3vw,38px);overflow:hidden;isolation:isolate}
+.mgr17-hero>p:first-of-type{position:relative;z-index:2;letter-spacing:.16em;color:#967959;font-size:10px}
+body.mg-report-reader .mgr17-hero h1{position:relative;z-index:2;margin:10px 0 15px;font-size:clamp(55px,7vw,92px);line-height:.96;letter-spacing:-.045em;max-width:850px}
+body.mg-report-reader .mgr17-hero h1 em{font-style:italic;color:#a89072;font-weight:400}
+body.mg-report-reader .mgr17-hero>p:last-of-type{position:relative;z-index:2;font-size:12px;line-height:1.7;max-width:490px;color:#596c80}
+.mgr17-hero::after{display:none}
+.mgr17-hero-figure{pointer-events:none;position:absolute;z-index:0;right:0;top:5%;width:clamp(270px,42vw,590px);height:92%;fill:none;stroke:#b99f7a;stroke-width:1.4;opacity:.2;transform:translateX(3%)}
+.mgr17-hero-figure path,.mgr17-outro-figure path{stroke-dasharray:750;stroke-dashoffset:0}
+.mgr17-hero-figure circle,.mgr17-outro-figure circle{stroke-dasharray:4 8}
+@media(prefers-reduced-motion:no-preference){
+ .mgr17-hero-figure path{animation:mg17-line-arrival 1.6s cubic-bezier(.15,.7,.2,1) both}
+ .mgr17-hero-figure path:nth-child(2){animation-delay:.12s}
+ .mgr17-hero-figure path:nth-child(5){animation-delay:.21s}
+ .mgr17-hero-figure circle{animation:mg17-orbit-enter 1.6s ease both}
+}
+@keyframes mg17-line-arrival{from{stroke-dashoffset:750;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
+@keyframes mg17-orbit-enter{from{opacity:0;transform:scale(.92);transform-origin:60% 50%}to{opacity:1;transform:scale(1);transform-origin:60% 50%}}
+/* Keep the metrics compact, with generous breathing room rather than cards stacking awkwardly. */
+body.mg-report-reader .mgr16-insights{max-width:1390px;margin:0 auto 32px;padding:0 clamp(14px,3.4vw,46px)}
+.mgr16-insights-heading{gap:12px;padding:0 0 18px;border-bottom:1px solid #ddd8cf;margin-bottom:16px}
+body.mg-report-reader .mgr16-insights h2{font-size:clamp(29px,3vw,40px);font-weight:400;letter-spacing:-.025em}
+.mgr16-fiction{background:transparent;border:1px solid #d9d0c4;color:#776b5c;border-radius:2px;white-space:normal}
+.mgr16-insights-grid{grid-template-columns:minmax(0,.97fr) minmax(0,1.03fr);gap:13px}
+.mgr16-ring-panel,.mgr16-detail-panel{border-radius:8px;box-shadow:none;min-height:225px}
+.mgr16-ring-panel{background:linear-gradient(122deg,#21384c,#11293e);position:relative;overflow:hidden}
+.mgr16-ring-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 12%,#d9c8aa19,transparent 55%)}
+.mgr16-ring-wrap{flex-basis:clamp(130px,14vw,167px);width:clamp(130px,14vw,167px)}
+.mgr16-ring-copy>strong{white-space:nowrap;font-size:clamp(34px,4.1vw,54px)}
+.mgr16-detail-panel{border-color:#e2dad0;background:var(--mg17-paper)}
+.mgr16-mini-stats strong{font-size:clamp(30px,3vw,38px)}
+/* Seven chapters, one clear visual hierarchy. Retire overlapping old control rules. */
+body.mg-report-reader .mgr16-reading-layout{
+ grid-template-columns:202px minmax(0,1fr);gap:clamp(15px,2.4vw,31px);
+ max-width:1390px;padding:0 clamp(14px,3.4vw,46px) 50px
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-chapters{
+ top:17px;background:#142b40;border:1px solid #284157;
+ padding:18px 10px 14px;border-radius:8px;box-shadow:none
+}
+.mgr16-reading-layout .mgr-chapters::before{font-size:9px;padding-bottom:14px}
+body.mg-report-reader .mgr16-reading-layout .mgr-chapter-button{
+ font-size:11px;line-height:1.3;min-height:43px;padding:10px 9px;
+ border-radius:4px;transition:background-color .2s,color .2s,border-color .2s
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-chapter-button[aria-current="page"]{
+ border-color:#e2c39966;background:#f1ddbd1a;box-shadow:inset 2px 0 #d4b78d
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls{
+ display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+ padding:9px 12px;border:1px solid #e3ddd5;border-radius:7px;
+ background:#fffcf7f5;box-shadow:0 6px 25px #152b4110;
+ min-height:57px;justify-content:flex-start
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-status{
+ order:0;flex:1 1 130px;width:auto;min-width:130px;
+ font-size:10px;white-space:normal;line-height:1.4;padding:0;color:#65788b
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-prev{order:1}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-next{order:2}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls label{order:3;display:flex;align-items:center;gap:6px;margin:0;font-size:10px;white-space:nowrap}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls label select{max-width:134px;min-width:103px}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-print{
+ order:4;margin-left:auto;background:#19334c;border-color:#19334c;color:#fff
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls button,
+body.mg-report-reader .mgr16-reading-layout .mgr-controls select{
+ font-size:10px;font-weight:700;min-height:37px;padding:8px 10px;border-radius:4px
+}
+body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-print:hover{background:#294c66}
+body.mg-report-reader .mgr16-reading-layout .mgr-reader-progress{margin:0 1px 21px;background:#dfd8cd;border-radius:0}
+body.mg-report-reader .mgr16-reading-layout .mgr-reader-progress>span{background:#ab8c64}
+/* The document itself remains the visual hero, never a forced-height presentation card. */
+body.mg-report-reader .mgr16-reading-layout main{padding:0 0 25px;max-width:none}
+body.mg-report-reader .mgr16-reading-layout .mg7-pages{gap:clamp(25px,3vw,42px)}
+body.mg-report-reader .mgr16-reading-layout .mg7-page{
+ max-width:950px;min-height:0;height:auto;aspect-ratio:auto;
+ padding:clamp(26px,3.6vw,49px) clamp(25px,3.8vw,51px) clamp(25px,3vw,36px);
+ border:1px solid #e0dcd5;border-radius:3px;background:var(--mg17-paper);
+ box-shadow:0 14px 48px #1c34420d;scroll-margin-top:104px;
+ transition:border-color .24s ease,box-shadow .24s ease;
+ contain:layout style
+}
+body.mg-report-reader .mgr16-reading-layout .mg7-page.mgr16-current-page{
+ border-color:#bba88e;box-shadow:0 14px 48px #1c344217,0 0 0 1px #c5b49955
+}
+.mgr16-reading-layout .mg7-page-head{min-height:42px;align-items:center;gap:12px}
+.mgr16-reading-layout .mg7-page-head>span{letter-spacing:.09em;font-size:8px;line-height:1.45}
+.mgr16-reading-layout .mg7-letterbrand{font-size:22px;white-space:nowrap}
+body.mg-report-reader .mgr16-reading-layout .mg7-page-body{padding-top:18px;min-width:0;overflow-wrap:break-word}
+body.mg-report-reader .mgr16-reading-layout .mg7-cover-title{
+ font-size:clamp(61px,7.5vw,98px);line-height:.92;letter-spacing:-.04em;margin-top:25px
+}
+body.mg-report-reader .mgr16-reading-layout .mg7-report-heading{
+ font-size:clamp(41px,4.5vw,58px);line-height:1.01;letter-spacing:-.04em;margin:0 0 15px;overflow-wrap:normal
+}
+.mgr16-reading-layout .mg7-report-heading em{color:#a28867}
+.mgr16-reading-layout .mg7-issue-label{color:#a18462;letter-spacing:.16em}
+.mgr16-reading-layout .mg7-deck{max-width:640px;margin:0 0 18px;font-size:11px;line-height:1.75}
+.mgr16-reading-layout .mg7-bodycopy,.mgr16-reading-layout .mg7-observation p{font-size:11px;line-height:1.8}
+.mgr16-reading-layout .mg7-page-footer{border-color:#e7e0d7;color:#77899a;font-size:9px;padding-top:13px;margin-top:30px}
+/* Each page has a fine mathematical figure in the reading flow: no text collision. */
+.mgr17-ribbon{height:42px;display:block;position:relative;flex:0 0 auto;
+ margin:10px 0 0;overflow:hidden;border-bottom:1px solid #e8e2d8;
+ pointer-events:none;contain:paint}
+.mgr17-ribbon svg{display:block;width:100%;height:100%;stroke:#ac8e6a;stroke-width:1.25;
+ stroke-linecap:round;stroke-linejoin:round;fill:none;opacity:.72;overflow:visible}
+.mgr17-ribbon path{vector-effect:non-scaling-stroke}
+.mgr17-ribbon path:nth-child(2){stroke:#57788a;opacity:.7}
+.mgr17-ribbon path:nth-child(3){stroke:#baa58b;opacity:.66}
+.mgr17-ribbon circle{stroke:#9d8669;fill:none;vector-effect:non-scaling-stroke}
+@media(prefers-reduced-motion:no-preference){
+ body.mg-report-reader.mgr17-motion-ready .mgr17-ribbon path{stroke-dasharray:1000;stroke-dashoffset:1000}
+ body.mg-report-reader.mgr17-motion-ready .mg7-page.mgr17-seen .mgr17-ribbon path{
+  animation:mg17-ribbon-draw 1.18s cubic-bezier(.15,.65,.22,1) both
+ }
+ body.mg-report-reader.mgr17-motion-ready .mg7-page.mgr17-seen .mgr17-ribbon path:nth-child(2){animation-delay:.11s}
+ body.mg-report-reader.mgr17-motion-ready .mg7-page.mgr17-seen .mgr17-ribbon path:nth-child(3){animation-delay:.19s}
+ body.mg-report-reader.mgr17-motion-ready .mg7-page.mgr17-seen .mgr17-ribbon circle{
+  animation:mg17-point-arrive .7s ease both .28s
+ }
+}
+@keyframes mg17-ribbon-draw{from{stroke-dashoffset:1000;opacity:.1}to{stroke-dashoffset:0;opacity:1}}
+@keyframes mg17-point-arrive{from{opacity:0;transform:scale(.65);transform-origin:center}to{opacity:1;transform:scale(1);transform-origin:center}}
+/* Keep the explanation, not the cards, dominant. */
+.mgr16-reading-layout .mg7-observation{border-left-width:2px;background:#f8f5ef;border-radius:0;margin:19px 0}
+.mgr16-reading-layout .mg7-brief-item{border-color:#dcd4c8}
+.mgr16-reading-layout .mg7-stat,.mgr16-reading-layout .mg7-plan-step,
+.mgr16-reading-layout .mg7-evidence-case,.mgr16-reading-layout .mg7-check>div{
+ border-radius:3px;border-color:#e5ddd2;background:#fbf9f5
+}
+.mgr16-reading-layout .mg7-cover-band{background:#1b334a;border-radius:2px}
+.mgr16-reading-layout .mg7-table-scroller{max-width:100%;overflow-x:auto;border-radius:3px}
+.mgr16-reading-layout .mg7-mark-table{width:100%;max-width:100%}
+.mgr16-reading-layout .mg7-mark-table tbody tr{transition:background-color .22s ease}
+.mgr16-reading-layout .mg7-mark-table tbody tr:hover{background:#f1eae0}
+.mgr16-reading-layout .mg7-topic-list{gap:12px}
+.mgr16-reading-layout .mg7-topic-track i{background:#395b6e}
+.mgr16-reading-layout .mg7-topic[data-mg7-priority="true"] .mg7-topic-track i{background:#b39771}
+body.mg-report-reader .mgr16-reading-layout .mg7-page.mgr17-seen .mg7-topic-track i{animation:mg17-scale-across .85s cubic-bezier(.18,.7,.23,1) both}
+@keyframes mg17-scale-across{from{transform:scaleX(.03)}to{transform:scaleX(1)}}
+/* Distinct restrained motions for each chapter, never hiding canonical content. */
+@media(prefers-reduced-motion:no-preference){
+ body.mg-report-reader .mgr16-reading-layout .mg7-page.mgr17-seen .mg7-cover-band{
+  animation:mg17-soft-rise .68s cubic-bezier(.18,.72,.24,1) both .15s
+ }
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="2"].mgr17-seen .mg7-stat,
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="4"].mgr17-seen .mg7-mark-table tbody tr,
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="5"].mgr17-seen .mg7-evidence-case,
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="6"].mgr17-seen .mg7-plan-step,
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="7"].mgr17-seen .mg7-guidance article{
+  animation:mg17-soft-rise .56s cubic-bezier(.18,.72,.25,1) both
+ }
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="2"].mgr17-seen .mg7-stat:nth-child(2),
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="6"].mgr17-seen .mg7-plan-step:nth-child(2),
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="7"].mgr17-seen .mg7-guidance article:nth-child(2){animation-delay:.09s}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="2"].mgr17-seen .mg7-stat:nth-child(3),
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="6"].mgr17-seen .mg7-plan-step:nth-child(3),
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="7"].mgr17-seen .mg7-guidance article:nth-child(3){animation-delay:.18s}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="6"].mgr17-seen .mg7-plan-step:nth-child(4){animation-delay:.27s}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="4"].mgr17-seen .mg7-mark-table tbody tr:nth-child(2n){animation-delay:.08s}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[data-reader-page="4"].mgr17-seen .mg7-mark-table tbody tr:nth-child(3n){animation-delay:.16s}
+}
+@keyframes mg17-soft-rise{from{opacity:.5;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* End of the story: a short premium bridge back to the rest of MathsGrove. */
+.mgr17-outro{background:#172d42;color:#f5ecde;position:relative;overflow:hidden;isolation:isolate;border-top:1px solid #40576b}
+.mgr17-outro-inner{position:relative;z-index:2;width:min(1300px,100%);padding:clamp(38px,5vw,65px) clamp(20px,4vw,58px);margin:0 auto}
+.mgr17-outro-inner>span{display:block;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.17em;color:#c9b294}
+.mgr17-outro h2{font:400 clamp(36px,5vw,60px)/1.06 "Instrument Serif",Georgia,serif;max-width:760px;letter-spacing:-.025em;margin:15px 0}
+.mgr17-outro h2 em{color:#d3b78e}
+.mgr17-outro p{font-size:12px;line-height:1.75;color:#c8d5dd;max-width:550px;margin:0 0 23px}
+.mgr17-outro-links{display:flex;gap:11px;flex-wrap:wrap}
+.mgr17-outro-links a{display:inline-flex;align-items:center;gap:17px;padding:12px 18px;border:1px solid #dfc7a6;border-radius:3px;
+ text-decoration:none;background:#d2ba96;color:#183047;font:700 11px/1.4 "DM Sans",Arial,sans-serif;
+ transition:transform .24s cubic-bezier(.18,.7,.24,1),background-color .24s ease}
+.mgr17-outro-links a+ a{background:transparent;color:#f5ebdc;border-color:#f5ebdc55}
+.mgr17-outro-links a:hover{transform:translateY(-2px);background:#efdbc0}
+.mgr17-outro-links a+a:hover{color:#183047}
+.mgr17-outro-links a:focus-visible{outline:3px solid #e6cfac;outline-offset:3px}
+.mgr17-outro-figure{pointer-events:none;position:absolute;width:min(42vw,520px);right:1%;top:-3%;height:105%;fill:none;stroke:#ccb18a;opacity:.18;stroke-width:1.2}
+@media(prefers-reduced-motion:no-preference){
+ .mgr17-outro.mgr17-seen .mgr17-outro-figure path{animation:mg17-line-arrival 1.4s ease both}
+}
+/* Tablets: one horizontally scrolling chapter strip, no pinched document column. */
+@media(max-width:1180px){
+ body.mg-report-reader .mgr16-reading-layout{grid-template-columns:minmax(0,1fr);gap:11px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapters{position:relative;top:auto;border-radius:6px;padding:10px 8px;overflow-x:auto;scrollbar-width:thin}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapters::before{padding:0 7px 8px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapter-list{display:flex;gap:5px;width:max-content;min-width:max-content}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapter-button{min-width:118px;min-height:42px;width:auto;white-space:nowrap}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page{max-width:950px}
+}
+@media(max-width:880px){
+ .mgr16-insights-grid{grid-template-columns:1fr}
+ .mgr16-ring-panel,.mgr16-detail-panel{min-height:0}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls{justify-content:center}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-status{flex:1 1 100%;text-align:left;min-width:0;order:0}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-print{margin-left:0}
+}
+@media(max-width:600px){
+ body.mg-report-reader .mgr-header{padding:12px 15px;gap:8px}
+ body.mg-report-reader .mgr-brand{font-size:24px}
+ body.mg-report-reader .mgr-header-right a{font-size:10px}
+ body.mg-report-reader .mgr17-hero{padding:28px 18px 22px;min-height:0}
+ body.mg-report-reader .mgr17-hero h1{font-size:clamp(49px,12vw,67px);max-width:none;line-height:.97}
+ .mgr17-hero-figure{right:-30%;width:100%;opacity:.095}
+ body.mg-report-reader .mgr16-insights{padding:0 10px;margin-bottom:19px}
+ .mgr16-insights-heading{gap:7px;padding-bottom:12px}
+ body.mg-report-reader .mgr16-insights h2{font-size:30px}
+ .mgr16-fiction{font-size:8px;padding:5px 8px}
+ .mgr16-insights-grid{gap:9px}
+ .mgr16-ring-panel{padding:17px 15px;gap:10px}
+ .mgr16-ring-wrap{flex-basis:113px;width:113px}
+ .mgr16-ring-value strong{font-size:34px}
+ .mgr16-ring-copy>strong{font-size:35px;white-space:normal}
+ .mgr16-ring-copy p{font-size:10px;line-height:1.55}
+ .mgr16-detail-panel{padding:14px}
+ body.mg-report-reader .mgr16-reading-layout{padding:0 8px 22px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:8px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-status{grid-column:1 / -1;order:0;padding:3px 4px;font-size:10px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-prev{grid-column:1;order:1}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-next{grid-column:2;order:2}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls label{grid-column:1;order:3;width:100%;display:flex;gap:5px;font-size:9px;min-width:0}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls label select{min-width:0;max-width:none;width:100%;flex:1}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls #mgr-print{grid-column:2;order:4;width:100%;margin:0}
+ body.mg-report-reader .mgr16-reading-layout .mgr-controls button{width:100%}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapters{padding:8px 7px}
+ body.mg-report-reader .mgr16-reading-layout .mgr-chapter-button{min-width:102px;padding:9px;min-height:39px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page{
+  min-height:0!important;max-width:100%;width:100%;aspect-ratio:auto;
+  overflow:visible;padding:24px 16px 22px;border-radius:2px;scroll-margin-top:150px
+ }
+ body.mg-report-reader .mgr16-reading-layout .mg7-page-head>span{max-width:48%;overflow-wrap:anywhere}
+ body.mg-report-reader .mgr16-reading-layout .mg7-cover-title{font-size:clamp(55px,12.5vw,74px);margin-top:18px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-report-heading{font-size:clamp(36px,9vw,45px);line-height:1.04;letter-spacing:-.035em}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page-body{padding-top:17px}
+ .mgr17-ribbon{height:33px;margin-top:7px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-cover-band{grid-template-columns:1fr;gap:12px;padding:20px 16px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-cover-band strong{font-size:43px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-cover-band strong[style]{font-size:26px!important}
+ .mgr16-reading-layout .mg7-cover-copy{font-size:12px;line-height:1.72}
+ .mgr16-reading-layout .mg7-details{gap:10px 12px}
+ .mgr16-reading-layout .mg7-stat-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .mgr16-reading-layout .mg7-stat{padding:11px 7px}
+ .mgr16-reading-layout .mg7-stat strong{font-size:clamp(23px,6.4vw,30px)}
+ .mgr16-reading-layout .mg7-stat small{min-height:29px}
+ .mgr16-reading-layout .mg7-evidence-grid,.mgr16-reading-layout .mg7-topic-advice,.mgr16-reading-layout .mg7-check{grid-template-columns:1fr}
+ .mgr16-reading-layout .mg7-topic{grid-template-columns:minmax(65px,1fr) 42px minmax(44px,.9fr) 33px;gap:5px}
+ .mgr16-reading-layout .mg7-topic-name,.mgr16-reading-layout .mg7-topic-count{font-size:9px}
+ .mgr16-reading-layout .mg7-section-heading{font-size:26px}
+ .mgr16-reading-layout .mg7-mark-table{min-width:0}
+ .mgr17-outro-inner{padding:39px 20px}
+ .mgr17-outro h2{font-size:41px}
+ .mgr17-outro-figure{width:78vw;right:-20%;opacity:.09}
+}
+@media(max-width:375px){
+ body.mg-report-reader .mgr16-reading-layout .mg7-page{padding:20px 12px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page-head{gap:6px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-letterbrand{font-size:20px}
+ .mgr16-ring-wrap{flex-basis:102px;width:102px}
+ body.mg-report-reader .mgr16-reading-layout .mg7-report-heading{font-size:36px}
+}
+/* Motion/print are explicit opt-outs, including the complex multi-page document. */
+@media(prefers-reduced-motion:reduce){
+ .mgr17-hero-figure *, .mgr17-outro-figure *, .mgr17-ribbon *, .mg7-page.mgr17-seen *{animation:none!important;transition:none!important;transform:none!important}
+ body.mg-report-reader .mgr17-ribbon path{stroke-dashoffset:0!important}
+ .mgr17-outro-links a:hover{transform:none}
+}
+@media print{
+ body.mg-report-reader .mgr17-hero,body.mg-report-reader .mgr17-outro,
+ body.mg-report-reader .mgr17-ribbon,body.mg-report-reader .mgr17-hero-figure{
+  display:none!important
+ }
+ body.mg-report-reader .mgr16-reading-layout .mg7-page,
+ body.mg-report-reader .mgr16-reading-layout .mg7-page[hidden]{
+  display:flex!important;contain:none!important;
+  width:100%!important;min-height:270mm!important;max-height:270mm!important;
+  margin:0!important;padding:12mm 13mm 10mm!important;overflow:hidden!important;
+  border:0!important;box-shadow:none!important;border-radius:0!important;
+  transform:none!important;animation:none!important
+ }
+ body.mg-report-reader .mgr16-reading-layout .mg7-page-body{padding-top:27px!important}
+ body.mg-report-reader .mgr16-reading-layout .mg7-cover-title{margin-top:38mm!important}
+ body.mg-report-reader .mgr16-reading-layout .mg7-report-heading{font-size:clamp(39px,4.1vw,55px)!important;line-height:1.06!important}
+ body.mg-report-reader .mgr16-reading-layout .mg7-page *{animation:none!important;transition:none!important;transform:none!important}
+}
