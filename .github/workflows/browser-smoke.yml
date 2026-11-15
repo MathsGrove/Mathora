@@ -37,6 +37,8 @@ jobs:
           node scripts/check-maths-gallery-v13.mjs
           node --check maths-weekly-demo-v15.js
           node scripts/check-maths-journey-v15.mjs
+          node --check report-reader.js
+          node scripts/check-report-studio-v16.mjs
           node scripts/check-marketing-v5.mjs
           node scripts/check-welcome-v8.mjs
           node scripts/check-atelier-v9.mjs
