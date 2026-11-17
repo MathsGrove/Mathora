@@ -1,0 +1,27 @@
+// Zero-dependency public editorial QA. Fictional examples only; never publishes questions.
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const doc=readFileSync(new URL('../content/operations/2026-11-17-cross-route-original-specimens.md',import.meta.url),'utf8');
+assert.match(doc,/Editorial only/);
+assert.match(doc,/not unseen mock questions/);
+assert.match(doc,/not an independent examiner review/);
+assert.match(doc,/GCSE Higher/);
+assert.match(doc,/IGCSE 0580 Extended/);
+assert.match(doc,/TMUA Paper 2/);
+const roots=[7,-12];
+for(const x of roots)assert.equal(x*x+5*x-84,0);
+assert.equal(7*12,84);
+assert.equal(480*1.125,540);
+assert.equal(540*.8,432);
+assert.equal((432-480)/480*100,-10);
+const A=n=>!(n*n%2===0)||n%2!==0;
+const B=n=>!(n*n%4===0)||n%2===0;
+const C=n=>n%2!==0||n*n%2!==0;
+const D=n=>n*n%2!==1||n%2===0;
+const E=n=>n*n%4!==0||n%4===0;
+const predicates=[A,B,C,D,E];
+for(let n=-200;n<=200;n++)assert.equal(B(n),true,'B counterexample at '+n);
+for(const [i,fn] of predicates.entries())if(i!==1)assert.ok(Array.from({length:401},(_,k)=>k-200).some(n=>!fn(n)),'Distractor '+i+' must have counterexample');
+assert.deepEqual([A(2),C(2),D(1),E(2)],[false,false,false,false]);
+assert.equal((doc.match(/\*\*Proposed marking guidance/g)||[]).length,3);
+console.log('PASS: GCSE quadratic, IGCSE compound change, TMUA implication and distractors, editorial-only guards');
